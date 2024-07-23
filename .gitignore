@@ -1,0 +1,5 @@
+.idea/
+*.js
+package-lock.json
+__MACOSX/
+/node_modules
