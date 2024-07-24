@@ -41,4 +41,10 @@ export class User {
 
   @OneToMany(() => Game, (game) => game.player2)
   gamesAsPlayer2: Promise<Game[]>;
+
+  @Column()
+  totalWins: string;
+
+  @Column()
+  totalLosses: string;
 }

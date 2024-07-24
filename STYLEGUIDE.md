@@ -4,7 +4,7 @@
 
 - Use camelCase for variable names: `matchPoints`, `userId`, `currentUser`, etc.
 - Use declarative names for IDs, both in frontend and backend:
-  ```typescript
+  ```
   User.ts:
   
   userId: number,
@@ -15,6 +15,7 @@
   gameId: Number,
   changeEloPlayer1: number,
   ...
+  ```
 
 ## Code Indentation
 
@@ -29,7 +30,7 @@
 
 - Nest components within each other if they only appear within another component:
 
-    ```typescript
+    ```
     /components
     |--/profile
     |----/user-description
@@ -37,6 +38,7 @@
     |--/productsPage
     |----/filter
     |----/productGrid
+    ```
 
 ## Client-Side Logic
 
@@ -52,16 +54,18 @@
 ## Routing
 
 - Use Angulars routerLink="/" for navigation within the application:
-  ```html
+  ```
   Use:
   <a routerLink="/profile">
+  ```
 
 - Do not use "href=/" attributes for navigation as it is inefficient within the Angular Framework:
-  ```html
+  ```
   Don't use:
   <a href="/profile">
   
   <router-outlet></router-outlet>
+  ```
 
 ## Function Size
 
@@ -77,22 +81,26 @@
 ## Commit Messages
 
 - Use meaningful commit messages:
-    ```typescript
-  Added profile.component and finished profile.component.html and .css
-  additionaly cleared up the global styles.css 
+  ```
+  Add profile.component and finished profile.component.html and .css
+  additionally cleared up the global styles.css 
+  ```
 
-- Avoid messages such as "Kein Bock mehr lul, Jesus Christ..."
+- Avoid messages such as: "Kein Bock mehr lul, Jesus Christ..."
 
 ## REST Routes
 
 - Prefix REST routes with /api.
 
 ### Example Backend Route for Creating a User
-    CREATE localhost:8080/api/user
+  ```
+  CREATE localhost:8080/api/user
+  ```
 
 ### Example Frontend Route for Profile Page
-
-    localhost:8080/profile
+  ```
+  localhost:8080/profile
+  ```
 
 ## Swagger Attributes
 
