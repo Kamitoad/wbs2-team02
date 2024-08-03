@@ -2,6 +2,8 @@
   <ng-container>
     <div class="row">
       <h1 class="mt-3">Möge das Glück mit dir sein</h1>
+
+      <!-- Player information -->
       <div class="col-3 mt-3">
         <h5>Du bist dran</h5>
         <div class="container">
@@ -14,7 +16,24 @@
           </div>
         </div>
       </div>
-      <div class="col-6 mt-3">GAME</div>
+
+      <!-- Tic-Tac-Toe Field -->
+      <div class="col-6 mt-3">
+        <table class="table table-bordered">
+          <tbody>
+          <tr *ngFor="let row of gameBoard; let i = index">
+            <td *ngFor="let cell of row; let j = index"
+                class="text-center align-middle cell-hover"
+                style="height: 100px; cursor: pointer;"
+                (click)="makeMove(i, j)">
+              {{ cell }}
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Opponent information -->
       <div class="col-3 mt-3">
         <h5>Gegner ist dran</h5>
         <div class="container">
