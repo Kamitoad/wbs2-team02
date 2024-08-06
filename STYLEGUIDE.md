@@ -66,6 +66,16 @@
   
   <router-outlet></router-outlet>
   ```
+  
+## Icons
+
+- Use Font-Awesome Icons like this:
+  ```
+  <fa-icon [icon]="faPenToSquare"></fa-icon>
+  ```
+- it will show errors the first time when in an html component, you can resolve this by importing
+the corresponding component by hovering over the "not-imported-component" and pressing Ctrl+Alt+Enter
+
 
 ## Function Size
 
