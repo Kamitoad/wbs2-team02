@@ -1,12 +1,15 @@
 import {Component} from '@angular/core';
 import {NgForOf} from "@angular/common";
+import {FaIconComponent} from "@fortawesome/angular-fontawesome";
+import {faUser} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-game',
   standalone: true,
   templateUrl: './game.component.html',
   imports: [
-    NgForOf
+    NgForOf,
+    FaIconComponent
   ],
   styleUrls: ['./game.component.css']
 })
@@ -73,4 +76,6 @@ export class GameComponent {
     this.winner = null;
     this.moveCount = 0;
   }
+
+  protected readonly faUser = faUser;
 }
