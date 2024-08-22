@@ -43,8 +43,8 @@ export class User {
   gamesAsPlayer2: Promise<Game[]>;
 
   @Column()
-  totalWins: string;
+  totalWins: number;
 
   @Column()
-  totalLosses: string;
+  totalLosses: number;
 }
