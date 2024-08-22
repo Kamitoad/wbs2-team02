@@ -8,6 +8,7 @@ export class IsLoggedInGuard implements CanActivate {
     const http = context.switchToHttp();
     const request = http.getRequest<Request>();
     const session: SessionData = request.session;
-    return session.isLoggedIn;  //returns true if user isLoggedIn
+
+    return session.currentUser !== undefined;
   }
 }
