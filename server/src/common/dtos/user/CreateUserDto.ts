@@ -42,8 +42,4 @@ export class CreateUserDto {
     @IsString()
     @IsNotEmpty()
     lastName: string;
-
-    @ApiProperty()
-    @IsString()
-    profilePic: string;
 }

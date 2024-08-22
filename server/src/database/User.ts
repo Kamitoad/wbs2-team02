@@ -30,7 +30,7 @@ export class User {
   @Column()
   elo: number;
 
-  @Column()
+  @Column({ nullable: true })
   profilePic: string;
 
   @Column()

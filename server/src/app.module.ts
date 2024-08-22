@@ -6,6 +6,8 @@ import { User } from './database/User';
 import { Game } from './database/Game';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import * as path from 'node:path';
+import {AuthController} from "./common/controllers/auth/auth.controller";
+import {AuthService} from "./common/services/auth/auth.service";
 
 @Module({
   imports: [
@@ -28,9 +30,11 @@ import * as path from 'node:path';
   ],
   controllers: [
     AppController,
+    AuthController,
   ],
   providers: [
     AppService,
+    AuthService
   ],
 })
 export class AppModule {
