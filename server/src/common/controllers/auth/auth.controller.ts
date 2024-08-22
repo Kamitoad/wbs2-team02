@@ -1,13 +1,14 @@
 import {
     BadRequestException,
-    Body, ConflictException, Controller, InternalServerErrorException, Post, Session,
-    UnauthorizedException
+    Body, ConflictException, Controller, InternalServerErrorException, NotFoundException, Post, Session, UseGuards
 } from '@nestjs/common';
 import { SessionData } from "express-session";
-import {CreateUserDto} from "../../dtos/user/CreateUserDto";
+import {CreateUserDto} from "../../dtos/auth/CreateUserDto";
 import {ApiResponse, ApiTags} from "@nestjs/swagger";
 import {OkDto} from "../../dtos/OkDto";
 import {AuthService} from "../../services/auth/auth.service";
+import {LoginDto} from "../../dtos/auth/LoginDto";
+import {IsLoggedInGuard} from "../../guards/is-logged-in/is-logged-in.guard";
 
 @ApiTags('auth')
 @Controller('auth')
@@ -23,12 +24,10 @@ export class AuthController {
     async register(
         @Session() session: SessionData,
         @Body() body: CreateUserDto,
-    ) {
+    ): Promise<OkDto> {
         try {
             const user = await this.authService.register(body);
-            if (session) {
-                session.currentUser = user.userId;
-            }
+            session.currentUser = user.userId;
             return new OkDto(true, 'User erfolgreich registriert');
         } catch (error) {
             if (error instanceof BadRequestException) {
@@ -42,19 +41,26 @@ export class AuthController {
     }
 
     @Post('login')
-    login(
+    async login(
         @Session() session: SessionData,
-        @Body('username') username: string,
-    ): void {
-        /*if (username == 'admin') {
-            session.isLoggedIn = true;
-        } else {
-            throw new UnauthorizedException();
-        }*/
-        session.currentUser = 1;
+        @Body() body: LoginDto,
+    ): Promise<OkDto> {
+        try {
+            const user = await this.authService.login(body);
+            session.currentUser = user.userId;
+            return new OkDto(true, 'User erfolgreich eingeloggt');
+        } catch (error) {
+            if (error instanceof NotFoundException) {
+                throw new NotFoundException(error.message);
+            } else {
+                throw new InternalServerErrorException( "Fehler bei der Anmeldung");
+            }
+        }
     }
     @Post('logout')
-    logout(@Session() session: SessionData): void {
+    @UseGuards(IsLoggedInGuard)
+    logout(@Session() session: SessionData): OkDto {
         session.currentUser = undefined;
+        return new OkDto(false, 'User erfolgreich ausgeloggt');
     }
 }
