@@ -1,28 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Game } from '../../../database/Game';
-import { CreateGameDto } from '../dtos/create-game.dto';
-import { UpdateGameDto } from '../dtos/update-game.dto';
+import { GameRepository } from '../../../database/repositories/game.repository';
+import { UserRepository } from '../../../database/repositories/user.repository';
+import { Game } from '../../../database/entities/game.entity';
 
 @Injectable()
 export class GameService {
     constructor(
-        @InjectRepository(Game)
-        private readonly gameRepository: Repository<Game>,
+        private readonly gameRepository: GameRepository,
+        private readonly userRepository: UserRepository,
     ) {}
 
-    async create(createGameDto: CreateGameDto): Promise<Game> {
-        const game = this.gameRepository.create(createGameDto);
-        return await this.gameRepository.save(game);
-    }
+    async createGame(player1Id: number, player2Id: number): Promise<Game> {
+        const player1 = await this.userRepository.findOne(player1Id);
+        const player2 = await this.userRepository.findOne(player2Id);
 
-    async findOne(id: string): Promise<Game> {
-        return await this.gameRepository.findOne({ where: { id } });
-    }
+        const game = this.gameRepository.create({
+            player1,
+            player2,
+            currentTurn: 'X',
+        });
 
-    async update(id: string, updateGameDto: UpdateGameDto): Promise<Game> {
-        await this.gameRepository.update(id, updateGameDto);
-        return this.findOne(id);
+        return this.gameRepository.save(game);
     }
 }

@@ -6,6 +6,8 @@ import { User } from './database/User';
 import { Game } from './database/Game';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import * as path from 'node:path';
+import {GameService} from "./modules/user/services/game.service";
+import {GameRepository} from "./database/repositories/game.repository";
 
 @Module({
   imports: [
@@ -31,6 +33,9 @@ import * as path from 'node:path';
   ],
   providers: [
     AppService,
+      GameService,
+      GameRepository,
+      UserR
   ],
 })
 export class AppModule {
