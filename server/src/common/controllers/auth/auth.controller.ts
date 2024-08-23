@@ -1,6 +1,14 @@
 import {
     BadRequestException,
-    Body, ConflictException, Controller, InternalServerErrorException, NotFoundException, Post, Session, UseGuards
+    Body,
+    ConflictException,
+    Controller,
+    HttpCode,
+    InternalServerErrorException,
+    NotFoundException,
+    Post,
+    Session,
+    UseGuards
 } from '@nestjs/common';
 import {SessionData} from "express-session";
 import {CreateUserDto} from "../../dtos/auth/CreateUserDto";
@@ -74,6 +82,7 @@ export class AuthController {
         description: 'Fehler bei der Anmeldung'
     })
     @Post('login')
+    @HttpCode(200)
     async login(
         @Session() session: SessionData,
         @Body() body: LoginDto,
@@ -102,6 +111,7 @@ export class AuthController {
         description: 'Benutzer ist nicht eingeloggt oder Sitzung ist abgelaufen',
     })
     @Post('logout')
+    @HttpCode(200)
     @UseGuards(IsLoggedInGuard)
     logout(@Session() session: SessionData): OkDto {
         session.currentUser = undefined;
