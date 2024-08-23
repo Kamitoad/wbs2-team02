@@ -5,7 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 
 declare module 'express-session' {
   interface SessionData {
-    isLoggedIn?: boolean;
+    currentUser?: number;
   }
 }
 
