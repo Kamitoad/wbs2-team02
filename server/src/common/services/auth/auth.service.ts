@@ -38,20 +38,20 @@ export class AuthService {
 
     private async validateRegister(createUserDto: CreateUserDto) {
         //checks if email is already in auth table of database
-        const checkUserEmail = await this.userRepository.findOne({
+        const checkUserByEmail = await this.userRepository.findOne({
             where: {email: createUserDto.email}
         });
-        if (checkUserEmail) {
+        if (checkUserByEmail) {
             throw new ConflictException(
                 "User existiert bereits mit dieser Email"
             )
         }
 
         //checks if userName is already in auth table of database
-        const checkUserUserName = await this.userRepository.findOne({
+        const checkUserByUserName = await this.userRepository.findOne({
             where: {userName: createUserDto.userName}
         });
-        if (checkUserUserName) {
+        if (checkUserByUserName) {
             throw new ConflictException(
                 "User existiert bereits mit diesem Usernamen"
             )
@@ -80,9 +80,9 @@ export class AuthService {
 
     async login(loginDto: LoginDto): Promise<User> {
         const user: User | null = await this.getUserByUserName(loginDto.userName);
-
-        if (!bcrypt.compare(loginDto.password, user.password)) {
-            throw new BadRequestException("Email oder Passwort inkorrekt")
+        const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
+        if (!isPasswordValid) {
+            throw new BadRequestException("Email oder Passwort inkorrekt");
         }
         return user;
     }
