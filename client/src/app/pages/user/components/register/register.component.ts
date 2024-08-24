@@ -27,7 +27,7 @@ export class RegisterComponent {
   agb: boolean = false;
 
 
-  constructor(private userService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   httpclient: HttpClient = inject(HttpClient);
 
@@ -36,7 +36,7 @@ export class RegisterComponent {
       return;
     }
     // If username is available -> proceed to register
-    this.userService.register({
+    this.authService.register({
       userName: this.userName,
       firstName: this.firstName,
       lastName: this.lastName,

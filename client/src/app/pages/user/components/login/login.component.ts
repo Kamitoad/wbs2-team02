@@ -17,20 +17,20 @@ import {HttpClient} from "@angular/common/http";
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
+  httpclient: HttpClient = inject(HttpClient);
+
   userName: string = '';
   password: string = '';
   loginFailed: boolean = false;
 
-  constructor(private userService: AuthService, private router: Router) {}
-
-  httpclient: HttpClient = inject(HttpClient);
+  constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit() {
     let user: any = {
       userName: this.userName,
       password: this.password,
     }
-    this.userService.login(user).subscribe(success => {
+    this.authService.login(user).subscribe(success => {
       if (success) {
         this.router.navigate(['/profile']);
       } else {
