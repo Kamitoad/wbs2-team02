@@ -1,0 +1,26 @@
+.register-container {
+  text-align: center;
+  margin-top: 50px;
+}
+
+form {
+  display: inline-block;
+  text-align: left;
+}
+
+input {
+  display: block;
+  margin: 10px 0;
+  padding: 10px;
+  width: 300px;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+}

@@ -27,7 +27,7 @@ export class User {
   @Column()
   lastName: string;
 
-  @Column()
+  @Column({default:1000})
   elo: number;
 
   @Column({ nullable: true })
