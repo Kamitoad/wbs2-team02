@@ -18,7 +18,7 @@ body{
 
 .custom-card {
   background-color: #fff;
-  color: #00a8cc;
+  color: #127897;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -32,4 +32,8 @@ body{
 
 .border-lose {
   border-color: #bd2a2c !important;
+}
+
+.vs-text {
+  font-size: 60px;
 }
