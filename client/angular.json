@@ -24,7 +24,9 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input":
+                "./src/app/assets",
+                "output": "/assets/"
               }
             ],
             "styles": [

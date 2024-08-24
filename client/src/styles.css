@@ -4,3 +4,14 @@ body{
   background-color: #33A6C9;
   color: #F0F8FF;
 }
+
+.word-wrap {
+  overflow-wrap: break-word;
+}
+
+.big-button {
+  color: #f8f8ff;
+  background-color: #127897;
+  border: 2px solid #f8f8ff;
+  border-radius: 10px;
+}

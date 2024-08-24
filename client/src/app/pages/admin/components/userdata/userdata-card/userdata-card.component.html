@@ -1,7 +1,59 @@
-<div>
-  <div class="hstack">
-    <div class="me-3">
-      <img src="/assets/default-profile.png"  alt="Profilbild eines Benutzers">
+<div class="rounded-5 userdata-card p-3">
+  <div class="row">
+    <div class="col-4">
+      <div class="row d-flex align-items-center h-100 me-2">
+        <div class="hstack">
+          <div class="me-4">
+            <img src="/assets/default-profile.png" alt="Profilbild eines Benutzers" class="rounded-circle" width="100px"
+                 height="100px">
+          </div>
+          <div class="me-4 text-start">
+            <h5><span class="fw-semibold">User: </span>1</h5>
+            <h5 class="fw-semibold">MaxUserman</h5>
+            <h6><span class="fw-semibold">Eloscore: </span>2006</h6>
+            <h6 class="mb-0"><span class="fw-semibold">Rolle: </span>User</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-5">
+      <div class="row d-flex align-items-center h-100 word-wrap me-2">
+        <div class="col-5">
+          <p class="mb-0">
+            <span class="fw-semibold">Email:</span> <br>
+            {{ "max@mustermann.de" }}
+          </p>
+        </div>
+        <div class="col-3">
+          <p class="mb-0">
+            <span class="fw-semibold">Vorname: </span><br>
+            Max
+          </p>
+        </div>
+        <div class="col-4">
+          <p class="mb-0">
+            <span class="fw-semibold">Nachname: </span><br>
+            Mustermann
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="row d-flex align-items-center h-100 me-2">
+        <p class="mb-0 p-0 text-center fw-semibold">
+          Match-Statistiken:
+        </p>
+        <div class="text-center border-2 border border-win rounded-pill px-3 me-2 my-1 w-100">
+          <span class="">20 Gewonnen</span>
+        </div>
+        <div class="text-center border-2 border border-tie rounded-pill px-3 me-2 my-1 w-100">
+          <span class="">10 Unentschieden</span>
+        </div>
+        <div class="text-center border-2 border border-lose rounded-pill px-3 me-2 my-1 w-100">
+          <span class="">5 Verloren</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+

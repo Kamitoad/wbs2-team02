@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {UserdataCardComponent} from "./userdata-card/userdata-card.component";
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-userdata',
@@ -8,7 +9,8 @@ import {UserdataCardComponent} from "./userdata-card/userdata-card.component";
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    UserdataCardComponent
+    UserdataCardComponent,
+    RouterLink
   ],
   templateUrl: './userdata.component.html',
   styleUrl: './userdata.component.css'

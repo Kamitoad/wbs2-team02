@@ -1,22 +1,52 @@
-<div class="login-container">
-  <div class="row justify-content-center">
+<div class="admin-container">
+  <div class="row justify-content-center w-100">
     <div class="col-10">
       <h1 class="text-center mt-4">Usermanager</h1>
-      <div class="form-group">
-        <div class="row">
-          <div class="col-4">
-            <input type="text" class="form-control" name="lastName" placeholder="Suche" required>
-          </div>
-          <div class="col-4"></div>
-          <div class="col-4">
-            <input type="button" class="form-control" name="lastName" placeholder="Nachname" required>
-          </div>
+
+      <div class="row mb-4 justify-content-between">
+        <!--Ask if search is necessary-->
+        <form class="col-3">
+          <input type="text" class="form-control" name="lastName" placeholder="Suche nach Username">
+        </form>
+        <!---->
+        <div class="col-3">
+          <button routerLink="/admin/currentgames" type="button" class="big-button w-100 p-2" name="lastName">
+            <span class="h4">{{ "Zur Spielübersicht >>" }}</span>
+          </button>
         </div>
       </div>
-      <app-userdata-card></app-userdata-card>
-      <app-userdata-card></app-userdata-card>
-      <app-userdata-card></app-userdata-card>
-      <app-userdata-card></app-userdata-card>
+
+      <div class="my-3">
+        <app-userdata-card></app-userdata-card>
+      </div>
+      <div class="my-3">
+        <app-userdata-card></app-userdata-card>
+      </div>
+      <div class="my-3">
+        <app-userdata-card></app-userdata-card>
+      </div>
+      <div class="my-3">
+        <app-userdata-card></app-userdata-card>
+      </div>
+      <div class="my-3">
+        <app-userdata-card></app-userdata-card>
+      </div>
+      <div class="my-3">
+        <app-userdata-card></app-userdata-card>
+      </div>
+      <div class="my-3">
+        <app-userdata-card></app-userdata-card>
+      </div>
+      <div class="my-3">
+        <app-userdata-card></app-userdata-card>
+      </div>
+      <div class="my-3">
+        <app-userdata-card></app-userdata-card>
+      </div>
+      <div class="my-3">
+        <app-userdata-card></app-userdata-card>
+      </div>
+
     </div>
   </div>
 </div>
