@@ -21,5 +21,4 @@ export const routes: Routes = [
       },
     ]
   },
-
 ];
