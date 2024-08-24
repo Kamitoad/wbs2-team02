@@ -61,11 +61,11 @@ export class AuthService {
             throw new BadRequestException("Du musst den AGBs und der Datenschutzerklärung zustimmen")
         }
 
-        if (createUserDto.email !== createUserDto.emailConfirm) {
+        if (createUserDto.email !== createUserDto.confirmEmail) {
             throw new BadRequestException("Du musst deine Email-Adresse zweimal richtig eingeben")
         }
 
-        if (createUserDto.password !== createUserDto.passwordConfirm) {
+        if (createUserDto.password !== createUserDto.confirmPassword) {
             throw new BadRequestException("Du musst dein Passwort zweimal richtig eingeben")
         }
     }

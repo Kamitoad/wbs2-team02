@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
 import { Router } from '@angular/router';
-import { UserService } from '../../services/user.service';
+import { AuthService } from '../../../../shared/services/auth/auth.service';
 import {FormsModule} from "@angular/forms";
 import {HttpClient} from "@angular/common/http";
 
@@ -16,7 +16,7 @@ import {HttpClient} from "@angular/common/http";
 
 
 export class RegisterComponent {
-  username: string = '';
+  userName: string = '';
   firstName: string = '';
   lastName: string = '';
   email: string = '';
@@ -24,8 +24,10 @@ export class RegisterComponent {
   password: string = '';
   confirmPassword: string = '';
   usernameTaken: boolean = false;
+  agb: boolean = false;
 
-  constructor(private userService: UserService, private router: Router) {}
+
+  constructor(private userService: AuthService, private router: Router) {}
 
   httpclient: HttpClient = inject(HttpClient);
 
@@ -33,24 +35,19 @@ export class RegisterComponent {
     if (this.password !== this.confirmPassword || this.email !== this.confirmEmail) {
       return;
     }
-    // Check if the username is already taken by calling the UserService
-    this.userService.checkUsername(this.username).subscribe((isTaken: any) => {
-      if (isTaken) {
-        // If  username is taken show an error message
-        this.usernameTaken = true;
-      } else {
-        // If username is available -> proceed to register
-        this.userService.registerUser({
-          username: this.username,
-          firstName: this.firstName,
-          lastName: this.lastName,
-          email: this.email,
-          password: this.password
-        }).subscribe(() => {
-          // successful registration -> navigate to  profile picture upload
-          this.router.navigate(['/profile-picture']);
-        });
-      }
+    // If username is available -> proceed to register
+    this.userService.register({
+      userName: this.userName,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      email: this.email,
+      confirmEmail: this.confirmEmail,
+      password: this.password,
+      confirmPassword: this.confirmPassword,
+      agb: this.agb,
+    }).subscribe(() => {
+      // successful registration -> navigate to  profile picture upload
+      this.router.navigate(['/profile-picture']);
     });
   }
 }

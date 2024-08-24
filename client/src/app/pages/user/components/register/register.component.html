@@ -2,9 +2,10 @@
   <h2>Schön dass du dabei sein möchtest!</h2>
   <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
     <div>
-      <input type="text" name="username" placeholder="Username" [(ngModel)]="username" required />
-      <!--Todo *ngIf veraltet mit if/else fixen S45 Angular 1-->
-      <div *ngIf="usernameTaken" class="error">Dieser Username ist bereits vergeben</div>
+      <input type="text" name="username" placeholder="Username" [(ngModel)]="userName" required />
+      @if (usernameTaken) {
+        <div class="error">Dieser Username ist bereits vergeben</div>
+      }
     </div>
     <div>
       <input type="text" name="firstName" placeholder="Vorname" [(ngModel)]="firstName" required />
@@ -17,6 +18,12 @@
     <div>
       <input type="password" name="password" placeholder="Passwort" [(ngModel)]="password" required />
       <input type="password" name="confirmPassword" placeholder="Passwort bestätigen" [(ngModel)]="confirmPassword" required />
+    </div>
+    <div class="form-check">
+      <input type="checkbox"  name="agb" id="agb" [(ngModel)]="agb" value="" required>
+      <label class="form-check-label" for="agb">
+        AGBs sind toll lalala
+      </label>
     </div>
     <button type="submit">Weiter</button>
   </form>

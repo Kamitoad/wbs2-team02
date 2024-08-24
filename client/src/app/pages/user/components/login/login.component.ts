@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
 import { Router } from '@angular/router';
-import { UserService } from '../../services/user.service';
+import { AuthService } from '../../../../shared/services/auth/auth.service';
 import {FormsModule} from "@angular/forms";
 import {CommonModule, NgIf} from "@angular/common";
 import {HttpClient} from "@angular/common/http";
@@ -17,20 +17,20 @@ import {HttpClient} from "@angular/common/http";
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  username: string = '';
+  userName: string = '';
   password: string = '';
   loginFailed: boolean = false;
 
-  constructor(private userService: UserService, private router: Router) {}
+  constructor(private userService: AuthService, private router: Router) {}
 
   httpclient: HttpClient = inject(HttpClient);
 
   onSubmit() {
     let user: any = {
-      username: this.username,
+      userName: this.userName,
       password: this.password,
     }
-    this.userService.loginUser(user).subscribe(success => {
+    this.userService.login(user).subscribe(success => {
       if (success) {
         this.router.navigate(['/profile']);
       } else {

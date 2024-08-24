@@ -7,7 +7,7 @@
         <input
           type="text"
           placeholder="Username"
-          [(ngModel)]="username"
+          [(ngModel)]="userName"
           name="userName"
           required>
       </div>
@@ -19,9 +19,11 @@
           name="password"
           required>
       </div>
-      <div *ngIf="loginFailed" class="error-message">
-        Falscher Nutzername oder falsches Passwort
-      </div>
+      @if (loginFailed) {
+        <div class="error-message">
+          Falscher Nutzername oder falsches Passwort
+        </div>
+      }
       <button type="submit" class="login-button">Einloggen</button>
     </form>
     <div class="register-link">

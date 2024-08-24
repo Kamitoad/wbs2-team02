@@ -17,7 +17,7 @@ export class CreateUserDto {
     @IsString()
     @IsNotEmpty()
     @IsEmail()
-    emailConfirm: string;
+    confirmEmail: string;
 
     @ApiProperty( { example: "123123123"})
     @IsString()
@@ -27,7 +27,7 @@ export class CreateUserDto {
     @ApiProperty( { example: "123123123"})
     @IsString()
     @IsNotEmpty()
-    passwordConfirm: string;
+    confirmPassword: string;
 
     @ApiProperty( { example: true})
     @IsBoolean()
