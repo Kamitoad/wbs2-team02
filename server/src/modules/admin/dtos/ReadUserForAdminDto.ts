@@ -1,4 +1,5 @@
 import {ApiProperty} from "@nestjs/swagger";
+import {User} from "../../../database/User";
 
 export class ReadUserForAdminDto {
     @ApiProperty({example: "1"})
@@ -30,4 +31,17 @@ export class ReadUserForAdminDto {
 
     @ApiProperty({example: 10})
     totalLosses: number;
+
+    constructor(user: User) {
+        this.userId = user.userId;
+        this.userName = user.userName;
+        this.email = user.email;
+        this.role = user.role;
+        this.firstName = user.firstName;
+        this.lastName = user.lastName;
+        this.elo = user.elo;
+        this.profilePic = user.profilePic;
+        this.totalWins = user.totalWins;
+        this.totalLosses = user.totalLosses;
+    }
 }

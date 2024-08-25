@@ -8,6 +8,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import * as path from 'node:path';
 import {AuthController} from "./common/controllers/auth/auth.controller";
 import {AuthService} from "./common/services/auth/auth.service";
+import {UserdataController} from "./modules/admin/controllers/userdata/userdata.controller";
+import {UserdataService} from "./modules/admin/services/userdata/userdata.service";
 
 @Module({
   imports: [
@@ -31,10 +33,12 @@ import {AuthService} from "./common/services/auth/auth.service";
   controllers: [
     AppController,
     AuthController,
+    UserdataController,
   ],
   providers: [
     AppService,
-    AuthService
+    AuthService,
+    UserdataService,
   ],
 })
 export class AppModule {
