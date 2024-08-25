@@ -10,6 +10,7 @@ import {AuthController} from "./common/controllers/auth/auth.controller";
 import {AuthService} from "./common/services/auth/auth.service";
 import {UserdataController} from "./modules/admin/controllers/userdata/userdata.controller";
 import {UserdataService} from "./modules/admin/services/userdata/userdata.service";
+import {UserGateway} from "./modules/user/gateways/user.gateway";
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import {UserdataService} from "./modules/admin/services/userdata/userdata.servic
     AppService,
     AuthService,
     UserdataService,
+    UserGateway,
   ],
 })
 export class AppModule {

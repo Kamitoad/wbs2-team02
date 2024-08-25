@@ -15,37 +15,11 @@
         </div>
       </div>
 
-      <div class="my-3">
-        <app-userdata-card></app-userdata-card>
-      </div>
-      <div class="my-3">
-        <app-userdata-card></app-userdata-card>
-      </div>
-      <div class="my-3">
-        <app-userdata-card></app-userdata-card>
-      </div>
-      <div class="my-3">
-        <app-userdata-card></app-userdata-card>
-      </div>
-      <div class="my-3">
-        <app-userdata-card></app-userdata-card>
-      </div>
-      <div class="my-3">
-        <app-userdata-card></app-userdata-card>
-      </div>
-      <div class="my-3">
-        <app-userdata-card></app-userdata-card>
-      </div>
-      <div class="my-3">
-        <app-userdata-card></app-userdata-card>
-      </div>
-      <div class="my-3">
-        <app-userdata-card></app-userdata-card>
-      </div>
-      <div class="my-3">
-        <app-userdata-card></app-userdata-card>
-      </div>
-
+      @for (user of users; track user.userId) {
+        <div class="my-3">
+          <app-userdata-card [user]="this.user"></app-userdata-card>
+        </div>
+      }
     </div>
   </div>
 </div>

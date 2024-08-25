@@ -4,14 +4,22 @@
       <div class="row d-flex align-items-center h-100 me-2">
         <div class="hstack">
           <div class="me-4">
-            <img src="/assets/default-profile.png" alt="Profilbild eines Benutzers" class="rounded-circle" width="100px"
+            <img [src]="user.profilePic || '/assets/default-profile.png'" alt="Profilbild eines Benutzers" class="rounded-circle" width="100px"
                  height="100px">
           </div>
           <div class="me-4 text-start">
-            <h5><span class="fw-semibold">User: </span>1</h5>
-            <h5 class="fw-semibold">MaxUserman</h5>
-            <h6><span class="fw-semibold">Eloscore: </span>2006</h6>
-            <h6 class="mb-0"><span class="fw-semibold">Rolle: </span>User</h6>
+            <h5><span class="fw-semibold">User: </span>{{user.userId}}</h5>
+            <h5 class="fw-semibold">{{user.userName}}</h5>
+            <h6><span class="fw-semibold">Eloscore: </span>{{user.elo}}</h6>
+            <h6 class="mb-0"><span class="fw-semibold">Rolle: </span>
+              @if (user.role == 'admin') {
+                <span>Admin</span>
+              } @else if (user.role == 'user') {
+                <span>User</span>
+              } @else {
+                <span>Fehler</span>
+              }
+            </h6>
           </div>
         </div>
       </div>
@@ -21,19 +29,19 @@
         <div class="col-5">
           <p class="mb-0">
             <span class="fw-semibold">Email:</span> <br>
-            {{ "max@mustermann.de" }}
+            {{ user.email }}
           </p>
         </div>
         <div class="col-3">
           <p class="mb-0">
             <span class="fw-semibold">Vorname: </span><br>
-            Max
+            {{ user.firstName }}
           </p>
         </div>
         <div class="col-4">
           <p class="mb-0">
             <span class="fw-semibold">Nachname: </span><br>
-            Mustermann
+            {{ user.lastName }}
           </p>
         </div>
       </div>
@@ -44,13 +52,13 @@
           Match-Statistiken:
         </p>
         <div class="text-center border-2 border border-win rounded-pill px-3 me-2 my-1 w-100">
-          <span>20 Gewonnen</span>
+          <span>{{ user.totalWins }} Gewonnen</span>
         </div>
         <div class="text-center border-2 border border-tie rounded-pill px-3 me-2 my-1 w-100">
-          <span>10 Unentschieden</span>
+          <span><!--{{ user.totalTie }}--> 10 Unentschieden</span>
         </div>
         <div class="text-center border-2 border border-lose rounded-pill px-3 me-2 my-1 w-100">
-          <span>5 Verloren</span>
+          <span>{{ user.totalLosses }} Verloren</span>
         </div>
       </div>
     </div>
