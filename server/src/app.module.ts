@@ -10,7 +10,7 @@ import {AuthController} from "./common/controllers/auth/auth.controller";
 import {AuthService} from "./common/services/auth/auth.service";
 import {UserdataController} from "./modules/admin/controllers/userdata/userdata.controller";
 import {UserdataService} from "./modules/admin/services/userdata/userdata.service";
-import {UserGateway} from "./modules/user/gateways/user.gateway";
+import {UserdataGateway} from "./modules/admin/gateways/userdata/userdata.gateway";
 import {GamedataController} from "./modules/admin/controllers/gamedata/gamedata.controller";
 import {GamedataService} from "./modules/admin/services/gamedata/gamedata.service";
 
@@ -43,7 +43,7 @@ import {GamedataService} from "./modules/admin/services/gamedata/gamedata.servic
     AppService,
     AuthService,
     UserdataService,
-    UserGateway,
+    UserdataGateway,
     GamedataService,
   ],
 })

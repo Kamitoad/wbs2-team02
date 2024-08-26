@@ -6,14 +6,14 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {RoleEnum} from "../../../database/enums/RoleEnum";
 import * as bcrypt from 'bcryptjs';
 import {LoginDto} from "../../dtos/auth/LoginDto";
-import {UserGateway} from "../../../modules/user/gateways/user.gateway";
+import {UserdataGateway} from "../../../modules/admin/gateways/userdata/userdata.gateway";
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(User)
         private userRepository: Repository<User>,
-        private usersGateway: UserGateway,
+        private userdataGateway: UserdataGateway,
     ) {
     }
 
@@ -35,7 +35,7 @@ export class AuthService {
 
         await this.userRepository.save(newUser);
 
-        this.usersGateway.notifyUserRegistered(newUser);
+        this.userdataGateway.notifyUserRegistered(newUser);
 
         return await this.getUserByEmail(newUser.email);
     }

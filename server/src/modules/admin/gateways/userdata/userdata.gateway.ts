@@ -7,8 +7,8 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway({namespace: 'user'})
-export class UserGateway implements OnGatewayConnection, OnGatewayDisconnect {
+@WebSocketGateway({namespace: 'ws-admin-userdata'})
+export class UserdataGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     @WebSocketServer()
     server: Server;
