@@ -6,12 +6,14 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {RoleEnum} from "../../../database/enums/RoleEnum";
 import * as bcrypt from 'bcryptjs';
 import {LoginDto} from "../../dtos/auth/LoginDto";
+import {UserdataGateway} from "../../../modules/admin/gateways/userdata/userdata.gateway";
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(User)
         private userRepository: Repository<User>,
+        private userdataGateway: UserdataGateway,
     ) {
     }
 
@@ -32,6 +34,8 @@ export class AuthService {
         newUser.totalLosses = 0;
 
         await this.userRepository.save(newUser);
+
+        this.userdataGateway.notifyUserRegistered(newUser);
 
         return await this.getUserByEmail(newUser.email);
     }
@@ -61,11 +65,11 @@ export class AuthService {
             throw new BadRequestException("Du musst den AGBs und der Datenschutzerklärung zustimmen")
         }
 
-        if (createUserDto.email !== createUserDto.emailConfirm) {
+        if (createUserDto.email !== createUserDto.confirmEmail) {
             throw new BadRequestException("Du musst deine Email-Adresse zweimal richtig eingeben")
         }
 
-        if (createUserDto.password !== createUserDto.passwordConfirm) {
+        if (createUserDto.password !== createUserDto.confirmPassword) {
             throw new BadRequestException("Du musst dein Passwort zweimal richtig eingeben")
         }
     }

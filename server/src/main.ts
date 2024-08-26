@@ -15,7 +15,9 @@ declare module 'express-session' {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const secret: string = randomBytes(64).toString('hex')
+    app.setGlobalPrefix('api');
+
+    const secret: string = randomBytes(64).toString('hex')
 
   app.use(
       session({

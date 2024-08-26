@@ -24,6 +24,7 @@ import {AuthService} from "../../services/auth/auth.service";
 import {LoginDto} from "../../dtos/auth/LoginDto";
 import {IsLoggedInGuard} from "../../guards/is-logged-in/is-logged-in.guard";
 import {ErrorDto} from "../../dtos/auth/ErrorDto";
+import {ReadUserDto} from "../../dtos/auth/ReadUserDto";
 
 @ApiTags('auth')
 @Controller('auth')
@@ -34,7 +35,7 @@ export class AuthController {
     }
 
     @ApiCreatedResponse({
-        type: OkDto,
+        type: ReadUserDto,
         description: 'User erfolgreich registriert'
     })
     @ApiBadRequestResponse({
@@ -53,11 +54,11 @@ export class AuthController {
     async register(
         @Session() session: SessionData,
         @Body() body: CreateUserDto,
-    ): Promise<OkDto> {
+    ): Promise<ReadUserDto> {
         try {
             const user = await this.authService.register(body);
             session.currentUser = user.userId;
-            return new OkDto(true, 'User erfolgreich registriert');
+            return new ReadUserDto(user);
         } catch (error) {
             if (error instanceof BadRequestException) {
                 throw new BadRequestException(error.message);
@@ -70,7 +71,7 @@ export class AuthController {
     }
 
     @ApiOkResponse({
-        type: OkDto,
+        type: ReadUserDto,
         description: 'User erfolgreich eingeloggt'
     })
     @ApiBadRequestResponse({
@@ -86,11 +87,11 @@ export class AuthController {
     async login(
         @Session() session: SessionData,
         @Body() body: LoginDto,
-    ): Promise<OkDto> {
+    ): Promise<ReadUserDto> {
         try {
             const user = await this.authService.login(body);
             session.currentUser = user.userId;
-            return new OkDto(true, 'User erfolgreich eingeloggt');
+            return new ReadUserDto(user);
         } catch (error) {
             if (error instanceof NotFoundException) {
                 throw new BadRequestException("Email oder Passwort inkorrekt");

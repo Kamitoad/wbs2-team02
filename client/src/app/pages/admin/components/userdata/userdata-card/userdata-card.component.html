@@ -1,0 +1,67 @@
+<div class="rounded-5 custom-card p-3">
+  <div class="row mx-2">
+    <div class="col-4">
+      <div class="row d-flex align-items-center h-100 me-2">
+        <div class="hstack">
+          <div class="me-4">
+            <img [src]="user.profilePic || '/assets/default-profile.png'" alt="Profilbild eines Benutzers" class="rounded-circle" width="100px"
+                 height="100px">
+          </div>
+          <div class="me-4 text-start">
+            <h5><span class="fw-semibold">User: </span>{{user.userId}}</h5>
+            <h5 class="fw-semibold">{{user.userName}}</h5>
+            <h6><span class="fw-semibold">Eloscore: </span>{{user.elo}}</h6>
+            <h6 class="mb-0"><span class="fw-semibold">Rolle: </span>
+              @if (user.role == 'admin') {
+                <span>Admin</span>
+              } @else if (user.role == 'user') {
+                <span>User</span>
+              } @else {
+                <span>Fehler</span>
+              }
+            </h6>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-5">
+      <div class="row d-flex align-items-center h-100 word-wrap me-2">
+        <div class="col-5">
+          <p class="mb-0">
+            <span class="fw-semibold">Email:</span> <br>
+            {{ user.email }}
+          </p>
+        </div>
+        <div class="col-3">
+          <p class="mb-0">
+            <span class="fw-semibold">Vorname: </span><br>
+            {{ user.firstName }}
+          </p>
+        </div>
+        <div class="col-4">
+          <p class="mb-0">
+            <span class="fw-semibold">Nachname: </span><br>
+            {{ user.lastName }}
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="row d-flex align-items-center h-100">
+        <p class="mb-0 p-0 text-center fw-semibold">
+          Match-Statistiken:
+        </p>
+        <div class="text-center border-2 border border-win rounded-pill px-3 me-2 my-1 w-100">
+          <span>{{ user.totalWins }} Gewonnen</span>
+        </div>
+        <div class="text-center border-2 border border-tie rounded-pill px-3 me-2 my-1 w-100">
+          <span><!--{{ user.totalTie }}--> 10 Unentschieden</span>
+        </div>
+        <div class="text-center border-2 border border-lose rounded-pill px-3 me-2 my-1 w-100">
+          <span>{{ user.totalLosses }} Verloren</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

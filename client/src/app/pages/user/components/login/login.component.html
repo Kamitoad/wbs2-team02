@@ -1,0 +1,34 @@
+<div class="login-container">
+  <h1>Willkommen bei TikTakToe-World!</h1>
+  <div class="login-form">
+    <h2>Gebe deine Login Daten ein</h2>
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <input
+          type="text"
+          placeholder="Username"
+          [(ngModel)]="userName"
+          name="userName"
+          required>
+      </div>
+      <div class="form-group">
+        <input
+          type="password"
+          placeholder="Passwort"
+          [(ngModel)]="password"
+          name="password"
+          required>
+      </div>
+      @if (loginFailed) {
+        <div class="error-message">
+          Falscher Nutzername oder falsches Passwort
+        </div>
+      }
+      <button type="submit" class="login-button">Einloggen</button>
+    </form>
+    <div class="register-link">
+      <span>Noch keinen Account?</span>
+      <button class="register-button" (click)="navigateToRegister()">Registrieren</button>
+    </div>
+  </div>
+</div>
