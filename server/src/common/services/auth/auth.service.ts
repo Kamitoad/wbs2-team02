@@ -31,6 +31,7 @@ export class AuthService {
         newUser.profilePic = null;
         newUser.inQueue = false;
         newUser.totalWins = 0;
+        newUser.totalTies = 0;
         newUser.totalLosses = 0;
 
         await this.userRepository.save(newUser);
