@@ -11,16 +11,18 @@ export class GamedataService {
   private socket: any;
   private currentGamesSubject = new BehaviorSubject<any[]>([]);
   currentGames$ = this.currentGamesSubject.asObservable();
+  private baseUrl: string;  //Needed to test project rather in Angular or Nest.js Server
 
   constructor(
     private http: HttpClient,
     //@ts-ignore
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
+    this.baseUrl = isPlatformBrowser(this.platformId) ? '' : 'http://localhost:3000';
+
+    //To make sure Angular can be build properly with sockets to test with Nest.js
     if(isPlatformBrowser(this.platformId)) {
       this.socket = require('socket.io-client')('http://localhost:3000/user');
-      this.socket.on('connect', () => {
-      });
 
       this.socket.on('game-added', (newGame: any) => {
         this.addGame(newGame);
@@ -40,7 +42,7 @@ export class GamedataService {
   }
 
   getCurrentGames(): Observable<any[]> {
-    return this.http.get<any[]>('/api/admin/gamedata/allCurrentGames');
+    return this.http.get<any[]>(`${this.baseUrl}/api/admin/gamedata/allCurrentGames`);
   }
 
   private addGame(newGame: any) {
