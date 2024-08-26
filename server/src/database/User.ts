@@ -43,14 +43,14 @@ export class User {
   gamesAsPlayer2: Promise<Game[]>;
 
   @IsInt()
-  @Column()
+  @Column({default: 0})
   totalWins: number;
 
   @IsInt()
-  @Column()
+  @Column({default: 0})
   totalTies: number;
 
   @IsInt()
-  @Column()
+  @Column({default: 0})
   totalLosses: number;
 }
