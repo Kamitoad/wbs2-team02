@@ -51,18 +51,18 @@ export class Game {
   player2: User;
 
   @IsInt()
-  @Column()
+  @Column({nullable: true, default: null})
   winner: number;
 
   @IsInt()
-  @Column()
+  @Column({nullable: true, default: null})
   loser: number;
 
   @IsInt()
-  @Column()
+  @Column({nullable: true, default: null})
   changeEloPlayer1: number;
 
   @IsInt()
-  @Column()
+  @Column({nullable: true, default: null})
   changeEloPlayer2: number;
 }
