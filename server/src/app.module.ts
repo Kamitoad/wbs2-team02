@@ -6,6 +6,14 @@ import { User } from './database/User';
 import { Game } from './database/Game';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import * as path from 'node:path';
+import {AuthController} from "./common/controllers/auth/auth.controller";
+import {AuthService} from "./common/services/auth/auth.service";
+import {UserdataController} from "./modules/admin/controllers/userdata/userdata.controller";
+import {UserdataService} from "./modules/admin/services/userdata/userdata.service";
+import {UserdataGateway} from "./modules/admin/gateways/userdata/userdata.gateway";
+import {GamedataController} from "./modules/admin/controllers/gamedata/gamedata.controller";
+import {GamedataService} from "./modules/admin/services/gamedata/gamedata.service";
+import {GamedataGateway} from "./modules/admin/gateways/gamedata/gamedata.gateway";
 
 @Module({
   imports: [
@@ -28,9 +36,17 @@ import * as path from 'node:path';
   ],
   controllers: [
     AppController,
+    AuthController,
+    UserdataController,
+    GamedataController,
   ],
   providers: [
     AppService,
+    AuthService,
+    UserdataService,
+    UserdataGateway,
+    GamedataService,
+    GamedataGateway,
   ],
 })
 export class AppModule {

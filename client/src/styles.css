@@ -1,1 +1,39 @@
 /* You can add global styles to this file, and also import other style files */
+body{
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #33A6C9;
+  color: #F0F8FF;
+}
+
+.word-wrap {
+  overflow-wrap: break-word;
+}
+
+.big-button {
+  color: #f8f8ff;
+  background-color: #127897;
+  border: 2px solid #f8f8ff;
+  border-radius: 10px;
+}
+
+.custom-card {
+  background-color: #fff;
+  color: #127897;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.border-tie {
+  border-color: #127897 !important;
+}
+
+.border-win {
+  border-color: #18a01d !important;
+}
+
+.border-lose {
+  border-color: #bd2a2c !important;
+}
+
+.vs-text {
+  font-size: 60px;
+}

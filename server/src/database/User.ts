@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { IsEmail } from 'class-validator';
+import {IsEmail, IsInt} from 'class-validator';
 import { Game } from './Game';
 import { RoleEnum } from './enums/RoleEnum';
 
@@ -27,10 +27,10 @@ export class User {
   @Column()
   lastName: string;
 
-  @Column()
+  @Column({default:1000})
   elo: number;
 
-  @Column()
+  @Column({ nullable: true })
   profilePic: string;
 
   @Column()
@@ -42,9 +42,15 @@ export class User {
   @OneToMany(() => Game, (game) => game.player2)
   gamesAsPlayer2: Promise<Game[]>;
 
-  @Column()
+  @IsInt()
+  @Column({default: 0})
   totalWins: number;
 
-  @Column()
+  @IsInt()
+  @Column({default: 0})
+  totalTies: number;
+
+  @IsInt()
+  @Column({default: 0})
   totalLosses: number;
 }

@@ -1,0 +1,25 @@
+<div class="admin-container">
+  <div class="row justify-content-center w-100">
+    <div class="col-10">
+      <h1 class="text-center mt-4">Usermanager</h1>
+      <div class="row mb-4 justify-content-between">
+        <!--Ask if search is necessary-->
+        <form class="col-3">
+          <input type="text" class="form-control" name="lastName" placeholder="Suche nach Username">
+        </form>
+        <!---->
+        <div class="col-3">
+          <button routerLink="/admin/game" type="button" class="big-button w-100 p-2">
+            <span class="h4">{{ "Zur Spielübersicht >>" }}</span>
+          </button>
+        </div>
+      </div>
+
+      @for (user of users; track user.userId) {
+        <div class="my-3">
+          <app-userdata-card [user]="this.user"></app-userdata-card>
+        </div>
+      }
+    </div>
+  </div>
+</div>
