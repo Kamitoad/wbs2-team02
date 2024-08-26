@@ -11,7 +11,7 @@ export class GamedataGateway {
     this.server.emit('game-added', newGame);
   }
 
-  notifyGameEnded(gameId: string) {
+  notifyGameEnded(gameId: number) {
     this.server.emit('game-ended', { gameId });
   }
 }

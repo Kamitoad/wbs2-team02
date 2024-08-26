@@ -13,6 +13,7 @@ import {UserdataService} from "./modules/admin/services/userdata/userdata.servic
 import {UserdataGateway} from "./modules/admin/gateways/userdata/userdata.gateway";
 import {GamedataController} from "./modules/admin/controllers/gamedata/gamedata.controller";
 import {GamedataService} from "./modules/admin/services/gamedata/gamedata.service";
+import {GamedataGateway} from "./modules/admin/gateways/gamedata/gamedata.gateway";
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import {GamedataService} from "./modules/admin/services/gamedata/gamedata.servic
     UserdataService,
     UserdataGateway,
     GamedataService,
+    GamedataGateway,
   ],
 })
 export class AppModule {
