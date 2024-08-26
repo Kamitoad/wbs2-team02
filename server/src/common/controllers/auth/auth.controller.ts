@@ -35,7 +35,7 @@ export class AuthController {
     }
 
     @ApiCreatedResponse({
-        type: OkDto,
+        type: ReadUserDto,
         description: 'User erfolgreich registriert'
     })
     @ApiBadRequestResponse({
@@ -71,7 +71,7 @@ export class AuthController {
     }
 
     @ApiOkResponse({
-        type: OkDto,
+        type: ReadUserDto,
         description: 'User erfolgreich eingeloggt'
     })
     @ApiBadRequestResponse({

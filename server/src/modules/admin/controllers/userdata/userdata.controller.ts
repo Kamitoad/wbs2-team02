@@ -6,12 +6,11 @@ import {
     ApiInternalServerErrorResponse, ApiOkResponse,
     ApiTags
 } from "@nestjs/swagger";
-import {OkDto} from "../../../../common/dtos/OkDto";
 import {ErrorDto} from "../../../../common/dtos/auth/ErrorDto";
 import {ReadUserForAdminDto} from "../../dtos/ReadUserForAdminDto";
 import {UserdataService} from "../../services/userdata/userdata.service";
 
-@ApiTags('userdata')
+@ApiTags('Admin - Userdata')
 @Controller('userdata')
 export class UserdataController {
     constructor(
@@ -20,7 +19,7 @@ export class UserdataController {
     }
 
     @ApiOkResponse({
-        type: OkDto,
+        type: ReadUserForAdminDto,
         description: 'User wurden geladen'
     })
     @ApiInternalServerErrorResponse({
