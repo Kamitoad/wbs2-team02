@@ -31,7 +31,6 @@ export class GamedataService {
       });
     }
     this.loadInitialCurrentGames();
-    console.log(this.currentGamesSubject)
   }
 
   private loadInitialCurrentGames() {
