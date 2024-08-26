@@ -4,11 +4,11 @@
       <div class="row d-flex align-items-center h-100 justify-content-center">
         <div class="hstack">
           <div>
-            <img src="/assets/default-profile.png" alt="Profilbild eines Benutzers" class="rounded-circle" width="100px"
+            <img [src]="currentGame.player1ProfilePic || '/assets/default-profile.png'" alt="Profilbild eines Benutzers" class="rounded-circle" width="100px"
                  height="100px">
           </div>
           <div class="text-center border-2 border border-tie rounded-pill py-2 ms-3 my-1 w-100">
-            <span class="h4"><span class="fw-semibold">MaxUserman </span>(2006)</span>
+            <span class="h4"><span class="fw-semibold">{{ currentGame.player1UserName }} </span>({{ currentGame.player1Elo }})</span>
           </div>
         </div>
       </div>
@@ -22,10 +22,10 @@
       <div class="row d-flex align-items-center h-100">
         <div class="hstack">
           <div class="text-center border-2 border border-tie rounded-pill py-2 me-3 my-1 w-100">
-            <span class="h4">(2002) <span class="fw-semibold">Kamitoad</span></span>
+            <span class="h4">({{ currentGame.player2Elo }}) <span class="fw-semibold">{{ currentGame.player2UserName }}</span></span>
           </div>
           <div>
-            <img src="/assets/default-profile.png" alt="Profilbild eines Benutzers" class="rounded-circle" width="100px"
+            <img [src]="currentGame.player2ProfilePic || '/assets/default-profile.png'" alt="Profilbild eines Benutzers" class="rounded-circle" width="100px"
                  height="100px">
           </div>
         </div>
