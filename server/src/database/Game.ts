@@ -1,12 +1,16 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './User';
-import { IsEnum, IsInt } from 'class-validator';
+import {IsBoolean, IsEnum, IsInt} from 'class-validator';
 import { FieldStateEnum } from './enums/FieldStateEnum';
 
 @Entity()
 export class Game {
   @PrimaryGeneratedColumn()
   gameId: number;
+
+  @IsBoolean()
+  @Column({default: 0})
+  hasEnded: number;
 
   @IsEnum(FieldStateEnum)
   @Column({ enum: FieldStateEnum, default: FieldStateEnum.NotFilled })
