@@ -69,4 +69,5 @@ export class Game {
   @IsInt()
   @Column({nullable: true, default: null})
   changeEloPlayer2: number;
+  currentTurn: string;
 }
