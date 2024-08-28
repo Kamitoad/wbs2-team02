@@ -15,6 +15,6 @@ export class QueueGateway {
   }
 
   sendQueueTime(userId: number, time: number): void {
-    this.server.emit('queueTimeUpdate', { userId, time });
+    this.server.emit('queue-time-update', { userId, time });
   }
 }
