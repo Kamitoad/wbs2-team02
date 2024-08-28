@@ -15,7 +15,7 @@ export class GamedataService {
 
     async getAllCurrentGames(): Promise<Game[]> {
         return await this.gameRepository.find({
-            where: { winner: null },
+            where: { winner: null, hasEnded: 0 },
             relations: ['player1', 'player2']
         });
     }
