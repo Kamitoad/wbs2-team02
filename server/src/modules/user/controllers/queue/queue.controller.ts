@@ -56,7 +56,7 @@ export class QueueController {
         @Session() session: SessionData,
     ): Promise<any> {
         try {
-            await this.queueService.getUserQueueDuration(session.currentUser)
+            return await this.queueService.getUserQueueDuration(session.currentUser)
         } catch (error) {
             if (error instanceof NotFoundException) {
                 throw new NotFoundException(error.message);
