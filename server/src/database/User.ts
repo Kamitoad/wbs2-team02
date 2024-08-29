@@ -36,6 +36,9 @@ export class User {
   @Column()
   inQueue: boolean;
 
+  @Column({ type: 'text', nullable: true, default: null })
+  queueStartTime: string;
+
   @OneToMany(() => Game, (game) => game.player1)
   gamesAsPlayer1: Promise<Game[]>;
 
@@ -43,14 +46,14 @@ export class User {
   gamesAsPlayer2: Promise<Game[]>;
 
   @IsInt()
-  @Column()
+  @Column({default: 0})
   totalWins: number;
 
   @IsInt()
-  @Column()
+  @Column({default: 0})
   totalTies: number;
 
   @IsInt()
-  @Column()
+  @Column({default: 0})
   totalLosses: number;
 }
