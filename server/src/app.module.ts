@@ -14,6 +14,9 @@ import {UserdataGateway} from "./modules/admin/gateways/userdata/userdata.gatewa
 import {GamedataController} from "./modules/admin/controllers/gamedata/gamedata.controller";
 import {GamedataService} from "./modules/admin/services/gamedata/gamedata.service";
 import {GamedataGateway} from "./modules/admin/gateways/gamedata/gamedata.gateway";
+import {QueueController} from "./modules/user/controllers/queue/queue.controller";
+import {QueueService} from "./modules/user/services/queue/queue.service";
+import {QueueGateway} from "./modules/user/gateways/queue/queue.gateway";
 
 @Module({
   imports: [
@@ -39,6 +42,7 @@ import {GamedataGateway} from "./modules/admin/gateways/gamedata/gamedata.gatewa
     AuthController,
     UserdataController,
     GamedataController,
+    QueueController,
   ],
   providers: [
     AppService,
@@ -47,6 +51,8 @@ import {GamedataGateway} from "./modules/admin/gateways/gamedata/gamedata.gatewa
     UserdataGateway,
     GamedataService,
     GamedataGateway,
+    QueueService,
+    QueueGateway,
   ],
 })
 export class AppModule {
