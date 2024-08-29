@@ -3,12 +3,15 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {Game} from "../../../../database/Game";
 import {GamedataGateway} from "../../gateways/gamedata/gamedata.gateway";
+import {User} from "../../../../database/User";
 
 @Injectable()
 export class GamedataService {
     constructor(
         @InjectRepository(Game)
         private gameRepository: Repository<Game>,
+        @InjectRepository(User)
+        private userRepository: Repository<User>,
         private gamedataGateway: GamedataGateway,
     ) {
     }
@@ -33,5 +36,11 @@ export class GamedataService {
             await this.gameRepository.save(game);
             this.gamedataGateway.notifyGameEnded(gameId);
         }
+    }
+
+    async getAllUsersInQueue(): Promise<User[]> {
+        return await this.userRepository.find({
+            where: { inQueue: true },
+        });
     }
 }

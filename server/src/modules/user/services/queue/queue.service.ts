@@ -39,14 +39,20 @@ export class QueueService {
         if (!user?.queueStartTime) {
             throw new NotFoundException('Benutzer ist nicht in der Queue');
         }
-
-        const now = Date.now();
-        const queueStartTime = new Date(user.queueStartTime).getTime();
-
-        const duration = now - queueStartTime;
-
         // Waiting time in seconds
-        return Math.floor(duration / 1000);
+        return this.calcQueueDuration(user.queueStartTime);
+    }
+
+    /**
+     *  Calculates the time between now in seconds
+     * @param {string} queueStartTimeDate
+     */
+
+    calcQueueDuration(queueStartTimeDate: string): number {
+        const now = Date.now();
+        const queueStartTime = new Date(queueStartTimeDate).getTime();
+
+        return Math.floor((now - queueStartTime) / 1000);
     }
 
     async updateQueueTime(userId: number) {
