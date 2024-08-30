@@ -1,30 +1,5 @@
-<div class="my-3">
-  <app-queue-overview-card></app-queue-overview-card>
-</div>
-<div class="my-3">
-  <app-queue-overview-card></app-queue-overview-card>
-</div>
-<div class="my-3">
-  <app-queue-overview-card></app-queue-overview-card>
-</div>
-<div class="my-3">
-  <app-queue-overview-card></app-queue-overview-card>
-</div>
-<div class="my-3">
-  <app-queue-overview-card></app-queue-overview-card>
-</div>
-<div class="my-3">
-  <app-queue-overview-card></app-queue-overview-card>
-</div>
-<div class="my-3">
-  <app-queue-overview-card></app-queue-overview-card>
-</div>
-<div class="my-3">
-  <app-queue-overview-card></app-queue-overview-card>
-</div>
-<div class="my-3">
-  <app-queue-overview-card></app-queue-overview-card>
-</div>
-<div class="my-3">
-  <app-queue-overview-card></app-queue-overview-card>
-</div>
+@for (userInQueue of usersInQueue; track userInQueue.gameId) {
+  <div class="my-3">
+    <app-queue-overview-card [userInQueue]="this.userInQueue"></app-queue-overview-card>
+  </div>
+}

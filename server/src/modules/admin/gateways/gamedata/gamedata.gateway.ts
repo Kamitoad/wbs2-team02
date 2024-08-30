@@ -1,7 +1,7 @@
 import {WebSocketGateway, WebSocketServer} from '@nestjs/websockets';
 import {Server} from "socket.io";
 
-@WebSocketGateway({namespace: 'ws-admin-userdata'} )
+@WebSocketGateway({namespace: 'ws-admin-gamedata'} )
 export class GamedataGateway {
 
   @WebSocketServer()

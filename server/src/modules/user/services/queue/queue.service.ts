@@ -6,6 +6,8 @@ import {QueueGateway} from "../../gateways/queue/queue.gateway";
 
 @Injectable()
 export class QueueService {
+    private intervals: Map<number, NodeJS.Timeout> = new Map();
+
     constructor(
         @InjectRepository(User)
         private userRepository: Repository<User>,
@@ -21,9 +23,18 @@ export class QueueService {
         user.queueStartTime = new Date(Date.now()).toISOString();
         user.inQueue = true;
         await this.userRepository.save(user);
+
+        const interval = setInterval(() => {
+            this.updateQueueTime(userId);
+        }, 1000);
+
+        this.intervals.set(userId, interval);
     }
 
     async removeFromQueue(userId: number): Promise<void> {
+        clearInterval(this.intervals.get(userId));
+        this.intervals.delete(userId);
+
         const user = await this.userRepository.findOne( { where: { userId } });
         if (!user) {
             throw new NotFoundException('Benutzer nicht gefunden');

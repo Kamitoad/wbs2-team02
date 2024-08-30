@@ -8,9 +8,13 @@ import {isPlatformBrowser} from "@angular/common";
 })
 export class GamedataService {
 
-  private socket: any;
+  private gameSocket: any;
+  private queueSocket: any;
   private currentGamesSubject = new BehaviorSubject<any[]>([]);
+  private usersInQueueSubject = new BehaviorSubject<any[]>([]);
+
   currentGames$ = this.currentGamesSubject.asObservable();
+  usersInQueue$ = this.currentGamesSubject.asObservable();
   private baseUrl: string;  //Needed to test project rather in Angular or Nest.js Server
 
   constructor(
@@ -22,17 +26,19 @@ export class GamedataService {
 
     //To make sure Angular can be build properly with sockets to test with Nest.js
     if(isPlatformBrowser(this.platformId)) {
-      this.socket = require('socket.io-client')('http://localhost:3000/user');
+      this.gameSocket = require('socket.io-client')('http://localhost:3000/ws-admin-gamedata');
+      this.queueSocket = require('socket.io-client')('http://localhost:3000/ws-user-queue');
 
-      this.socket.on('game-added', (newGame: any) => {
+      this.gameSocket.on('game-added', (newGame: any) => {
         this.addGame(newGame);
       });
 
-      this.socket.on('game-ended', (data: any) => {
+      this.gameSocket.on('game-ended', (data: any) => {
         this.removeGame(data.gameId);
       });
     }
     this.loadInitialCurrentGames();
+    this.loadInitialUsersInQueue();
   }
 
   private loadInitialCurrentGames() {
@@ -45,6 +51,16 @@ export class GamedataService {
     return this.http.get<any[]>(`${this.baseUrl}/api/admin/gamedata/allCurrentGames`);
   }
 
+  private loadInitialUsersInQueue() {
+    this.getUsersInQueue().subscribe(games => {
+      this.currentGamesSubject.next(games);
+    });
+  }
+
+  getUsersInQueue(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/api/admin/gamedata/queue`);
+  }
+
   private addGame(newGame: any) {
     const currentGames = this.currentGamesSubject.getValue();
     this.currentGamesSubject.next([...currentGames, newGame]);
@@ -54,5 +70,9 @@ export class GamedataService {
     const currentGames = this.currentGamesSubject.getValue();
     const updatedGames = currentGames.filter(game => game.id !== gameId);
     this.currentGamesSubject.next(updatedGames);
+  }
+
+  joinQueue(userId: number) {
+    this.queueSocket.emit('joinQueue', { userId });
   }
 }
