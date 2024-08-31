@@ -17,6 +17,7 @@ import {GamedataGateway} from "./modules/admin/gateways/gamedata/gamedata.gatewa
 import {QueueController} from "./modules/user/controllers/queue/queue.controller";
 import {QueueService} from "./modules/user/services/queue/queue.service";
 import {QueueGateway} from "./modules/user/gateways/queue/queue.gateway";
+import { GameModule } from './modules/game/game.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import {QueueGateway} from "./modules/user/gateways/queue/queue.gateway";
     ServeStaticModule.forRoot({
       rootPath: path.resolve(process.cwd(), '..', 'client', 'dist', 'client', 'browser'),
     }),
+    GameModule,
   ],
   controllers: [
     AppController,

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn  } from 'typeorm';
 import { User } from './User';
 import {IsBoolean, IsEnum, IsInt} from 'class-validator';
 import { FieldStateEnum } from './enums/FieldStateEnum';
@@ -68,6 +68,11 @@ export class Game {
 
   @IsInt()
   @Column({nullable: true, default: null})
+
   changeEloPlayer2: number;
+  // Hier fügst du das createdAt-Feld hinzu
+  @CreateDateColumn ()
+  createdAt: string;
+
   currentTurn: string;
 }
