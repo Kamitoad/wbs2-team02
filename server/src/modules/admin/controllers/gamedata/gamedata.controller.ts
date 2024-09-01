@@ -52,8 +52,7 @@ export class GamedataController {
             const users = await this.gamedataService.getAllUsersInQueue();
             return users.map(user => {
                 // queueDuration represents the seconds between now
-                const queueDuration = this.queueService.calcQueueDuration(user.queueStartTime);
-                return new ReadQueueForAdminDto(user, queueDuration) });
+                return new ReadQueueForAdminDto(user) });
         } catch (error) {
             throw new InternalServerErrorException("Fehler beim Laden der User");
         }

@@ -1,4 +1,4 @@
-@for (userInQueue of usersInQueue; track userInQueue.gameId) {
+@for (userInQueue of usersInQueue; track userInQueue.userId) {
   <div class="my-3">
     <app-queue-overview-card [userInQueue]="this.userInQueue"></app-queue-overview-card>
   </div>
