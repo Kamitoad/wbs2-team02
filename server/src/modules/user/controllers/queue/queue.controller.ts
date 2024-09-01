@@ -14,11 +14,12 @@ import {
     ApiBadRequestResponse,
     ApiInternalServerErrorResponse,
     ApiNotFoundResponse,
-    ApiOkResponse
+    ApiOkResponse, ApiTags
 } from "@nestjs/swagger";
 import {ErrorDto} from "../../../../common/dtos/auth/ErrorDto";
 import {OkDto} from "../../../../common/dtos/OkDto";
 
+@ApiTags('User - Queue')
 @Controller('queue')
 export class QueueController {
     constructor(
