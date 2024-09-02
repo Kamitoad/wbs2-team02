@@ -5,14 +5,14 @@ import {UserdataComponent} from "./pages/admin/components/userdata/userdata.comp
 import {CurrentGamesComponent} from "./pages/admin/components/gamedata/current-games/current-games.component";
 import {GamedataComponent} from "./pages/admin/components/gamedata/gamedata.component";
 import {QueueOverviewComponent} from "./pages/admin/components/gamedata/queue-overview/queue-overview.component";
-import {PasswordChangeComponent} from "./pages/user/components/password-change/password-change.component";
+import {PasswordChangeComponent} from "./pages/user/components/editUser/password-change/password-change.component";
 
 export const routes: Routes = [
 
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'admin/user', component: UserdataComponent },
-  {path: 'passwordChange', component: PasswordChangeComponent },
+  { path: 'admin/editUser', component: UserdataComponent },
+  {path: 'editPassword', component: PasswordChangeComponent },
   { path: 'admin/game', component: GamedataComponent,
     children: [
       {

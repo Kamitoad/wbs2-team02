@@ -21,8 +21,8 @@ export class UserdataGateway implements OnGatewayConnection, OnGatewayDisconnect
         console.log(`Client disconnected: ${client.id}`);
     }
 
-    @SubscribeMessage('user-registered')
+    @SubscribeMessage('editUser-registered')
     notifyUserRegistered(newUser: any) {
-        this.server.emit('user-registered', newUser);
+        this.server.emit('editUser-registered', newUser);
     }
 }
