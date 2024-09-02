@@ -24,17 +24,42 @@ export class PasswordChangeComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit() {
-    let user: any = {
-      oldPassword: this.oldPasword,
-      newPassword: this.newPassword,
-      newPasswordConfirm: this.newPasswordConfirm,
-    }
-    this.authService.login(user).subscribe(success => {
-      if (success) {
-        this.router.navigate(['/profile']);
-      } else {
-        this.loginFailed = true;
+    if(this.newPassword == this.newPasswordConfirm){
+      let changedPassword: any = {
+        oldPassword: this.oldPasword,
+        newPassword: this.newPassword
       }
-    });
+      this.authService.passwordChange(changedPassword).subscribe(success => {
+        if (success) {
+          console.log("success");
+          this.showMessage('messageSuccess', 5000);
+          this.clearInputFields();
+
+        } else {
+          console.log("error");
+          this.showMessage('messageError', 5000);
+        }
+      });
+    } else {
+      this.showMessage('messageError', 5000);
+    }
+
+
+  }
+
+  showMessage(elementId: string, duration: number) {
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.style.display = 'inline'; // Show the message
+      setTimeout(() => {
+        element.style.display = 'none'; // Hide the message after the duration
+      }, duration);
+    }
+  }
+
+  clearInputFields() {
+    this.oldPasword = '';
+    this.newPassword = '';
+    this.newPasswordConfirm = '';
   }
 }

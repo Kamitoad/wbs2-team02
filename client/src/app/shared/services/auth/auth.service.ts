@@ -33,4 +33,15 @@ export class AuthService {
       }),
     );
   }
+
+  passwordChange(changedPassword: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/passwordChange`, changedPassword).pipe(
+      tap(registeredUser => {
+        this.user = registeredUser;
+        return registeredUser;
+      })
+    )
+  }
+
+
 }
