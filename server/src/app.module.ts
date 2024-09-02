@@ -18,6 +18,8 @@ import {QueueController} from "./modules/user/controllers/queue/queue.controller
 import {QueueService} from "./modules/user/services/queue/queue.service";
 import {QueueGateway} from "./modules/user/gateways/queue/queue.gateway";
 import { GameModule } from './modules/game/game.module';
+import { GameService } from './modules/user/services/game/game.service';
+import { GameController } from './modules/user/controllers/game/game.controller';
 
 @Module({
   imports: [
@@ -45,6 +47,7 @@ import { GameModule } from './modules/game/game.module';
     UserdataController,
     GamedataController,
     QueueController,
+    GameController,
   ],
   providers: [
     AppService,
@@ -55,6 +58,7 @@ import { GameModule } from './modules/game/game.module';
     GamedataGateway,
     QueueService,
     QueueGateway,
+    GameService,
   ],
 })
 export class AppModule {
