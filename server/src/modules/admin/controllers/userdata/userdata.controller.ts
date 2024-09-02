@@ -1,16 +1,15 @@
-import {
-    Controller, Get,
-    InternalServerErrorException,
-} from '@nestjs/common';
-import {
-    ApiInternalServerErrorResponse, ApiOkResponse,
-    ApiTags
-} from "@nestjs/swagger";
+import {Controller, Get, InternalServerErrorException, UseGuards,} from '@nestjs/common';
+import {ApiInternalServerErrorResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
 import {ErrorDto} from "../../../../common/dtos/auth/ErrorDto";
 import {ReadUserForAdminDto} from "../../dtos/ReadUserForAdminDto";
 import {UserdataService} from "../../services/userdata/userdata.service";
+import {RolesGuard} from "../../../../common/guards/roles/roles.guard";
+import {Roles} from "../../../../common/decorators/roles/roles.decorator";
+import {RoleEnum} from "../../../../database/enums/RoleEnum";
 
 @ApiTags('Admin - Userdata')
+@UseGuards(RolesGuard)
+@Roles(RoleEnum.Admin)
 @Controller('userdata')
 export class UserdataController {
     constructor(

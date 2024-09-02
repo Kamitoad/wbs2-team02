@@ -9,6 +9,7 @@ import {randomBytes} from "crypto";
 declare module 'express-session' {
   interface SessionData {
     currentUser?: number;
+    role: string;
   }
 }
 

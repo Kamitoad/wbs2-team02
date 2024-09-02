@@ -1,6 +1,6 @@
 import {
+    BadRequestException,
     Controller,
-    Get,
     InternalServerErrorException,
     NotFoundException,
     Patch,
@@ -10,11 +10,16 @@ import {
 import {SessionData} from "express-session";
 import {QueueService} from "../../services/queue/queue.service";
 import {IsLoggedInGuard} from "../../../../common/guards/is-logged-in/is-logged-in.guard";
-import {ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse} from "@nestjs/swagger";
+import {
+    ApiBadRequestResponse,
+    ApiInternalServerErrorResponse,
+    ApiNotFoundResponse,
+    ApiOkResponse, ApiTags
+} from "@nestjs/swagger";
 import {ErrorDto} from "../../../../common/dtos/auth/ErrorDto";
 import {OkDto} from "../../../../common/dtos/OkDto";
-import {ReadQueueDurationDto} from "../../../admin/dtos/ReadQueueDurationDto";
 
+@ApiTags('User - Queue')
 @Controller('queue')
 export class QueueController {
     constructor(
@@ -30,6 +35,10 @@ export class QueueController {
         type: ErrorDto,
         description: 'Benutzer nicht gefunden'
     })
+    @ApiBadRequestResponse({
+        type: ErrorDto,
+        description: 'Nutzer bereits in der Queue'
+    })
     @ApiInternalServerErrorResponse({
         type: ErrorDto,
         description: 'Fehler beim Betreten der Queue'
@@ -40,10 +49,12 @@ export class QueueController {
         @Session() session: SessionData,
     ): Promise<void> {
         try {
-            await this.queueService.addToQueue(session.currentUser)
+            await this.queueService.join(session.currentUser)
         } catch (error) {
             if (error instanceof NotFoundException) {
                 throw new NotFoundException(error.message);
+            } else if (error instanceof BadRequestException) {
+                throw new BadRequestException(error.message);
             } else if (error instanceof InternalServerErrorException) {
                 throw new InternalServerErrorException("Fehler beim Betreten der Queue");
             }
@@ -57,6 +68,10 @@ export class QueueController {
     @ApiNotFoundResponse({
         type: ErrorDto,
         description: 'Benutzer nicht gefunden'
+    })
+    @ApiBadRequestResponse({
+        type: ErrorDto,
+        description: 'Nutzer bereits in der Queue'
     })
     @ApiInternalServerErrorResponse({
         type: ErrorDto,
@@ -72,12 +87,16 @@ export class QueueController {
         } catch (error) {
             if (error instanceof NotFoundException) {
                 throw new NotFoundException(error.message);
+            } else if (error instanceof BadRequestException) {
+                throw new BadRequestException(error.message);
             } else if (error instanceof InternalServerErrorException) {
                 throw new InternalServerErrorException("Fehler beim Verlassen der Queue");
             }
         }
     }
 
+    // May be not needed, time could be calculated on clients side
+    /*
     @ApiOkResponse({
         type: ReadQueueDurationDto,
         description: 'Wartezeit vom User wird angezeigt'
@@ -105,5 +124,5 @@ export class QueueController {
                 throw new InternalServerErrorException("Fehler beim auslesen der Queuedauer");
             }
         }
-    }
+    }*/
 }

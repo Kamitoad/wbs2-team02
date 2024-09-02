@@ -1,6 +1,6 @@
 import {
     Controller, Get,
-    InternalServerErrorException,
+    InternalServerErrorException, UseGuards,
 } from '@nestjs/common';
 import {
     ApiInternalServerErrorResponse, ApiOkResponse, ApiTags
@@ -10,15 +10,19 @@ import {GamedataService} from "../../services/gamedata/gamedata.service";
 import {ReadCurrentGamesDto} from "../../dtos/ReadCurrentGamesDto";
 import {ReadQueueForAdminDto} from "../../dtos/ReadQueueForAdminDto";
 import {QueueService} from "../../../user/services/queue/queue.service";
+import {RolesGuard} from "../../../../common/guards/roles/roles.guard";
+import {Roles} from "../../../../common/decorators/roles/roles.decorator";
+import {RoleEnum} from "../../../../database/enums/RoleEnum";
 
 @ApiTags('Admin - Gamedata')
+@UseGuards(RolesGuard)
+@Roles(RoleEnum.Admin)
 @Controller('admin/gamedata')
 export class GamedataController {
     constructor(
         public readonly gamedataService: GamedataService,
-    public readonly queueService: QueueService
-) {
-    }
+        public readonly queueService: QueueService
+    ) {}
 
     @ApiOkResponse({
         type: ReadCurrentGamesDto,
@@ -52,8 +56,7 @@ export class GamedataController {
             const users = await this.gamedataService.getAllUsersInQueue();
             return users.map(user => {
                 // queueDuration represents the seconds between now
-                const queueDuration = this.queueService.calcQueueDuration(user.queueStartTime);
-                return new ReadQueueForAdminDto(user, queueDuration) });
+                return new ReadQueueForAdminDto(user) });
         } catch (error) {
             throw new InternalServerErrorException("Fehler beim Laden der User");
         }

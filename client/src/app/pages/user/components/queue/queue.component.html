@@ -1,0 +1,62 @@
+<div class="custom-container">
+  <div class="row justify-content-center w-100">
+    <div class="col-10">
+
+      <!--For Top Margin-->
+      <div class="row my-5">
+        <div class="col my-5"></div>
+      </div>
+      <div class="row my-5">
+        <div class="col"></div>
+      </div>
+      <!---->
+
+      <h1 class="text-center mt-5 mb-5">Gegner wird gesucht...</h1>
+      <div class="rounded-5 custom-card p-3 py-5 mb-5">
+        <div class="row mx-5">
+          <div class="col-5">
+            <div class="row d-flex align-items-center h-100 justify-content-center">
+              <div class="hstack">
+                <div>
+                  <img [src]="'/assets/default-profile.png'" alt="Dein Profilbild" class="rounded-circle" width="100px"
+                       height="100px">
+                </div>
+                <div class="text-center border-2 border border-tie rounded-pill py-2 ms-3 my-1 w-100">
+                  <span class="h4"><span class="fw-semibold">{{ "currentGame.player1UserName" }} </span>
+                    ({{ "currentGame.player1Elo" }})</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="row d-flex align-items-center h-100 text-center">
+              <p class="mb-0 vs-text">VS</p>
+            </div>
+          </div>
+          <div class="col-5 justify-content-center">
+            <div class="row d-flex align-items-center h-100">
+              <div class="hstack">
+                <div class="text-center border-2 border border-tie rounded-pill py-2 me-3 my-1 w-100">
+                  <span class="h4">({{ "currentGame.player2Elo" }}) <span
+                    class="fw-semibold">{{ "currentGame.player2UserName" }}</span></span>
+                </div>
+                <div>
+                  <img [src]="'/assets/default-profile.png'" alt="Profilbild des Gegners" class="rounded-circle"
+                       width="100px"
+                       height="100px">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <button (click)="leaveQueue()" type="button" class="big-red-button w-25 p-2">
+          <span class="h4">Queue verlassen</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
