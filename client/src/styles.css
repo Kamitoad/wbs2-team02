@@ -22,6 +22,10 @@ body{
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+.roundedBoarders{
+  border-radius: 20px;
+}
+
 .border-tie {
   border-color: #127897 !important;
 }
