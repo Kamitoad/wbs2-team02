@@ -4,6 +4,7 @@ import {User} from "../../../../database/User";
 import {Repository} from "typeorm";
 import {GamedataGateway} from "../../../admin/gateways/gamedata/gamedata.gateway";
 import {QueueGateway} from "../../gateways/queue/queue.gateway";
+import {Game} from "../../../../database/Game";
 
 @Injectable()
 export class QueueService {
@@ -12,13 +13,17 @@ export class QueueService {
     constructor(
         @InjectRepository(User)
         private userRepository: Repository<User>,
+        @InjectRepository(Game)
+        private gameRepository: Repository<Game>,
 
         private gamedataGateway: GamedataGateway,
         private queueGateway: QueueGateway,
     ) {}
 
-    async addToQueue(userId: number): Promise<void> {
+    async join(userId: number): Promise<void> {
         const user = await this.userRepository.findOne( { where: { userId } });
+
+        // Error Handling
         if (!user) {
             throw new NotFoundException('Benutzer nicht gefunden');
         }
@@ -26,11 +31,69 @@ export class QueueService {
             throw new BadRequestException("Nutzer bereits in der Queue");
         }
 
+        const ongoingGame = await this.gameRepository.findOne({
+            where: [
+                { player1: user, hasEnded: 0 },
+                { player2: user, hasEnded: 0 }
+            ]
+        });
+        if (ongoingGame) {
+            throw new BadRequestException('Nutzer ist bereits in einem laufenden Spiel');
+        }
+
+        // Main part
         user.queueStartTime = new Date(Date.now()).toISOString();
         user.inQueue = true;
         await this.userRepository.save(user);
 
+        //Send to the admin panel that a new user joined the queue
         await this.gamedataGateway.handleJoinQueue(user);
+
+        await this.findMatches();
+    }
+
+    //Comments are for the purpose, that multiple matches can be found.
+    //Only useful when changes to a user in directly database is done
+    async findMatches() {
+        const usersInQueue = await this.userRepository.find({
+            where: { inQueue: true },
+            order: { queueStartTime: 'ASC'}
+        });
+
+        //const matchedUsers = new Set<number>();
+
+        for (const curUser1 of usersInQueue) {
+            const user1: User = curUser1;
+
+            //if (matchedUsers.has(user1.userId)) continue;
+
+            for (const curUser2 of usersInQueue) {
+                const user2: User = curUser2;
+
+                //if (matchedUsers.has(user2.userId)) continue;
+
+                if (user1.userId === user2.userId) continue;
+
+                if (Math.abs(user1.elo - user2.elo) < 200) {
+                    //matchedUsers.add(user1.userId);
+                    //matchedUsers.add(user2.userId);
+
+                    const newGame: Game = this.gameRepository.create();
+                    newGame.player1 = user1;
+                    newGame.player2 = user2;
+
+                    await this.gameRepository.save(newGame);
+
+                    this.gamedataGateway.notifyGameAdded(newGame);
+
+                    await this.userRepository.update(user1.userId, { inQueue: false, queueStartTime: null });
+                    await this.userRepository.update(user2.userId, { inQueue: false, queueStartTime: null });
+
+                    return;
+                    //break; instead of return;
+                }
+            }
+        }
     }
 
     async removeFromQueue(userId: number): Promise<void> {

@@ -49,7 +49,7 @@ export class QueueController {
         @Session() session: SessionData,
     ): Promise<void> {
         try {
-            await this.queueService.addToQueue(session.currentUser)
+            await this.queueService.join(session.currentUser)
         } catch (error) {
             if (error instanceof NotFoundException) {
                 throw new NotFoundException(error.message);
