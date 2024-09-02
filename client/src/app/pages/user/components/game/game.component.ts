@@ -1,53 +1,62 @@
-import {Component} from '@angular/core';
-import {NgForOf} from "@angular/common";
-import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {faUser} from "@fortawesome/free-solid-svg-icons";
+import { Component, OnInit } from '@angular/core';
+import { GameService } from '../../services/game.service'; // Pfad anpassen
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-game',
   standalone: true,
   templateUrl: './game.component.html',
-  imports: [
-    NgForOf,
-    FaIconComponent
-  ],
   styleUrls: ['./game.component.css']
 })
-export class GameComponent {
+export class GameComponent implements OnInit {
   gameBoard: string[][] = [['', '', ''], ['', '', ''], ['', '', '']];
   currentPlayer: 'X' | 'O' = 'X';
   winner: string | null = null;
   moveCount: number = 0;
+  gameId: number = 0;
 
-  // Method for a move
+  constructor(private gameService: GameService) {}
+
+  ngOnInit(): void {
+    this.gameService.getGameUpdates().subscribe((updatedGame) => {
+      this.updateGameBoard(updatedGame);
+    });
+
+    this.gameService.getGameCreated().subscribe((newGame) => {
+      console.log('New game created:', newGame);
+    });
+  }
+
   makeMove(row: number, col: number): void {
-    // If the field is already occupied or the game is over, do nothing
     if (this.gameBoard[row][col] !== '' || this.winner) {
       return;
     }
 
-    // Place the current player's symbol on the board
     this.gameBoard[row][col] = this.currentPlayer;
     this.moveCount++;
 
-     // Check if someone won
     if (this.checkWinner()) {
       this.winner = this.currentPlayer;
-      // Display a notification that the player has won
       window.alert(`Spieler ${this.currentPlayer} hat gewonnen!`);
     } else if (this.moveCount === 9) {
-      // If the board is full and no one has won, the game is a draw
       this.winner = 'Unentschieden';
       window.alert('Das Spiel ist unentschieden!');
     } else {
-// Switch to the next player
       this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
     }
+
+    // Send the move to the server
+// Angenommene Methode, die `gameId` als `number` erwartet
+    this.gameService.makeMove(this.gameId, { field: `${row}-${col}`, value: this.currentPlayer });
   }
 
-  // Method to check game status
+  updateGameBoard(updatedGame: any) {
+    // Update the game board and state based on the received game data
+    console.log('Game board updated:', updatedGame);
+    // Replace with actual logic
+  }
+
   checkWinner(): boolean {
-    // Check rows and columns
     for (let i = 0; i < 3; i++) {
       if (this.gameBoard[i][0] && this.gameBoard[i][0] === this.gameBoard[i][1] && this.gameBoard[i][1] === this.gameBoard[i][2]) {
         return true;
@@ -57,7 +66,6 @@ export class GameComponent {
       }
     }
 
-    // check diagonals
     if (this.gameBoard[0][0] && this.gameBoard[0][0] === this.gameBoard[1][1] && this.gameBoard[1][1] === this.gameBoard[2][2]) {
       return true;
     }
@@ -65,11 +73,9 @@ export class GameComponent {
       return true;
     }
 
-    // no winner
     return false;
   }
 
-// Method to reset the game
   resetGame(): void {
     this.gameBoard = [['', '', ''], ['', '', ''], ['', '', '']];
     this.currentPlayer = 'X';

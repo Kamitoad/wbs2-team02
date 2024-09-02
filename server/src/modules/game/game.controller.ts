@@ -2,7 +2,7 @@ import { Controller, Get, Post, Put, Param, Body, NotFoundException } from '@nes
 import { ApiTags, ApiOperation, ApiParam, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { GameService } from './game.service';
 import { Game } from '../../database/Game';
-// import { GameEntity } from './game.entity';
+import {Observable} from "rxjs";
 
 @ApiTags('games') // Swagger-Dekorator für Gruppierung
 @Controller('games') // Die Route wird unter /api/games verfügbar sein
@@ -14,7 +14,7 @@ export class GameController {
     @ApiBody({ type: Game }) // Swagger erwartet ein Game-Objekt im Request-Body
     @ApiResponse({ status: 201, description: 'The game has been successfully created.', type: Game })
     async createGame(@Body() createGameDto: { player1Id: number; player2Id: number }): Promise<Game> {
-        return this.gameService.createGame(createGameDto.player1Id, createGameDto.player2Id);
+        this.gameService.createGame(createGameDto.player1Id, createGameDto.player2Id);
     }
 
     @Get(':id')
@@ -22,8 +22,8 @@ export class GameController {
     @ApiParam({ name: 'id', type: 'number' }) // Swagger erwartet eine ID als Parameter
     @ApiResponse({ status: 200, description: 'The game record', type: Game })
     @ApiResponse({ status: 404, description: 'Game not found' })
-    async getGameById(@Param('id') id: number): Promise<Game> {
-        const game = await this.gameService.getGameById(id);
+    async getGameById(@Param('id') id: number): Promise<Observable<any>> {
+        const game = this.gameService.getGameById(id);
         if (!game) {
             throw new NotFoundException('Game not found');
         }
@@ -40,7 +40,7 @@ export class GameController {
         @Param('id') id: number,
         @Body() updateData: Partial<Game>,
     ): Promise<Game> {
-        const game = await this.gameService.getGameById(id);
+        const game = this.gameService.getGameById(id);
         if (!game) {
             throw new NotFoundException('Game not found');
         }
