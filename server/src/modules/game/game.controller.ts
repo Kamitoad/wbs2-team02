@@ -13,10 +13,6 @@ export class GameController {
     @ApiOperation({ summary: 'Create a new game' }) // Swagger-Beschreibung
     @ApiBody({ type: Game }) // Swagger erwartet ein Game-Objekt im Request-Body
     @ApiResponse({ status: 201, description: 'The game has been successfully created.', type: Game })
-    /*async createGame(@Body() createGameDto: { player1Id: number; player2Id: number }): Promise<GameEntity> {
-        return this.gameService.createGame(createGameDto.player1Id, createGameDto.player2Id);
-    }
-    */
     async createGame(@Body() createGameDto: { player1Id: number; player2Id: number }): Promise<Game> {
         return this.gameService.createGame(createGameDto.player1Id, createGameDto.player2Id);
     }
