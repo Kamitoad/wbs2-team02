@@ -54,13 +54,16 @@ export class GameService {
         }
 
         // Überprüfe, ob der Zug gültig ist
-        const fieldKey = `field${makeMoveDto.x}_${makeMoveDto.y}` as keyof Game;
-        if (game[fieldKey] !== FieldStateEnum.NotFilled) {
-            throw new BadRequestException('Field is already filled');
+        function updateGameField(game: Game, key: string, value: FieldStateEnum) {
+            if (key in game) {
+                (game as any)[key] = value;
+            } else {
+                throw new Error(`Invalid field key: ${key}`);
+            }
         }
-
-        // Aktualisiere das Spielfeld
-        game[fieldKey] = makeMoveDto.player === PlayerEnum.Player1 ? FieldStateEnum.FilledByPlayer1 : FieldStateEnum.FilledByPlayer2;
+        // Verwendung
+        const fieldKey = `field${makeMoveDto.x}_${makeMoveDto.y}`;
+        updateGameField(game, fieldKey, makeMoveDto.player === PlayerEnum.Player1 ? FieldStateEnum.FilledByPlayer1 : FieldStateEnum.FilledByPlayer2);
 
         // Speichere den Zug
         const move = this.moveRepository.create({
@@ -80,7 +83,7 @@ export class GameService {
     }
 
     async getGame(gameId: number): Promise<Game> {
-        return await this.gameRepository.findOneBy({ gameId });
+        return await this.gameRepository.findOneBy({gameId});
     }
 
     // Weitere Methoden wie ELO-Berechnung, Spiel beenden etc.

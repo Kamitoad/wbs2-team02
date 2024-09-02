@@ -1,8 +1,8 @@
 import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, OneToMany} from 'typeorm';
 import { User } from './User';
 import { IsBoolean, IsEnum, IsInt } from 'class-validator';
-import { FieldStateEnum } from './enums/FieldStateEnum';
 import { Move } from './move.entity';
+import { FieldStateEnum } from './enums/FieldStateEnum';
 import { PlayerEnum } from './enums/PlayerEnum';
 
 @Entity()
