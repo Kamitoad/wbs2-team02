@@ -38,23 +38,16 @@ export class PasswordChangeComponent {
       }
       this.editUser.editPassword(changedPassword).subscribe(success => {
         if (success.error) {
-          if (this.messageError) {
-            this.messageError.nativeElement.textContent = "Altes Passwort nicht korrekt";
-          }
-          this.showMessage('messageError', 5000);
+          this.showMessage('messageErrorOld', 5000);
         } else if (success) {
-          if (this.messageSuccess) {
-            this.messageSuccess.nativeElement.textContent = "Password erfolgreich geändert";
-          }
+
           this.showMessage('messageSuccess', 5000);
           this.clearInputFields();
         }
       });
     } else {
-      if (this.messageError) {
-        this.messageError.nativeElement.textContent = "Neue Passwörter nicht gleich";
-      }
-      this.showMessage('messageError', 5000);
+
+      this.showMessage('messageErrorNew', 5000);
     }
 
 
@@ -62,6 +55,7 @@ export class PasswordChangeComponent {
 
   showMessage(elementId: string, duration: number) {
     const element = document.getElementById(elementId);
+    console.log(element)
     if (element) {
       element.style.display = 'inline'; // Show the message
       setTimeout(() => {
