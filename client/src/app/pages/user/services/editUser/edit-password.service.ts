@@ -5,7 +5,7 @@ import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 @Injectable({
   providedIn: 'root'
 })
-export class EditUserService {
+export class EditPasswordService {
 
   private user = null;
   private apiUrl = '/api/user';
