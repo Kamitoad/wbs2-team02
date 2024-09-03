@@ -46,7 +46,7 @@ export class QueueService {
         user.inQueue = true;
         await this.userRepository.save(user);
 
-        //Send to the admin panel that a new user joined the queue
+        //Send to the admin panel that a new user has joined the queue
         await this.gamedataGateway.handleJoinQueue(user);
 
         await this.findMatches();
@@ -85,6 +85,9 @@ export class QueueService {
                     await this.gameRepository.save(newGame);
 
                     this.gamedataGateway.notifyGameAdded(newGame);
+
+                    await this.gamedataGateway.handleLeaveQueue(user1);
+                    await this.gamedataGateway.handleLeaveQueue(user2);
 
                     await this.userRepository.update(user1.userId, { inQueue: false, queueStartTime: null });
                     await this.userRepository.update(user2.userId, { inQueue: false, queueStartTime: null });
