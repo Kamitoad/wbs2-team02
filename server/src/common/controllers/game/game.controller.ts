@@ -11,4 +11,10 @@ export class GameController {
         const stats= await this.gameService.getUserStats(userId);
         return stats;
     }
+
+    @Get(':userId/games')
+    async getGames(@Param('userId') userId: number) {
+        const games = await this.gameService.getUserGames(userId);
+        return { userId, games };
+    }
 }

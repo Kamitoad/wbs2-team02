@@ -33,5 +33,19 @@ export class GameService {
             losses: lossCount,
             ties: tieCount,
         };
+
+
+    }
+    async getUserGames(userId: number): Promise<Game[]> {
+        // Abfrage aller Spiele als Player1 oder Player2
+        const games = await this.gameRepository.find({
+            where: [
+                { player1: { userId } },
+                { player2: { userId } }
+            ],
+            relations: ['player1', 'player2'], // Beziehungen laden, um vollständige Benutzerinformationen zu erhalten
+        });
+
+        return games;
     }
 }
