@@ -37,11 +37,11 @@
             <div class="row d-flex align-items-center h-100">
               <div class="hstack">
                 <div class="text-center border-2 border border-tie rounded-pill py-2 me-3 my-1 w-100">
-                  <span class="h4">({{ "currentGame.player2Elo" }}) <span
-                    class="fw-semibold">{{ "currentGame.player2UserName" }}</span></span>
+                  <span class="h4">({{ (queueService.opponent$ | async)?.elo || 'Gegner' }}) <span
+                    class="fw-semibold">{{ (queueService.opponent$ | async)?.userName || 'Gegner' }}</span></span>
                 </div>
                 <div>
-                  <img [src]="'/assets/default-profile.png'" alt="Profilbild des Gegners" class="rounded-circle"
+                  <img [src]="(queueService.opponent$ | async)?.profilePic || '/assets/default-profile.png'" alt="Profilbild des Gegners" class="rounded-circle"
                        width="100px"
                        height="100px">
                 </div>

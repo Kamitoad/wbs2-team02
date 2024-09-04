@@ -19,6 +19,7 @@ import {
 import {ErrorDto} from "../../../../common/dtos/auth/ErrorDto";
 import {OkDto} from "../../../../common/dtos/OkDto";
 import {ReadUserForQueueDto} from "../../dtos/ReadUserForQueueDto";
+import {ReadUserForQueueListDto} from "../../dtos/ReadUserForQueueListDto";
 
 @ApiTags('User - Queue')
 @Controller('queue')
@@ -29,8 +30,22 @@ export class QueueController {
     }
 
     @ApiOkResponse({
-        type: ReadUserForQueueDto,
-        description: 'User hat erfolgreich die Queue betreten - Match gefunden, sonst OKDto bei keinem Match'
+        description: 'Nutzer erfolgreich der Queue beigetreten und Match gefunden (Sonst nur ein OKDto)',
+        type: ReadUserForQueueListDto,
+        example: [
+                    {
+                        userName: "Kamitoad",
+                        elo: 1050,
+                        profilePic: "kamiPb.png"
+                    },
+                    {
+                        userName: "MaxUserman",
+                        elo: 1150,
+                        profilePic: "maxPb.png"
+                    }
+                ]
+
+
     })
     @ApiNotFoundResponse({
         type: ErrorDto,
@@ -48,10 +63,10 @@ export class QueueController {
     @UseGuards(IsLoggedInGuard)
     async join(
         @Session() session: SessionData,
-    ): Promise<ReadUserForQueueDto> {
+    ): Promise<ReadUserForQueueDto[]> {
         try {
-            const user = await this.queueService.join(session.currentUser)
-            return new ReadUserForQueueDto(user)
+            const users = await this.queueService.join(session.currentUser)
+            return users.map(user => new ReadUserForQueueDto(user));
         } catch (error) {
             if (error instanceof NotFoundException) {
                 throw new NotFoundException(error.message);

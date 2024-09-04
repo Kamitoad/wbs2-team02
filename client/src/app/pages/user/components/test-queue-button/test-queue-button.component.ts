@@ -14,10 +14,8 @@ export class TestQueueButtonComponent {
   constructor(private queueService: QueueService, private router: Router) {}
 
   joinQueue() {
+    this.queueService.initiateSocketConnection();
+    this.queueService.emitJoinQueue();
     this.router.navigate(['/queue']);
-    this.queueService.joinQueue().subscribe(
-      response => console.log('Response:', response),
-      error => console.error('Error:', error)
-    );
   }
 }
