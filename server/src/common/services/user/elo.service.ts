@@ -50,20 +50,35 @@ export class EloService {
 
         //Erwartungswert E  = 1/(1+10^(Rg-R)/400)
         const expectedUser1 = 1 / (1 + 10 ** ((user2.elo - user1.elo) / 400));
-        const espectedUser2 = 1 - expectedUser1;
+        const expectedUser2 = 1 - expectedUser1;
 
         //Parteipunktzahl S:
         // 1 -> Partie gewonnen
         // 0 -> Partie verloren
         // 0,5 -> Unentschieden --> noch kein tied in game db
 
-        const actualScoreUser1 = game.winner === user1Id ? 1 : 0;
-        const actualScoreUser2 = game.winner === user2Id ? 1 : 0;
+        let actualScoreUser1=0;
+        let actualScoreUser2=0;
+
+        switch ( game.winner ) {
+            case game.winner = user1Id:
+                 actualScoreUser1 =1;
+                 actualScoreUser2 =0;
+                break;
+            case game.winner = user2Id:
+                 actualScoreUser1 =0;
+                 actualScoreUser2 =1;
+                break;
+            case game.winner = null:
+                 actualScoreUser1 =0.5;
+                 actualScoreUser2 =0.5;
+                break;
+            }
 
         // Berechnung neuer Elo
         // Formel:      R'= R+ k * (S - E)
         const newEloUser1 = user1.elo + K * (actualScoreUser1 - expectedUser1);
-        const newEloUser2 = user2.elo + K * (actualScoreUser2 - espectedUser2);
+        const newEloUser2 = user2.elo + K * (actualScoreUser2 - expectedUser2);
 
         // Aktualisieren der Elo-Werte
         await this.updateUserElo(user1.userId, newEloUser1);
