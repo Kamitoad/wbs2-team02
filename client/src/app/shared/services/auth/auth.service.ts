@@ -8,28 +8,31 @@ import {HttpClient} from "@angular/common/http";
 })
 export class AuthService {
 
-  private user = null;
   private apiUrl = '/api/auth';
-
-  constructor() {
-  }
 
   http: HttpClient = inject(HttpClient);
 
   register(user: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/register`, user).pipe(
       tap(registeredUser => {
-        this.user = registeredUser;
-        return registeredUser;
+        // Local storage because services are cleared after a page reload or self typed URL-Change
+        localStorage.setItem('user', JSON.stringify(registeredUser));
       }),
     );
   }
 
   login(user: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/login`, user).pipe(
-      tap(registeredUser => {
-        this.user = registeredUser;
-        return registeredUser;
+      tap(loggedInUser => {
+        localStorage.setItem('user', JSON.stringify(loggedInUser));
+      }),
+    );
+  }
+
+  logout(user: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/logout`, user).pipe(
+      tap(() => {
+        localStorage.removeItem('user');
       }),
     );
   }
