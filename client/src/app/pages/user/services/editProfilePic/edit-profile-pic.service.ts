@@ -58,31 +58,4 @@ export class EditProfilePicService {
       })
     )
   }
-
-  editProfilePic(file: any): any {
-    if (file) {
-      const reader: FileReader = new FileReader();
-      reader.onload = (e: any) => {
-        this.newPfp = e.target.result;
-      };
-      reader.readAsDataURL(file);
-      const formData: FormData = new FormData();
-      formData.append("file", file);
-
-      this.http.patch("http://localhost:8000/user/profilepic", formData, { withCredentials: true }).subscribe(
-        response => {
-
-
-        },
-        error => {
-          // Error message einfügen
-        }
-      );
-      return;
-    }
-    // Error message einfügen
-  }
-
-
-
 }

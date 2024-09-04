@@ -75,8 +75,6 @@ export class EditPasswordProfilepicComponent implements OnInit {
   }
 
   deleteProfilePic() {
-
-    console.log("test")
     this.editProfilePic.deleteProfilePic().subscribe(success => {
       if (success.error) {
       } else if (success) {
@@ -142,16 +140,6 @@ export class EditPasswordProfilepicComponent implements OnInit {
 
   protected readonly window = window;
   protected readonly onclick = onclick;
-
-
-  uploadPic() {
-    this.editProfilePic.editProfilePic("test").subscribe((success: { error: any; }) => {
-      if (success.error) {
-      } else if (success) {
-        this.clearInputFields();
-      }
-    });
-  }
 
   enableImgUpload() {
     this.imgUpload = this.editProfilePic.enableImgUpload(this.imgUpload);

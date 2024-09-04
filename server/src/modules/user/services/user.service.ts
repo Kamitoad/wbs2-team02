@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User} from "../../../database/User";
 import {AuthService} from "../../../common/services/auth/auth.service";
-import {EditPasswordDTO} from "../dtos/editUser/EditPasswordDTO";
+import {EditPasswordDto} from "../dtos/editUser/EditPasswordDto";
 import * as bcrypt from 'bcryptjs';
 
 
@@ -16,7 +16,7 @@ export class UserService {
     ) {}
 
 
-    async editPassword(editPasswordDTO: EditPasswordDTO, userID: number): Promise<User> {
+    async editPassword(editPasswordDTO: EditPasswordDto, userID: number): Promise<User> {
         const user: User | null = await this.authService.getUserByUserId(userID);
         const isPasswordValid = await bcrypt.compare(editPasswordDTO.oldPassword, user.password);
         if (!isPasswordValid) {
