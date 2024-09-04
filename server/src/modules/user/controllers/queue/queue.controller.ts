@@ -18,6 +18,7 @@ import {
 } from "@nestjs/swagger";
 import {ErrorDto} from "../../../../common/dtos/auth/ErrorDto";
 import {OkDto} from "../../../../common/dtos/OkDto";
+import {ReadUserForQueueDto} from "../../dtos/ReadUserForQueueDto";
 
 @ApiTags('User - Queue')
 @Controller('queue')
@@ -28,8 +29,8 @@ export class QueueController {
     }
 
     @ApiOkResponse({
-        type: OkDto,
-        description: 'User hat erfolgreich der Queue betreten'
+        type: ReadUserForQueueDto,
+        description: 'User hat erfolgreich die Queue betreten - Match gefunden, sonst OKDto bei keinem Match'
     })
     @ApiNotFoundResponse({
         type: ErrorDto,
@@ -47,9 +48,10 @@ export class QueueController {
     @UseGuards(IsLoggedInGuard)
     async join(
         @Session() session: SessionData,
-    ): Promise<void> {
+    ): Promise<ReadUserForQueueDto> {
         try {
-            await this.queueService.join(session.currentUser)
+            const user = await this.queueService.join(session.currentUser)
+            return new ReadUserForQueueDto(user)
         } catch (error) {
             if (error instanceof NotFoundException) {
                 throw new NotFoundException(error.message);

@@ -20,7 +20,7 @@ export class QueueService {
         private queueGateway: QueueGateway,
     ) {}
 
-    async join(userId: number): Promise<void> {
+    async join(userId: number): Promise<User> {
         const user = await this.userRepository.findOne( { where: { userId } });
 
         // Error Handling
@@ -49,12 +49,12 @@ export class QueueService {
         //Send to the admin panel that a new user has joined the queue
         await this.gamedataGateway.handleJoinQueue(user);
 
-        await this.findMatches();
+        return await this.findMatches(userId);
     }
 
     //Comments are for the purpose, that multiple matches can be found.
     //Only useful when changes to a user in directly database is done
-    async findMatches() {
+    async findMatches(userId: number):Promise<User> {
         const usersInQueue = await this.userRepository.find({
             where: { inQueue: true },
             order: { queueStartTime: 'ASC'}
@@ -92,7 +92,7 @@ export class QueueService {
                     await this.userRepository.update(user1.userId, { inQueue: false, queueStartTime: null });
                     await this.userRepository.update(user2.userId, { inQueue: false, queueStartTime: null });
 
-                    return;
+                    return user1.userId == userId ? user2 : user1;
                     //break; instead of return;
                 }
             }
