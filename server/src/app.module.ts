@@ -6,6 +6,8 @@ import { User } from './database/User';
 import { Game } from './database/Game';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import * as path from 'node:path';
+import {GameController} from "./common/controllers/game/game.controller";
+import {GameService} from "./common/services/game/game.service";
 
 @Module({
   imports: [
@@ -28,9 +30,11 @@ import * as path from 'node:path';
   ],
   controllers: [
     AppController,
+    GameController
   ],
   providers: [
     AppService,
+    GameService
   ],
 })
 export class AppModule {
