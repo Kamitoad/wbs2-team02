@@ -1,6 +1,5 @@
 import {Component} from '@angular/core';
 import {Router, RouterLink} from "@angular/router";
-import {AuthService} from "../../../../shared/services/auth/auth.service";
 import {QueueService} from "../../services/queue.service";
 
 @Component({
@@ -13,10 +12,15 @@ import {QueueService} from "../../services/queue.service";
   styleUrl: './queue.component.css'
 })
 export class QueueComponent {
+  user: any | null = null;
+
   constructor(
-    private authService: AuthService,
     private queueService: QueueService,
-    private router: Router) {}
+    private router: Router)
+  {
+    const savedUser = localStorage.getItem('user');
+    this.user = savedUser ? JSON.parse(savedUser) : null;
+  }
 
   leaveQueue() {
     this.router.navigate(['/queuebutton']);
