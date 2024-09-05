@@ -11,11 +11,21 @@ import {QueueService} from "../../services/queue.service";
 })
 export class TestQueueButtonComponent {
 
+  statusMessage: string = "";
+
   constructor(private queueService: QueueService, private router: Router) {}
 
   joinQueue() {
     this.queueService.initiateSocketConnection();
-    this.queueService.emitJoinQueue();
-    this.router.navigate(['/queue']);
+
+    this.queueService.emitJoinQueue()
+      .then(() => {
+        // Navigation nur wenn kein Fehler aufgetreten ist
+        this.router.navigate(['/queue']);
+      })
+      .catch((error) => {
+        this.statusMessage = error.message;
+        console.error('Error detected:', error);
+      });
   }
 }

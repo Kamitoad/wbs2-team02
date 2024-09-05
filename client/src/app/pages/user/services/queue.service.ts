@@ -11,6 +11,8 @@ export class QueueService {
   private opponentSubject = new BehaviorSubject<any | null>(null);
   opponent$ = this.opponentSubject.asObservable();
 
+  private errorSubject = new BehaviorSubject<string | null>(null);
+
   private socket: any;
   private baseUrl: string;  //Needed to test project rather in Angular or Nest.js Server
 
@@ -27,6 +29,16 @@ export class QueueService {
 
       this.socket.on('opponent-data', (opponent: any) => {
         this.readOpponent(opponent);
+      });
+
+      this.socket.on('queue-error', (error: any) => {
+        console.error('Queue error:', error);
+        this.errorSubject.next(error.message);  // Setze den Fehler im Fehler-Subject
+      });
+
+      // Setze den Fehler auf null, wenn die Verbindung erfolgreich ist
+      this.socket.on('join-queue-success', () => {
+        this.errorSubject.next(null);
       });
     }
   }
@@ -53,9 +65,26 @@ export class QueueService {
     });
   }
 
-  emitJoinQueue() {
-    const userId = this.getUserIdFromLocalStorage();
-    this.socket.emit('joinQueue', { userId });
+  emitJoinQueue(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const userId = this.getUserIdFromLocalStorage();
+      this.socket.emit('joinQueue', { userId });
+
+      const successHandler = () => {
+        this.socket.off('join-queue-success', successHandler);
+        this.socket.off('queue-error', errorHandler);
+        resolve();
+      };
+
+      const errorHandler = (error: any) => {
+        this.socket.off('join-queue-success', successHandler);
+        this.socket.off('queue-error', errorHandler);
+        reject(error);
+      };
+
+      this.socket.on('join-queue-success', successHandler);
+      this.socket.on('queue-error', errorHandler);
+    });
   }
 
   private readOpponent(opponent: any) {

@@ -37,8 +37,12 @@
             <div class="row d-flex align-items-center h-100">
               <div class="hstack">
                 <div class="text-center border-2 border border-tie rounded-pill py-2 me-3 my-1 w-100">
-                  <span class="h4">({{ (queueService.opponent$ | async)?.elo || 'Gegner' }}) <span
-                    class="fw-semibold">{{ (queueService.opponent$ | async)?.userName || 'Gegner' }}</span></span>
+                  @if ((queueService.opponent$ | async)?.elo) {
+                    <span class="h4">
+                      ({{ (queueService.opponent$ | async).elo }})
+                    </span>
+                  }
+                  <span class="fw-semibold h4">{{ (queueService.opponent$ | async)?.userName || 'Gegner wird gesucht' }}</span>
                 </div>
                 <div>
                   <img [src]="(queueService.opponent$ | async)?.profilePic || '/assets/default-profile.png'" alt="Profilbild des Gegners" class="rounded-circle"
