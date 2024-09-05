@@ -37,28 +37,25 @@ export class QueueGateway {
 
         // Send data of opponent to current user
         // (current user is the last one who joined the queue of the two players)
-        setTimeout(() => {
-          if (client) {
-            client.emit('opponent-data', {
-              userName: opponent.userName,
-              elo: opponent.elo,
-              profilePic: opponent.profilePic,
-              gameId: gameId,
-            });
-          }
+        if (client) {
+          client.emit('opponent-data', {
+            userName: opponent.userName,
+            elo: opponent.elo,
+            profilePic: opponent.profilePic,
+            gameId: gameId,
+          });
+        }
 
-          // Send data of current user to opponent
-          // (opponent is the first one who joined the queue of the two players)
-          if (opponentSocket) {
-            opponentSocket.emit('opponent-data', {
-              userName: currentUser.userName,
-              elo: currentUser.elo,
-              profilePic: currentUser.profilePic,
-              gameId: gameId,
-            });
-          }
-        },1000)
-
+        // Send data of current user to opponent
+        // (opponent is the first one who joined the queue of the two players)
+        if (opponentSocket) {
+          opponentSocket.emit('opponent-data', {
+            userName: currentUser.userName,
+            elo: currentUser.elo,
+            profilePic: currentUser.profilePic,
+            gameId: gameId,
+          });
+        }
       }
     } catch (error) {
       client.emit('queue-error', { message: error.message });
