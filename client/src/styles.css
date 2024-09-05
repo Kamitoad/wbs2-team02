@@ -50,3 +50,7 @@ body{
   color: white;
   height: 100vh;
 }
+
+.error-message{
+  color: #bd2a2c;
+}
