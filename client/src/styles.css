@@ -41,3 +41,7 @@ body{
 .vs-text {
   font-size: 60px;
 }
+
+.error-message{
+  color: #bd2a2c;
+}
