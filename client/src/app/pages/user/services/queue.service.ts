@@ -13,6 +13,10 @@ export class QueueService {
 
   private errorSubject = new BehaviorSubject<string | null>(null);
 
+  private gameStatusSubject = new BehaviorSubject<string | null>(null);  // Neue Subject für den Spielstatus
+  gameStatus$ = this.gameStatusSubject.asObservable();
+
+
   private socket: any;
   private baseUrl: string;  //Needed to test project rather in Angular or Nest.js Server
 
@@ -89,6 +93,7 @@ export class QueueService {
 
   private readOpponent(opponent: any) {
     this.opponentSubject.next(opponent);
+    this.gameStatusSubject.next('Spiel wird gestartet');  // Status aktualisieren
   }
 
   private getUserIdFromLocalStorage(): number {
