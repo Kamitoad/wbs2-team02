@@ -27,7 +27,7 @@ export class QueueGateway {
 
     try {
       // Search for opponent
-      const [opponent, currentUser] = await this.queueService.join(payload.userId);
+      const { opponent, currentUser, gameId } = await this.queueService.join(payload.userId);
 
       client.emit('join-queue-success');
 
@@ -37,26 +37,30 @@ export class QueueGateway {
 
         // Send data of opponent to current user
         // (current user is the last one who joined the queue of the two players)
-        if (client) {
-          client.emit('opponent-data', {
-            userName: opponent.userName,
-            elo: opponent.elo,
-            profilePic: opponent.profilePic,
-          });
-        }
+        setTimeout(() => {
+          if (client) {
+            client.emit('opponent-data', {
+              userName: opponent.userName,
+              elo: opponent.elo,
+              profilePic: opponent.profilePic,
+              gameId: gameId,
+            });
+          }
 
-        // Send data of current user to opponent
-        // (opponent is the first one who joined the queue of the two players)
-        if (opponentSocket) {
-          opponentSocket.emit('opponent-data', {
-            userName: currentUser.userName,
-            elo: currentUser.elo,
-            profilePic: currentUser.profilePic,
-          });
-        }
+          // Send data of current user to opponent
+          // (opponent is the first one who joined the queue of the two players)
+          if (opponentSocket) {
+            opponentSocket.emit('opponent-data', {
+              userName: currentUser.userName,
+              elo: currentUser.elo,
+              profilePic: currentUser.profilePic,
+              gameId: gameId,
+            });
+          }
+        },1000)
+
       }
     } catch (error) {
-      // Sende Fehler zurück an den Client
       client.emit('queue-error', { message: error.message });
     }
   }

@@ -20,7 +20,8 @@ export class QueueComponent {
   opponent: any | null = null;
   waitingTime: number = 0;
   startCountdown: number = 3;
-  gameStatus: string | null = null;  // Neue Variable für den Spielstatus
+  gameStatus: string | null = null;
+  gameId: number | null = null;
 
   constructor(
     public queueService: QueueService,
@@ -32,26 +33,25 @@ export class QueueComponent {
   ngOnInit(): void {
     this.queueService.opponent$.subscribe((opponent: any) => {
       this.opponent = opponent;
+      if (opponent?.gameId) {
+        this.gameId = opponent.gameId;
+      }
     });
 
-    // Abonniere den neuen Observable für den Spielstatus
     this.queueService.gameStatus$.subscribe((status: string | null) => {
       this.gameStatus = status;
-      console.log(this.gameStatus);
-      console.log(status);
-      if (status) {
-        for (let i = 0; i < 2; i++) {
-          setTimeout(() => {
-            this.startCountdown -= 1
-          }, (i + 1) * 1000)
-        }
 
-        setTimeout(() => {
-          this.router.navigate(['/game/3']);
-        },3000)
+      if (status) {
+        let countdownInterval = setInterval(() => {
+          this.startCountdown -= 1;
+          if (this.startCountdown <= 0) {
+            clearInterval(countdownInterval);
+            this.router.navigate([`/game/${this.gameId}`]); // Weiterleitung zur Spiel-Route
+          }
+        }, 1000);
       }
-      console.log(this.gameStatus);
     });
+
     setInterval(() => {
       this.waitingTime += 1;
     }, 1000)

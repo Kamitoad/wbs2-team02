@@ -18,7 +18,7 @@ export class QueueService {
         private gamedataGateway: GamedataGateway,
     ) {}
 
-    async join(userId: number): Promise<User[]> {
+    async join(userId: number): Promise<any> {
         const user = await this.userRepository.findOne({ where: { userId } });
 
         // Error Handling
@@ -62,10 +62,10 @@ export class QueueService {
 
             await this.gameRepository.save(newGame);
 
-            return [opponent, user];
+            return { opponent, currentUser: user, gameId: newGame.gameId };
         }
 
-        return [null, user];
+        return { opponent: null, currentUser: user, gameId: null };
     }
 
     async findMatches(userId: number): Promise<User | null> {
