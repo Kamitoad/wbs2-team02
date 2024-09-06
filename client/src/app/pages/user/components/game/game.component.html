@@ -1,26 +1,30 @@
 <div class="container">
   <div class="row">
-    <!-- Linke Spalte für Spieler 1 -->
+    <!-- Left column for player 1 -->
     <div class="col-md-3 text-center">
       <img src="assets/player1.png" alt="Player 1" class="img-fluid rounded-circle">
       <h3>{{ player1.name }}</h3>
       <p>Elo: {{ player1.elo }}</p>
     </div>
 
-    <!-- Spielfeld in der Mitte -->
+    <!-- Playing field in the middle -->
     <div class="col-md-6">
-      <div class="tic-tac-toe-board">
-        <div class="row" *ngFor="let row of board; let rowIndex = index">
-          <div class="col" *ngFor="let cell of row; let colIndex = index">
-            <button class="btn btn-block" (click)="makeMove(rowIndex, colIndex)">
-              {{ cell }}
-            </button>
-          </div>
-        </div>
-      </div>
+      <table class="table table-bordered">
+        <tbody>
+        <tr *ngFor="let row of board; let rowIndex = index">
+          <td
+            *ngFor="let cell of row; let colIndex = index"
+            class="text-center align-middle cell-hover"
+            style="height: 100px; cursor: pointer;"
+            (click)="makeMove(rowIndex, colIndex)">
+            {{ cell }}
+          </td>
+        </tr>
+        </tbody>
+      </table>
     </div>
 
-    <!-- Rechte Spalte für Spieler 2 -->
+    <!-- Right column for player 2 -->
     <div class="col-md-3 text-center">
       <img src="assets/player2.png" alt="Player 2" class="img-fluid rounded-circle">
       <h3>{{ player2.name }}</h3>

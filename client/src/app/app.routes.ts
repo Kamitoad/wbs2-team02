@@ -7,6 +7,7 @@ import {GamedataComponent} from "./pages/admin/components/gamedata/gamedata.comp
 import {QueueOverviewComponent} from "./pages/admin/components/gamedata/queue-overview/queue-overview.component";
 import {TestQueueButtonComponent} from "./pages/user/components/test-queue-button/test-queue-button.component";
 import {QueueComponent} from "./pages/user/components/queue/queue.component";
+import {GameComponent} from "./pages/user/components/game/game.component";
 
 export const routes: Routes = [
 
@@ -14,6 +15,7 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'queuebutton', component: TestQueueButtonComponent },
   { path: 'queue', component: QueueComponent },
+  { path: 'game', component: GameComponent },
 
   { path: 'admin/user', component: UserdataComponent },
   { path: 'admin/game', component: GamedataComponent,
