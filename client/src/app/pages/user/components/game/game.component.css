@@ -1,0 +1,8 @@
+.cell-hover {
+  background-color: #33A6C9;
+  color: #F0F8FF;
+}
+.cell-hover:hover {
+  background-color: #2a85a3;
+  color: #F0F8FF;
+}
