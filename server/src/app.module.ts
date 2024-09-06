@@ -17,6 +17,9 @@ import {GamedataGateway} from "./modules/admin/gateways/gamedata/gamedata.gatewa
 import {QueueController} from "./modules/user/controllers/queue/queue.controller";
 import {QueueService} from "./modules/user/services/queue/queue.service";
 import {QueueGateway} from "./modules/user/gateways/queue/queue.gateway";
+import { GameController } from './modules/user/controllers/game/game.controller';
+import { GameService } from './modules/user/services/game/game.service';
+import { GameGateway } from './modules/user/gateways/game/game.gateway';
 
 @Module({
   imports: [
@@ -43,6 +46,7 @@ import {QueueGateway} from "./modules/user/gateways/queue/queue.gateway";
     UserdataController,
     GamedataController,
     QueueController,
+    GameController,
   ],
   providers: [
     AppService,
@@ -53,6 +57,8 @@ import {QueueGateway} from "./modules/user/gateways/queue/queue.gateway";
     GamedataGateway,
     QueueService,
     QueueGateway,
+    GameService,
+    GameGateway,
   ],
 })
 export class AppModule {
