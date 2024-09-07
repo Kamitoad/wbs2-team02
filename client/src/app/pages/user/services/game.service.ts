@@ -9,21 +9,27 @@ export class GameService {
   private moveReceived = new Subject<any>();
   moveReceived$ = this.moveReceived.asObservable();
 
+  //
+/*
+  getGameState(gameId: number): Observable<Game>{
+
+  }
+*/
+  //
+  makeMove(gameId: number, move: {x: number, y: number}): void{
+
+  }
+
+  //  Setzt das Aufgeben des Spiels um.
+  resignGame(gameId: number): void {
+
+  }
+
   connectToGame(gameId: number): void {
-    this.socket = new WebSocket(`ws://localhost:3000/game/${gameId}`);
 
-    this.socket.onmessage = (event) => {
-      const move = JSON.parse(event.data);
-      this.moveReceived.next(move);
-    }
   }
 
-  sendMove(move: { row: number, col: number, player: string, gameId: number }): void {
-    if (this.socket) {
-      this.socket.send(JSON.stringify(move));
-    }
-  }
-
+  //
   disconnect(): void {
     if (this.socket) {
       this.socket.close();

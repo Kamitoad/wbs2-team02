@@ -9,8 +9,9 @@ export class Game {
   gameId: number;
 
   @IsBoolean()
-  @Column({default: 0})
-  hasEnded: number;
+  @Column({default: false})
+  // hasEnded: number;
+  hasEnded: boolean;
 
   @IsEnum(FieldStateEnum)
   @Column({ enum: FieldStateEnum, default: FieldStateEnum.NotFilled })
@@ -69,4 +70,12 @@ export class Game {
   @IsInt()
   @Column({nullable: true, default: null})
   changeEloPlayer2: number;
+
+  @IsInt()
+  @Column({nullable: true, default: null})
+  currentPlayer1: number;
+
+  @IsInt()
+  @Column({nullable: true, default: null})
+  currentPlayer2: number;
 }

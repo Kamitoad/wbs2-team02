@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Game } from '../../../../database/Game';
@@ -14,53 +14,88 @@ export class GameService {
         private userRepository: Repository<User>, // Repository für User
     ) {}
 
-    async createGame(player1Id: number, player2Id: number): Promise<Game> {
-        // Get the players from the database
-        const player1 = await this.userRepository.findOne({ where: { userId: player1Id } });
-        const player2 = await this.userRepository.findOne({ where: { userId: player2Id } });
-
-        if (!player1 || !player2) {
-            throw new Error('Einer oder beide Spieler existieren nicht');
-        }
-
-        // Create a new game
-        const newGame = this.gameRepository.create({
-            player1,
-            player2,
-            hasEnded: 0, // Example value for not completed
-            // Set all fields to default value
-            field1_1: FieldStateEnum.NotFilled,
-            field1_2: FieldStateEnum.NotFilled,
-            field1_3: FieldStateEnum.NotFilled,
-            field2_1: FieldStateEnum.NotFilled,
-            field2_2: FieldStateEnum.NotFilled,
-            field2_3: FieldStateEnum.NotFilled,
-            field3_1: FieldStateEnum.NotFilled,
-            field3_2: FieldStateEnum.NotFilled,
-            field3_3: FieldStateEnum.NotFilled,
-        });
-
-        return this.gameRepository.save(newGame);
+    async getGameById(gameId: number): Promise<Game> {
+        const GameID = await this.gameRepository.findOne({ where: { gameId: gameId } });
+        return GameID;
     }
 
-    async getGameState(gameId: number): Promise<Game> {
-        return this.gameRepository.findOne({ where: { gameId } });
-    }
-
-    async makeMove(gameId: number, row: number, col: number, player: string): Promise<void> {
+    // Diese Methode überprüft, ob der Zug gültig ist (z.B. ob das Feld bereits belegt ist), und speichert den neuen Zustand.
+    async makeMove(gameId: number, playerId: number, move: {x: number, y: number}): Promise<void> {
         const game = await this.gameRepository.findOne({ where: { gameId } });
-        if (game) {
-            // Update the game state with the new move
-            game[`field${row + 1}_${col + 1}`] = player;
-            await this.gameRepository.save(game);
+        if (!game) {
+            throw new NotFoundException('Spiel nicht gefunden');
+        }
+
+        // Beispiel für die Zuordnung des Spielfelds:
+        const fieldKey = `field${move.x}_${move.y}`;
+        if (game[fieldKey] !== null) {
+            throw new BadRequestException('Das Feld ist bereits belegt');
+        }
+
+        // Spieler 1 = X, Spieler 2 = O
+        // Methode ist nicht Redudant?
+        /*
+        const fieldValue = game.player1.userId === playerId ? FieldStateEnum.FilledByPlayer1 : FieldStateEnum.FilledByPlayer2;
+        game[fieldKey] = fieldValue;
+        */
+        game[fieldKey] = game.player1.userId === playerId ? FieldStateEnum.FilledByPlayer1 : FieldStateEnum.FilledByPlayer2;
+
+        await this.gameRepository.save(game);
+
+        // Prüfe auf Gewinner
+        const winner = await this.checkWinner(game);
+        if (winner) {
+            await this.endGame(gameId, playerId, winner === 'X' ? game.player2.userId : game.player1.userId);
         }
     }
 
-    async isGameEnded(gameId: number): Promise<boolean> {
-        const game = await this.gameRepository.findOne({ where: { gameId } });
-        if (game) {
-            return game.hasEnded === 1; // assumption: 1 means finished, 0 means not finished
+    // Diese Methode prüft nach jedem Zug, ob einer der Spieler gewonnen hat.
+    async checkWinner(game: Game): Promise<'X' | 'O' | null> {
+        const winningCombinations = [
+            ['field1_1', 'field1_2', 'field1_3'],
+            ['field2_1', 'field2_2', 'field2_3'],
+            ['field3_1', 'field3_2', 'field3_3'],
+            ['field1_1', 'field2_1', 'field3_1'],
+            ['field1_2', 'field2_2', 'field3_2'],
+            ['field1_3', 'field2_3', 'field3_3'],
+            ['field1_1', 'field2_2', 'field3_3'],
+            ['field1_3', 'field2_2', 'field3_1'],
+        ];
+
+        for (const combination of winningCombinations) {
+            const [a, b, c] = combination;
+            if (game[a] && game[a] === game[b] && game[a] === game[c]) {
+                return game[a];  // 'X' oder 'O'
+            }
         }
-        return false;
+        return null;
+    }
+
+    // Setzt das Spiel auf "beendet" und berechnet die neuen Elo-Werte.
+    async endGame(gameId: number, winnerId: number, loserId: number): Promise<void> {
+        const game = await this.gameRepository.findOne({ where: { gameId } });
+        if (!game) {
+            throw new NotFoundException('Spiel nicht gefunden');
+        }
+
+        game.hasEnded = true;
+        game.winner = winnerId;
+
+        // Elo-Werte anpassen
+        const winner = await this.userRepository.findOne({ where: { userId: winnerId } });
+        const loser = await this.userRepository.findOne({ where: { userId: loserId } });
+
+        if (winner && loser) {
+            const newWinnerElo = winner.elo + 10; // Beispielhafte Elo-Berechnung
+            const newLoserElo = loser.elo - 10;
+
+            winner.elo = newWinnerElo;
+            loser.elo = newLoserElo;
+
+            await this.userRepository.save(winner);
+            await this.userRepository.save(loser);
+        }
+
+        await this.gameRepository.save(game);
     }
 }
