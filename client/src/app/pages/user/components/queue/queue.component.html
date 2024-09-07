@@ -12,18 +12,18 @@
       <!---->
 
       <h1 class="text-center mt-5 mb-5">Gegner wird gesucht...</h1>
-      <div class="rounded-5 custom-card p-3 py-5 mb-5">
+      <div class="rounded-5 custom-card p-3 py-5 mb-4">
         <div class="row mx-5">
           <div class="col-5">
             <div class="row d-flex align-items-center h-100 justify-content-center">
               <div class="hstack">
                 <div>
-                  <img [src]="'/assets/default-profile.png'" alt="Dein Profilbild" class="rounded-circle" width="100px"
+                  <img [src]="user.profilePic || '/assets/default-profile.png'" alt="Dein Profilbild" class="rounded-circle" width="100px"
                        height="100px">
                 </div>
                 <div class="text-center border-2 border border-tie rounded-pill py-2 ms-3 my-1 w-100">
-                  <span class="h4"><span class="fw-semibold">{{ "currentGame.player1UserName" }} </span>
-                    ({{ "currentGame.player1Elo" }})</span>
+                  <span class="h4"><span class="fw-semibold">{{ user.userName }} </span>
+                    ({{ user.elo }})</span>
                 </div>
               </div>
             </div>
@@ -37,11 +37,15 @@
             <div class="row d-flex align-items-center h-100">
               <div class="hstack">
                 <div class="text-center border-2 border border-tie rounded-pill py-2 me-3 my-1 w-100">
-                  <span class="h4">({{ "currentGame.player2Elo" }}) <span
-                    class="fw-semibold">{{ "currentGame.player2UserName" }}</span></span>
+                  @if ((queueService.opponent$ | async)?.elo) {
+                    <span class="h4">
+                      ({{ (queueService.opponent$ | async).elo }})
+                    </span>
+                  }
+                  <span class="fw-semibold h4">{{ (queueService.opponent$ | async)?.userName || 'Gegner wird gesucht' }}</span>
                 </div>
                 <div>
-                  <img [src]="'/assets/default-profile.png'" alt="Profilbild des Gegners" class="rounded-circle"
+                  <img [src]="(queueService.opponent$ | async)?.profilePic || '/assets/default-profile.png'" alt="Profilbild des Gegners" class="rounded-circle"
                        width="100px"
                        height="100px">
                 </div>
@@ -51,12 +55,20 @@
         </div>
       </div>
 
-      <div class="text-center">
-        <button (click)="leaveQueue()" type="button" class="big-red-button w-25 p-2">
-          <span class="h4">Queue verlassen</span>
-        </button>
-      </div>
+      <div class="text-center mb-4">
+        @if (gameStatus) {
+          <p class="h3">Spiel wird gestartet in {{ startCountdown }}</p>
+        } @else {
+          <p class="h3">Aktuelle Wartezeit:</p>
+          <p class="h3">{{ waitingTime | timeCode }}</p>
 
+          <div class="text-center">
+            <button (click)="leaveQueue()" type="button" class="big-red-button w-25 p-2">
+              <span class="h4">Queue verlassen</span>
+            </button>
+          </div>
+        }
+      </div>
     </div>
   </div>
 </div>
