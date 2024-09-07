@@ -99,4 +99,12 @@ export class AuthService {
         }
         return user;
     }
+
+    async getUserByUserId(userId: number) {
+        const user = await this.userRepository.findOne({where: {userId}});
+        if (!user) {
+            throw new NotFoundException('User nicht gefunden');
+        }
+        return user;
+    }
 }

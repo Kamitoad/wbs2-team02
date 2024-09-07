@@ -16,6 +16,13 @@ body{
   border-radius: 10px;
 }
 
+.big-red-button {
+  color: #f8f8ff;
+  background-color: #dc3545 ;
+  border: 2px solid #f8f8ff;
+  border-radius: 10px;
+}
+
 .custom-card {
   background-color: #fff;
   color: #127897;
@@ -36,4 +43,14 @@ body{
 
 .vs-text {
   font-size: 60px;
+}
+
+.custom-container {
+  background-color: #00a8cc;
+  color: white;
+  height: 100vh;
+}
+
+.error-message{
+  color: #bd2a2c;
 }

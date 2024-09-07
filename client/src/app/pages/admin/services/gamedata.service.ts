@@ -101,7 +101,6 @@ export class GamedataService {
         })))
       ).subscribe(updatedUsers => {
         this.usersInQueueSubject.next(updatedUsers);
-        console.log(updatedUsers)
       });
     }
   }

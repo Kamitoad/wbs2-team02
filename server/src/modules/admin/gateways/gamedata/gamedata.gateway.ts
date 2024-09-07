@@ -1,6 +1,7 @@
 import {WebSocketGateway, WebSocketServer} from '@nestjs/websockets';
 import {Server} from "socket.io";
 import {ReadQueueForAdminDto} from "../../dtos/ReadQueueForAdminDto";
+import {ReadCurrentGamesDto} from "../../dtos/ReadCurrentGamesDto";
 
 @WebSocketGateway({namespace: 'ws-admin-gamedata'} )
 export class GamedataGateway {
@@ -10,7 +11,7 @@ export class GamedataGateway {
 
   //WebSocket for current games
   notifyGameAdded(newGame: any) {
-    this.server.emit('game-added', newGame);
+    this.server.emit('game-added', new ReadCurrentGamesDto(newGame));
   }
 
   notifyGameEnded(gameId: number) {
