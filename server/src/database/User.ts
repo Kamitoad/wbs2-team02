@@ -36,6 +36,9 @@ export class User {
   @Column()
   inQueue: boolean;
 
+  @Column({ type: 'text', nullable: true, default: null })
+  queueStartTime: string;
+
   @OneToMany(() => Game, (game) => game.player1)
   gamesAsPlayer1: Promise<Game[]>;
 

@@ -4,16 +4,16 @@
       <div class="row d-flex align-items-center h-100 me-2">
         <div class="hstack">
           <div class="me-5">
-            <img src="/assets/default-profile.png" alt="Profilbild eines Benutzers" class="rounded-circle" width="100px"
+            <img [src]="userInQueue.profilePic || '/assets/default-profile.png'" alt="Profilbild eines Benutzers" class="rounded-circle" width="100px"
                  height="100px">
           </div>
-          <h3 class="mb-0"><span class="fw-semibold">MaxUserman </span>(2005)</h3>
+          <h3 class="mb-0"><span class="fw-semibold"> {{userInQueue.userName}} </span>({{ userInQueue.elo }})</h3>
         </div>
       </div>
     </div>
     <div class="col-4 text-center">
       <div class="row d-flex align-items-center h-100">
-        <h4 class="mb-0">Aktuelle Wartezeit: <span class="fw-semibold">0:27</span></h4>
+        <h4 class="mb-0">Aktuelle Wartezeit: <span class="fw-semibold"> {{userInQueue.duration | timeCode }}</span></h4>
       </div>
     </div>
   </div>
