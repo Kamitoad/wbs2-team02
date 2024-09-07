@@ -62,19 +62,10 @@ export class QueueService {
 
             await this.gameRepository.save(newGame);
 
-            /*
-            return {
-                opponent: new ReadUserForQueueDto(newGame.player2),
-                currentUser: new ReadUserForQueueDto(newGame.player1),
-                gameId: newGame.gameId
-            };
-            */
-
-
-            /*
             return {
                 opponent: {
                     userName: newGame.player2.userName,
+                    userId: newGame.player2.userId,
                     elo: newGame.player2.elo,
                     profilePic: newGame.player2.profilePic,
                 },
@@ -85,21 +76,8 @@ export class QueueService {
                 },
                 gameId: newGame.gameId
             };
-            */
-
-            return { opponent, currentUser: user, gameId: newGame.gameId };
-
         }
 
-        /*
-        return {
-            opponent: null,
-            currentUser: new ReadUserForQueueDto(user),
-            gameId: null
-        };
-        */
-
-        /*
         return {
             opponent: null,
             currentUser: {
@@ -109,10 +87,6 @@ export class QueueService {
             },
             gameId: null
         };
-        */
-
-        return { opponent: null, currentUser: user, gameId: null };
-
     }
 
     async findMatches(userId: number): Promise<User | null> {

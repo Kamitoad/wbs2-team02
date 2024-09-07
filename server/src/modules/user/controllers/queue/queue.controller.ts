@@ -31,43 +31,21 @@ export class QueueController {
 
     @ApiOkResponse({
         description: 'Nutzer erfolgreich der Queue beigetreten und Match gefunden ' +
-            '(Wenn kein Match gefunden: opponent: null, gameId: null) ' +
-            '[Faulty Lösung, ganzer User wird ausgegeben, aber nicht anders über Socket möglich]',
+            '(Wenn kein Match gefunden: opponent: null, gameId: null)',
         type: User,
         example: {
             "opponent": {
-                "userId": 7,
                 "userName": "MaxUserman",
-                "email": "max@mustermann.de",
-                "password": "$2a$10$igNQZxtmmSQ9m63cfIpTTeNuY4pRupkJxhGOlvhEXu7z4La9Qb98O",
-                "role": "user",
-                "firstName": "Max",
-                "lastName": "Mustermann",
+                "userId": 1,
                 "elo": 1000,
-                "profilePic": null,
-                "inQueue": true,
-                "queueStartTime": "2024-09-05T20:16:30.297Z",
-                "totalWins": 0,
-                "totalTies": 0,
-                "totalLosses": 0
+                "profilePic": null
             },
             "currentUser": {
-                "userId": 6,
                 "userName": "Kamitoad",
-                "email": "chmoustafa@hotmail.de",
-                "password": "$2a$10$VrM3SG8ndiICVkRAQRx2WeCqHfgpwUI/JfM5KRzenvLzmKKLvB/H2",
-                "role": "admin",
-                "firstName": "Chasan",
-                "lastName": "Moustafa",
-                "elo": 1050,
-                "profilePic": null,
-                "inQueue": true,
-                "queueStartTime": "2024-09-05T20:16:42.641Z",
-                "totalWins": 0,
-                "totalTies": 0,
-                "totalLosses": 0
+                "elo": 1000,
+                "profilePic": null
             },
-            "gameId": 5
+            "gameId": 1
         }
     })
     @ApiNotFoundResponse({
