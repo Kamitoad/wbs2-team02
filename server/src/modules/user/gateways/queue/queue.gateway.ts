@@ -11,7 +11,7 @@ export class QueueGateway {
   server: Server;
 
   //Users connected to this socket
-  private connectedUsers: Map<number, Socket> = new Map(); // Mappe von UserId zu Socket
+  private connectedUsers: Map<number, Socket> = new Map();
 
   constructor(private queueService: QueueService) {}
 
