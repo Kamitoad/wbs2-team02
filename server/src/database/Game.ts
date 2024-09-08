@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './User';
-import {IsBoolean, IsEnum, IsInt} from 'class-validator';
+import { IsBoolean, IsEnum, IsInt } from 'class-validator';
 import { FieldStateEnum } from './enums/FieldStateEnum';
 
 @Entity()
@@ -9,8 +9,7 @@ export class Game {
   gameId: number;
 
   @IsBoolean()
-  @Column({default: false})
-  // hasEnded: number;
+  @Column({ default: false })
   hasEnded: boolean;
 
   @IsEnum(FieldStateEnum)
@@ -49,33 +48,33 @@ export class Game {
   @Column({ enum: FieldStateEnum, default: FieldStateEnum.NotFilled })
   field3_3: FieldStateEnum;
 
-  @ManyToOne(() => User, user => user.gamesAsPlayer1)
+  // ManyToOne relations for players
+  @ManyToOne(() => User, (user) => user.gamesAsPlayer1)
   player1: User;
 
-  @ManyToOne(() => User, user => user.gamesAsPlayer2)
+  @ManyToOne(() => User, (user) => user.gamesAsPlayer2)
   player2: User;
 
   @IsInt()
-  @Column({nullable: true, default: null})
+  @Column({ nullable: true, default: null })
   winner: number;
 
   @IsInt()
-  @Column({nullable: true, default: null})
+  @Column({ nullable: true, default: null })
   loser: number;
 
   @IsInt()
-  @Column({nullable: true, default: null})
+  @Column({ nullable: true, default: null })
   changeEloPlayer1: number;
 
   @IsInt()
-  @Column({nullable: true, default: null})
+  @Column({ nullable: true, default: null })
   changeEloPlayer2: number;
 
-  @IsInt()
-  @Column({nullable: true, default: null})
-  currentPlayer1: number;
+  // Set currentPlayer1 and currentPlayer2 as relations to User
+  @ManyToOne(() => User, { nullable: true })
+  currentPlayer1: User;
 
-  @IsInt()
-  @Column({nullable: true, default: null})
-  currentPlayer2: number;
+  @ManyToOne(() => User, { nullable: true })
+  currentPlayer2: User;
 }

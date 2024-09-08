@@ -1,5 +1,11 @@
-import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
+import {
+  WebSocketGateway,
+  SubscribeMessage,
+  MessageBody,
+  ConnectedSocket,
+  WebSocketServer,
+} from '@nestjs/websockets';
+import { Socket, Server } from 'socket.io';
 import { GameService } from '../../services/game/game.service';
 
 @WebSocketGateway()
@@ -7,25 +13,52 @@ export class GameGateway {
   @WebSocketServer()
   server: Server;
 
-  constructor(private gameService: GameService) {}
+  constructor(private readonly gameService: GameService) {}
 
-  @SubscribeMessage('move')
-  async onMoveMade(client: Socket, payload: { gameId: number, move: { x: number, y: number }, playerId: number }) {
+  // Handle when a player makes a move
+  @SubscribeMessage('makeMove')
+  async handleMove(
+      @MessageBody() moveData: { gameId: number; userId: number; move: { x: number, y: number } },
+      @ConnectedSocket() client: Socket,
+  ) {
     try {
-      await this.gameService.makeMove(payload.gameId, payload.playerId, payload.move);
-      const game = await this.gameService.getGameById(payload.gameId);
-      this.server.to(payload.gameId.toString()).emit('gameState', game);
+      // Call the makeMove method from game.service
+      await this.gameService.makeMove(moveData.gameId, moveData.userId, moveData.move);
+
+      // Fetch the updated game state
+      const game = await this.gameService.getGameById(moveData.gameId);
+
+      // Emit the updated game state to all players in the game room
+      this.server.to(`game_${moveData.gameId}`).emit('gameState', game);
     } catch (error) {
       client.emit('error', { message: error.message });
     }
   }
 
+  // Handle when a player joins a game room
+  @SubscribeMessage('joinGame')
+  handleJoinGame(
+      @MessageBody() data: { gameId: number; userId: number },
+      @ConnectedSocket() client: Socket,
+  ) {
+    client.join(`game_${data.gameId}`);
+    client.emit('joinedGame', { gameId: data.gameId });
+  }
+
+  // Handle when a player resigns
   @SubscribeMessage('resign')
-  async onResign(client: Socket, payload: { gameId: number, playerId: number }) {
+  async onResign(
+      @MessageBody() payload: { gameId: number; playerId: number },
+      @ConnectedSocket() client: Socket,
+  ) {
     try {
       await this.gameService.resignGame(payload.gameId, payload.playerId);
+
+      // Get the updated game state
       const game = await this.gameService.getGameById(payload.gameId);
-      this.server.to(payload.gameId.toString()).emit('gameEnded', game);
+
+      // Notify all players that the game has ended
+      this.server.to(`game_${payload.gameId}`).emit('gameEnded', game);
     } catch (error) {
       client.emit('error', { message: error.message });
     }

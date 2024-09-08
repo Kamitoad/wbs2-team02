@@ -59,10 +59,15 @@ export class QueueService {
 
             // Create new Game between the two players
             const newGame = this.gameRepository.create();
-            newGame.player1 = user;
-            newGame.player2 = opponent;
+            newGame.player1 = user;  // Vollständiges User-Objekt zuweisen
+            newGame.player2 = opponent;  // Vollständiges User-Objekt zuweisen
+
+            // Set the first player to move
+            newGame.currentPlayer1 = newGame.player1;  // Vollständiges User-Objekt
+            newGame.currentPlayer2 = null;  // null, weil es der Zug von player1 ist
 
             await this.gameRepository.save(newGame);
+
 
             return {
                 opponent: {
