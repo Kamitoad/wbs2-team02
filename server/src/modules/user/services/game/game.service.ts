@@ -15,19 +15,17 @@ export class GameService {
         @InjectRepository(Game)
         private gameRepository: Repository<Game>,
         @InjectRepository(User)
-        private userRepository: Repository<User>, // Repository für User
+        private userRepository: Repository<User>,
     ) {
     }
 
     async getGameById(gameId: number): Promise<Game> {
-        return this.gameRepository.findOne({where: {gameId: gameId}});
+        return this.gameRepository.findOne({where: {gameId}});
     }
 
-
-    // Diese Methode überprüft, ob der Zug gültig ist (z.B. ob das Feld bereits belegt ist), und speichert den neuen Zustand.
     async makeMove(gameId: number, playerId: number, move: { x: number, y: number }): Promise<void> {
         const game = await this.gameRepository.findOne({
-            where: { gameId },
+            where: {gameId},
             relations: ['player1', 'player2', 'currentPlayer1', 'currentPlayer2']
         });
 
@@ -35,37 +33,42 @@ export class GameService {
             throw new NotFoundException('Spiel nicht gefunden');
         }
 
-        // Prüfen, ob der richtige Spieler am Zug ist
         if ((game.currentPlayer1 && game.currentPlayer1.userId !== playerId) ||
             (game.currentPlayer2 && game.currentPlayer2.userId !== playerId)) {
             throw new BadRequestException('Du bist nicht an der Reihe.');
         }
 
-        // Setze den richtigen Feld-Schlüssel basierend auf dem Zug
         const fieldKey = `field${move.x}_${move.y}` as keyof GameFields;
-        if (game[fieldKey] !== FieldStateEnum.NotFilled) {
+
+        // Nutze Typ Assertion um sicherzustellen, dass das Feld vom Typ FieldStateEnum ist
+        if ((game[fieldKey] as FieldStateEnum) !== FieldStateEnum.NotFilled) {
             throw new BadRequestException('Das Feld ist bereits belegt');
         }
 
-        // Spieler 1 = X, Spieler 2 = O
         game[fieldKey] = game.player1.userId === playerId ? FieldStateEnum.FilledByPlayer1 : FieldStateEnum.FilledByPlayer2;
-
         await this.gameRepository.save(game);
 
-        // Prüfe auf einen Gewinner
         const winner = await this.checkWinner(game);
         if (winner) {
-            await this.endGame(gameId, playerId, winner === FieldStateEnum.FilledByPlayer1 ? game.player1.userId : game.player2.userId);
+            const winnerEnum = FieldStateEnum[winner as keyof typeof FieldStateEnum];
+            await this.endGame(gameId, playerId, winnerEnum === FieldStateEnum.FilledByPlayer1 ? game.player2.userId : game.player1.userId);
+            return;
         }
 
-        game.currentPlayer1 = game.currentPlayer1 ? null : game.player1;
-        game.currentPlayer2 = game.currentPlayer2 ? null : game.player2;
+        if (game.currentPlayer1 && game.currentPlayer1.userId === playerId) {
+            game.currentPlayer1 = null;
+            game.currentPlayer2 = game.player2;
+        } else if (game.currentPlayer2 && game.currentPlayer2.userId === playerId) {
+            game.currentPlayer2 = null;
+            game.currentPlayer1 = game.player1;
+        } else {
+            throw new BadRequestException('Ungültiger Spieler');
+        }
+
+        await this.gameRepository.save(game);
     }
 
-
-
-    // Diese Methode prüft nach jedem Zug, ob einer der Spieler gewonnen hat.
-    async checkWinner(game: Game): Promise<'X' | 'O' | null> {
+    async checkWinner(game: Game): Promise<'Player1' | 'Player2' | 'Tie' | null> {
         const winningCombinations = [
             ['field1_1', 'field1_2', 'field1_3'],
             ['field2_1', 'field2_2', 'field2_3'],
@@ -79,56 +82,62 @@ export class GameService {
 
         for (const combination of winningCombinations) {
             const [a, b, c] = combination;
-            if (game[a] && game[a] === game[b] && game[a] === game[c]) {
-                return game[a];  // 'X' oder 'O'
+
+            // Typ Assertion um den Typ des Feldes sicherzustellen
+            if (game[a as keyof GameFields] !== FieldStateEnum.NotFilled &&
+                game[a as keyof GameFields] === game[b as keyof GameFields] &&
+                game[a as keyof GameFields] === game[c as keyof GameFields]) {
+                return game[a as keyof GameFields] === FieldStateEnum.FilledByPlayer1 ? 'Player1' : 'Player2';
             }
         }
+
+        // Unentschieden prüfen
+        const allFieldsFilled = Object.keys(game).every((key) => {
+            if (key.startsWith('field')) {
+                return game[key as keyof GameFields] !== FieldStateEnum.NotFilled;
+            }
+            return true;
+        });
+
+        if (allFieldsFilled) {
+            return 'Tie'; // Unentschieden
+        }
+
         return null;
     }
 
-    // EndGame-Methode
-    async endGame(gameId: number, winnerId: number, loserId: number): Promise<void> {
-        const game = await this.gameRepository.findOne({where: {gameId}});
+    async endGame(gameId: number, winnerId: number | null, loserId: number | null): Promise<void> {
+        const game = await this.gameRepository.findOne({where: {gameId}, relations: ['player1', 'player2']});
         if (!game) {
             throw new NotFoundException('Spiel nicht gefunden');
         }
 
         game.hasEnded = true;
-        game.winner = winnerId;
-        game.loser = loserId; // Stelle sicher, dass du auch die Verlierer-ID speicherst, falls benötigt
+
+        if (winnerId && loserId) {
+            game.winner = winnerId;
+            game.loser = loserId;
+            await this.updateEloForPlayers(winnerId, loserId);
+            await this.updatePlayerStats(winnerId, loserId);
+        } else {
+            // Unentschieden: Elo für beide Spieler aktualisieren
+            await this.updateEloForTie(game.player1.userId, game.player2.userId);
+            await this.updatePlayerStatsForTie(game.player1.userId, game.player2.userId);
+        }
 
         await this.gameRepository.save(game);
-
-        // Rufe die updateElo-Methode auf
-        await this.updateElo(gameId);
     }
 
     async resignGame(gameId: number, playerId: number): Promise<void> {
         const game = await this.findGameById(gameId);
 
-        // Bestimme den Gegner
         const opponentId = game.player1.userId === playerId ? game.player2.userId : game.player1.userId;
 
-        // Setze das Spiel als beendet und den Sieger auf den Gegner
         game.hasEnded = true;
         game.winner = opponentId;
 
         await this.updateEloForPlayers(opponentId, playerId);
         await this.gameRepository.save(game);
-    }
-
-    // Definiere die updateElo-Methode
-    async updateElo(gameId: number): Promise<void> {
-        const game = await this.findGameById(gameId);
-
-
-        const winnerId = game.winner;
-        const loserId = game.loser;
-
-        if (!winnerId || !loserId) {
-            throw new BadRequestException('Fehlende Gewinner- oder Verlierer-ID');
-        }
-        await this.updateEloForPlayers(winnerId, loserId);
     }
 
     private async findGameById(gameId: number): Promise<Game> {
@@ -140,18 +149,81 @@ export class GameService {
     }
 
     async updateEloForPlayers(winnerId: number, loserId: number): Promise<void> {
-        const winner = await this.userRepository.findOne({ where: { userId: winnerId } });
-        const loser = await this.userRepository.findOne({ where: { userId: loserId } });
+        const winner = await this.userRepository.findOne({where: {userId: winnerId}});
+        const loser = await this.userRepository.findOne({where: {userId: loserId}});
 
         if (winner && loser) {
-            const newWinnerElo = winner.elo + 10;
-            const newLoserElo = loser.elo - 10;
+            // Berechne die Elo-Änderung
+            const winnerEloChange = calculateEloChange(winner.elo, loser.elo, 1); // Gewinner hat Score 1
+            const loserEloChange = calculateEloChange(loser.elo, winner.elo, 0);  // Verlierer hat Score 0
 
-            winner.elo = newWinnerElo;
-            loser.elo = newLoserElo;
+            // Elo für Gewinner und Verlierer aktualisieren
+            winner.elo += winnerEloChange;
+            loser.elo += loserEloChange;
 
             await this.userRepository.save(winner);
             await this.userRepository.save(loser);
         }
     }
+
+    async updatePlayerStats(winnerId: number, loserId: number): Promise<void> {
+        const winner = await this.userRepository.findOne({where: {userId: winnerId}});
+        const loser = await this.userRepository.findOne({where: {userId: loserId}});
+
+        if (winner) {
+            winner.totalWins += 1;
+        }
+
+        if (loser) {
+            loser.totalLosses += 1;
+        }
+
+        await this.userRepository.save(winner);
+        await this.userRepository.save(loser);
+    }
+
+    async updatePlayerStatsForTie(player1Id: number, player2Id: number): Promise<void> {
+        const player1 = await this.userRepository.findOne({where: {userId: player1Id}});
+        const player2 = await this.userRepository.findOne({where: {userId: player2Id}});
+
+        if (player1) {
+            player1.totalTies += 1;
+        }
+
+        if (player2) {
+            player2.totalTies += 1;
+        }
+
+        await this.userRepository.save(player1);
+        await this.userRepository.save(player2);
+    }
+
+    async updateEloForTie(player1Id: number, player2Id: number): Promise<void> {
+        const player1 = await this.userRepository.findOne({where: {userId: player1Id}});
+        const player2 = await this.userRepository.findOne({where: {userId: player2Id}});
+
+        if (player1 && player2) {
+            const player1EloChange = calculateEloChange(player1.elo, player2.elo, 0.5); // Unentschieden Score = 0.5
+            const player2EloChange = calculateEloChange(player2.elo, player1.elo, 0.5); // Unentschieden Score = 0.5
+
+            // Elo für beide Spieler aktualisieren
+            player1.elo += player1EloChange;
+            player2.elo += player2EloChange;
+
+            await this.userRepository.save(player1);
+            await this.userRepository.save(player2);
+        }
+    }
+
 }
+
+// Elo-Berechnungsmethode
+function calculateEloChange(playerElo: number, opponentElo: number, score: number): number {
+    const k = 20; // Anpassungsfaktor
+    return k * (score - (1 / (1 + Math.pow(10, (opponentElo - playerElo) / 400))));
+}
+
+
+
+
+
