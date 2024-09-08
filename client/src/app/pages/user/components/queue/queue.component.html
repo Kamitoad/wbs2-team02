@@ -3,72 +3,141 @@
     <div class="col-10">
 
       <!--For Top Margin-->
-      <div class="row my-5">
-        <div class="col my-5"></div>
+      <div class="d-none d-xxl-block">
+        <div class="row my-5">
+          <div class="col my-5"></div>
+        </div>
       </div>
       <div class="row my-5">
         <div class="col"></div>
       </div>
-      <!---->
 
-      <h1 class="text-center mt-5 mb-5">Gegner wird gesucht...</h1>
-      <div class="rounded-5 custom-card p-3 py-5 mb-4">
-        <div class="row mx-5">
-          <div class="col-5">
-            <div class="row d-flex align-items-center h-100 justify-content-center">
-              <div class="hstack">
-                <div>
-                  <img [src]="user.profilePic || '/assets/default-profile.png'" alt="Dein Profilbild" class="rounded-circle" width="100px"
-                       height="100px">
-                </div>
-                <div class="text-center border-2 border border-tie rounded-pill py-2 ms-3 my-1 w-100">
+      <!---->
+      <div class="d-none d-xxl-block">
+        <h1 class="text-center mt-5 mb-5">Gegner wird gesucht...</h1>
+        <div class="rounded-5 custom-card p-3 py-5 mb-4">
+          <div class="row mx-5">
+            <div class="col-5">
+              <div class="row d-flex align-items-center h-100 justify-content-center">
+                <div class="hstack">
+                  <div>
+                    <img [src]="user.profilePic || '/assets/default-profile.png'" alt="Dein Profilbild"
+                         class="rounded-circle" width="100px"
+                         height="100px">
+                  </div>
+                  <div class="text-center border-2 border border-tie rounded-pill py-2 ms-3 my-1 w-100">
                   <span class="h4"><span class="fw-semibold">{{ user.userName }} </span>
                     ({{ user.elo }})</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="col-2">
-            <div class="row d-flex align-items-center h-100 text-center">
-              <p class="mb-0 vs-text">VS</p>
+            <div class="col-2">
+              <div class="row d-flex align-items-center h-100 text-center">
+                <p class="mb-0 vs-text">VS</p>
+              </div>
             </div>
-          </div>
-          <div class="col-5 justify-content-center">
-            <div class="row d-flex align-items-center h-100">
-              <div class="hstack">
-                <div class="text-center border-2 border border-tie rounded-pill py-2 me-3 my-1 w-100">
-                  @if ((queueService.opponent$ | async)?.elo) {
-                    <span class="h4">
+            <div class="col-5 justify-content-center">
+              <div class="row d-flex align-items-center h-100">
+                <div class="hstack">
+                  <div class="text-center border-2 border border-tie rounded-pill py-2 me-3 my-1 w-100">
+                    @if ((queueService.opponent$ | async)?.elo) {
+                      <span class="h4">
                       ({{ (queueService.opponent$ | async).elo }})
                     </span>
-                  }
-                  <span class="fw-semibold h4">{{ (queueService.opponent$ | async)?.userName || 'Gegner wird gesucht' }}</span>
-                </div>
-                <div>
-                  <img [src]="(queueService.opponent$ | async)?.profilePic || '/assets/default-profile.png'" alt="Profilbild des Gegners" class="rounded-circle"
-                       width="100px"
-                       height="100px">
+                    }
+                    <span
+                      class="fw-semibold h4">{{ (queueService.opponent$ | async)?.userName || 'Gegner wird gesucht' }}</span>
+                  </div>
+                  <div>
+                    <img [src]="(queueService.opponent$ | async)?.profilePic || '/assets/default-profile.png'"
+                         alt="Profilbild des Gegners" class="rounded-circle"
+                         width="100px"
+                         height="100px">
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        <div class="text-center mb-4">
+          @if (gameStatus) {
+            <p class="h3">Spiel wird gestartet in {{ startCountdown }}</p>
+          } @else {
+            <p class="h3">Aktuelle Wartezeit:</p>
+            <p class="h3">{{ waitingTime | timeCode }}</p>
+
+            <div class="text-center">
+              <button (click)="leaveQueue()" type="button" class="big-red-button w-25 p-2">
+                <span class="h4">Queue verlassen</span>
+              </button>
+            </div>
+          }
+        </div>
       </div>
-
-      <div class="text-center mb-4">
-        @if (gameStatus) {
-          <p class="h3">Spiel wird gestartet in {{ startCountdown }}</p>
-        } @else {
-          <p class="h3">Aktuelle Wartezeit:</p>
-          <p class="h3">{{ waitingTime | timeCode }}</p>
-
-          <div class="text-center">
-            <button (click)="leaveQueue()" type="button" class="big-red-button w-25 p-2">
-              <span class="h4">Queue verlassen</span>
-            </button>
+      <div class="d-block d-xxl-none">
+        <h1 class="text-center mt-5 mb-5">Gegner wird gesucht...</h1>
+        <div class="rounded-5 custom-card p-3 mb-4">
+          <div class="row">
+            <div class="col-12">
+              <div class="row d-flex align-items-center h-100 justify-content-center">
+                <div class="hstack justify-content-center">
+                  <div>
+                    <img [src]="user.profilePic || '/assets/default-profile.png'" alt="Dein Profilbild"
+                         class="rounded-circle" width="50px"
+                         height="50px">
+                  </div>
+                  <div class="text-center border-2 border border-tie rounded-pill py-2 px-4 ms-3 my-1 w-75 word-wrap">
+                  <span class="h5"><span class="fw-semibold">{{ user.userName }} </span>
+                    ({{ user.elo }})</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="row d-flex align-items-center h-100 text-center">
+                <p class="mb-0 vs-text-small">VS</p>
+              </div>
+            </div>
+            <div class="col-12 justify-content-center">
+              <div class="row d-flex align-items-center h-100">
+                <div class="hstack justify-content-center">
+                  <div class="text-center border-2 border border-tie rounded-pill py-2 px-4 me-3 my-1 w-75">
+                    @if ((queueService.opponent$ | async)?.elo) {
+                      <span class="h5">
+                      ({{ (queueService.opponent$ | async).elo }})
+                    </span>
+                    }
+                    <span
+                      class="fw-semibold h5">{{ (queueService.opponent$ | async)?.userName || 'Gegner wird gesucht' }}</span>
+                  </div>
+                  <div>
+                    <img [src]="(queueService.opponent$ | async)?.profilePic || '/assets/default-profile.png'"
+                         alt="Profilbild des Gegners" class="rounded-circle"
+                         width="50px"
+                         height="50px">
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        }
+        </div>
+        <div class="text-center mb-4">
+          @if (gameStatus) {
+            <p class="h3">Spiel wird gestartet in {{ startCountdown }}</p>
+          } @else {
+            <p class="h3">Aktuelle Wartezeit:</p>
+            <p class="h3">{{ waitingTime | timeCode }}</p>
+
+            <div class="text-center">
+              <button (click)="leaveQueue()" type="button" class="big-red-button w-100 p-2">
+                <span class="h4">Queue verlassen</span>
+              </button>
+            </div>
+          }
+        </div>
       </div>
+
     </div>
   </div>
 </div>
