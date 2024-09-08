@@ -1,9 +1,9 @@
 import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Game } from '../../../../database/Game';
-import { User } from '../../../../database/User'; // Importiere User, um die Spieler zu setzen
-import { FieldStateEnum } from '../../../../database/enums/FieldStateEnum';
+import {InjectRepository} from '@nestjs/typeorm';
+import {Repository} from 'typeorm';
+import {Game} from '../../../../database/Game';
+import {User} from '../../../../database/User'; // Importiere User, um die Spieler zu setzen
+import {FieldStateEnum} from '../../../../database/enums/FieldStateEnum';
 
 @Injectable()
 export class GameService {
@@ -12,16 +12,17 @@ export class GameService {
         private gameRepository: Repository<Game>,
         @InjectRepository(User)
         private userRepository: Repository<User>, // Repository für User
-    ) {}
+    ) {
+    }
 
     async getGameById(gameId: number): Promise<Game> {
-        const GameID = await this.gameRepository.findOne({ where: { gameId: gameId } });
+        const GameID = await this.gameRepository.findOne({where: {gameId: gameId}});
         return GameID;
     }
 
     // Diese Methode überprüft, ob der Zug gültig ist (z.B. ob das Feld bereits belegt ist), und speichert den neuen Zustand.
-    async makeMove(gameId: number, playerId: number, move: {x: number, y: number}): Promise<void> {
-        const game = await this.gameRepository.findOne({ where: { gameId } });
+    async makeMove(gameId: number, playerId: number, move: { x: number, y: number }): Promise<void> {
+        const game = await this.gameRepository.findOne({where: {gameId}});
         if (!game) {
             throw new NotFoundException('Spiel nicht gefunden');
         }
@@ -71,7 +72,7 @@ export class GameService {
         return null;
     }
 
-    // Setzt das Spiel auf "beendet" und berechnet die neuen Elo-Werte.
+    // EndGame-Methode
     async endGame(gameId: number, winnerId: number, loserId: number): Promise<void> {
         const game = await this.gameRepository.findOne({ where: { gameId } });
         if (!game) {
@@ -80,8 +81,59 @@ export class GameService {
 
         game.hasEnded = true;
         game.winner = winnerId;
+        game.loser = loserId; // Stelle sicher, dass du auch die Verlierer-ID speicherst, falls benötigt
+
+        await this.gameRepository.save(game);
+
+        // Rufe die updateElo-Methode auf
+        await this.updateElo(gameId);
+    }
+
+    async resignGame(gameId: number, playerId: number): Promise<void> {
+        const game = await this.gameRepository.findOne({where: {gameId}});
+        if (!game) {
+            throw new NotFoundException('Spiel nicht gefunden');
+        }
+
+        // Bestimme den Gegner
+        const opponentId = game.player1.userId === playerId ? game.player2.userId : game.player1.userId;
+
+        // Setze das Spiel als beendet und den Sieger auf den Gegner
+        game.hasEnded = true;
+        game.winner = opponentId;
 
         // Elo-Werte anpassen
+        const winner = await this.userRepository.findOne({where: {userId: opponentId}});
+        const loser = await this.userRepository.findOne({where: {userId: playerId}});
+
+        if (winner && loser) {
+            const newWinnerElo = winner.elo + 10;
+            const newLoserElo = loser.elo - 10;
+
+            winner.elo = newWinnerElo;
+            loser.elo = newLoserElo;
+
+            await this.userRepository.save(winner);
+            await this.userRepository.save(loser);
+        }
+
+        await this.gameRepository.save(game);
+    }
+
+    // Definiere die updateElo-Methode
+    async updateElo(gameId: number): Promise<void> {
+        const game = await this.gameRepository.findOne({ where: { gameId } });
+        if (!game) {
+            throw new NotFoundException('Spiel nicht gefunden');
+        }
+
+        const winnerId = game.winner;
+        const loserId = game.loser;
+
+        if (!winnerId || !loserId) {
+            throw new BadRequestException('Fehlende Gewinner- oder Verlierer-ID');
+        }
+
         const winner = await this.userRepository.findOne({ where: { userId: winnerId } });
         const loser = await this.userRepository.findOne({ where: { userId: loserId } });
 
@@ -95,7 +147,8 @@ export class GameService {
             await this.userRepository.save(winner);
             await this.userRepository.save(loser);
         }
-
-        await this.gameRepository.save(game);
     }
+
+
+
 }

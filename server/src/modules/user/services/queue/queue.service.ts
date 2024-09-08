@@ -31,8 +31,10 @@ export class QueueService {
 
         const ongoingGame = await this.gameRepository.findOne({
             where: [
-                { player1: user, hasEnded: 0 },
-                { player2: user, hasEnded: 0 }
+                // { player1: user, hasEnded: 0 },
+                // { player2: user, hasEnded: 0 }
+                { player1: user, hasEnded: false },
+                { player2: user, hasEnded: false }
             ]
         });
         if (ongoingGame) {

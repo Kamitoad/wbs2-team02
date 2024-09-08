@@ -10,14 +10,24 @@ export class GameGateway {
   constructor(private gameService: GameService) {}
 
   @SubscribeMessage('move')
-  async onMoveMade(client: Socket, payload: { gameId: number, x: number, y: number, playerId: number }) {
-    await this.gameService.makeMove(payload.gameId, payload.playerId, { x: payload.x, y: payload.y });
-    this.server.to(payload.gameId.toString()).emit('moveMade', { x: payload.x, y: payload.y, playerId: payload.playerId });
+  async onMoveMade(client: Socket, payload: { gameId: number, move: { x: number, y: number }, playerId: number }) {
+    try {
+      await this.gameService.makeMove(payload.gameId, payload.playerId, payload.move);
+      const game = await this.gameService.getGameById(payload.gameId);
+      this.server.to(payload.gameId.toString()).emit('gameState', game);
+    } catch (error) {
+      client.emit('error', { message: error.message });
+    }
   }
 
-  // Benachrichtigt beide Spieler, dass das Spiel beendet ist und gibt den Gewinner bekannt.
-  // async onGameEnded(gameId: number, winnerId: number, loserId: number) {}
-
-  // Falls ein Spieler aufgibt, wird dieses Event gesendet und der Gegner als Sieger gekennzeichnet.
-  // async onResign(gameId: number, playerId: number) {}
+  @SubscribeMessage('resign')
+  async onResign(client: Socket, payload: { gameId: number, playerId: number }) {
+    try {
+      await this.gameService.resignGame(payload.gameId, payload.playerId);
+      const game = await this.gameService.getGameById(payload.gameId);
+      this.server.to(payload.gameId.toString()).emit('gameEnded', game);
+    } catch (error) {
+      client.emit('error', { message: error.message });
+    }
+  }
 }
