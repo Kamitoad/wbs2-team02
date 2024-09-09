@@ -23,7 +23,7 @@ export class GamedataGateway {
     this.server.emit('queue-user-added', new ReadQueueForAdminDto(user));
   }
 
-  async handleLeaveQueue(user: any): Promise<void> {
-    this.server.emit('queue-user-removed', new ReadQueueForAdminDto(user));
+  async handleLeaveQueue(userId: number): Promise<void> {
+    this.server.emit('queue-user-removed', userId);
   }
 }
