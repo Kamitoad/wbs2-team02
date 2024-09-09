@@ -107,7 +107,8 @@ benötigt.
 > zurückgegeben.
 
 
-Der Ansatz dieser Aufteilung soll eine einfache Navigation ermöglichen um schneller die benötigten Ressourcen finden zu
-können.
+Diese Aufteilung soll eine einfachere Navigation durch das Projekt ermöglichen um schneller die benötigten Ressourcen
+finden zu können.
 
-Einige dieser Ordner beinhalten eine DELETE.ME-Datei, um für die Komponenten-Struktur 
+Einige dieser Ordner beinhalten eine DELETE.ME-Datei, rein aus dem Zweck um beim Pushen ins Git die Komponenten-Struktur
+aufrechtzuerhalten, da sonst leere Ordner nicht mitgesendet werden.
