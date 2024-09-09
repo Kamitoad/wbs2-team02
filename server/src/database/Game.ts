@@ -63,6 +63,10 @@ export class Game {
   @Column({ nullable: true, default: null })
   loser: number;
 
+  @IsBoolean()
+  @Column({ default: false })
+  isTie: boolean;
+
   @IsInt()
   @Column({ nullable: true, default: null })
   changeEloPlayer1: number;

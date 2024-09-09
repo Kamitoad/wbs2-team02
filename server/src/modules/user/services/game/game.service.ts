@@ -33,6 +33,7 @@ export class GameService {
             throw new NotFoundException('Spiel nicht gefunden');
         }
 
+        // Überprüfung, ob der aktuelle Spieler am Zug ist
         if ((game.currentPlayer1 && game.currentPlayer1.userId !== playerId) ||
             (game.currentPlayer2 && game.currentPlayer2.userId !== playerId)) {
             throw new BadRequestException('Du bist nicht an der Reihe.');
@@ -40,24 +41,34 @@ export class GameService {
 
         const fieldKey = `field${move.x}_${move.y}` as keyof GameFields;
 
-        // Nutze Typ Assertion um sicherzustellen, dass das Feld vom Typ FieldStateEnum ist
+        // Überprüfung, ob das gewählte Feld bereits belegt ist
         if ((game[fieldKey] as FieldStateEnum) !== FieldStateEnum.NotFilled) {
             throw new BadRequestException('Das Feld ist bereits belegt');
         }
 
+        // Setze den Zug auf dem Spielfeld
         game[fieldKey] = game.player1.userId === playerId ? FieldStateEnum.FilledByPlayer1 : FieldStateEnum.FilledByPlayer2;
         await this.gameRepository.save(game);
 
+        // Überprüfung auf Gewinner oder Unentschieden
         const winner = await this.checkWinner(game);
-        if (winner) {
-            const winnerEnum = FieldStateEnum[winner as keyof typeof FieldStateEnum];
-            await this.endGame(gameId, playerId, winnerEnum === FieldStateEnum.FilledByPlayer1 ? game.player2.userId : game.player1.userId);
+
+        if (winner === 'Player1') {
+            await this.endGame(gameId, game.player1.userId, game.player2.userId); // Spieler 1 hat gewonnen
+            return;
+        } else if (winner === 'Player2') {
+            await this.endGame(gameId, game.player2.userId, game.player1.userId); // Spieler 2 hat gewonnen
+            return;
+        } else if (winner === 'Tie') {
+            await this.endGame(gameId, null, null); // Unentschieden
             return;
         }
 
+
+        // Wechsel des Zugspielers
         if (game.currentPlayer1 && game.currentPlayer1.userId === playerId) {
             game.currentPlayer1 = null;
-            game.currentPlayer2 = game.player2;
+            game.currentPlayer2 = game.player2; // Spieler 2 ist nun am Zug
         } else if (game.currentPlayer2 && game.currentPlayer2.userId === playerId) {
             game.currentPlayer2 = null;
             game.currentPlayer1 = game.player1;
@@ -83,15 +94,15 @@ export class GameService {
         for (const combination of winningCombinations) {
             const [a, b, c] = combination;
 
-            // Typ Assertion um den Typ des Feldes sicherzustellen
-            if (game[a as keyof GameFields] !== FieldStateEnum.NotFilled &&
+            if (
+                game[a as keyof GameFields] !== FieldStateEnum.NotFilled &&
                 game[a as keyof GameFields] === game[b as keyof GameFields] &&
-                game[a as keyof GameFields] === game[c as keyof GameFields]) {
+                game[a as keyof GameFields] === game[c as keyof GameFields]
+            ) {
                 return game[a as keyof GameFields] === FieldStateEnum.FilledByPlayer1 ? 'Player1' : 'Player2';
             }
         }
 
-        // Unentschieden prüfen
         const allFieldsFilled = Object.keys(game).every((key) => {
             if (key.startsWith('field')) {
                 return game[key as keyof GameFields] !== FieldStateEnum.NotFilled;
@@ -100,27 +111,33 @@ export class GameService {
         });
 
         if (allFieldsFilled) {
-            return 'Tie'; // Unentschieden
+            console.log('Game is Tie');
+            return 'Tie';
         }
 
         return null;
     }
 
+
     async endGame(gameId: number, winnerId: number | null, loserId: number | null): Promise<void> {
         const game = await this.gameRepository.findOne({where: {gameId}, relations: ['player1', 'player2']});
         if (!game) {
+            console.log("Spiel nicht gefunden");
             throw new NotFoundException('Spiel nicht gefunden');
         }
 
         game.hasEnded = true;
 
         if (winnerId && loserId) {
-            game.winner = winnerId;
-            game.loser = loserId;
+            game.winner = winnerId; // Korrekt setzen
+            game.loser = loserId; // Korrekt setzen
+            console.log('Gewinner:', winnerId);
+            console.log('Verlierer:', loserId);
             await this.updateEloForPlayers(winnerId, loserId);
             await this.updatePlayerStats(winnerId, loserId);
         } else {
             // Unentschieden: Elo für beide Spieler aktualisieren
+            game.isTie = true;
             await this.updateEloForTie(game.player1.userId, game.player2.userId);
             await this.updatePlayerStatsForTie(game.player1.userId, game.player2.userId);
         }
