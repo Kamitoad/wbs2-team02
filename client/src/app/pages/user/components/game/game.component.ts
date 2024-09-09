@@ -16,6 +16,7 @@ import { GameService } from '../../services/game.service';
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit {
+  parsedGame: any = null;
   player1Name: string | null = null;
   player1Score: number | null = null;
   player1Icon: string | null = null;
