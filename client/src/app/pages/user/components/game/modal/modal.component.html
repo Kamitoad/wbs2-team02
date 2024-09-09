@@ -1,0 +1,8 @@
+<div class="modal" *ngIf="isGameFinished">
+  <div class="modal-content">
+    <h2>Spielergebnis</h2>
+    <p>{{ resultMessage }}</p>
+    <button (click)="startNewGame()">Neues Spiel</button>
+    <button (click)="endGame()">Beenden</button>
+  </div>
+</div>

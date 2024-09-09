@@ -1,0 +1,15 @@
+.player-container {
+  border: 2px solid #ccc;
+  padding: 20px;
+  text-align: center;
+  border-radius: 10px;
+}
+
+.player-container.active {
+  background-color: lightgreen;
+}
+
+.turn-indicator {
+  font-weight: bold;
+  color: green;
+}
