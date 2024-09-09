@@ -1,1 +1,49 @@
-<p>profile works!</p>
+<div class="profile-page">
+  <button class="play-button" (click)="joinQueue()">Jetzt Spielen</button>
+
+  <div class="user-info">
+    <img [src]="currentUser?.profilePic || 'default-avatar.png'" alt="Profile Picture" class="profile-pic">
+    <h2>{{ currentUser?.userName }}</h2>
+    <p>ELO Score: {{ currentUser?.elo }}</p>
+    <button (click)="editProfile()" class="edit-button">Bearbeiten</button>
+    <button (click)="logout()" class="logout-button">Logout</button>
+  </div>
+
+  <div class="statistics-card">
+    <h3>Meine Statistiken</h3>
+    <div class="statistics">
+      <div class="stat win">
+        <p>{{ currentUser?.totalWins }} Siege</p>
+      </div>
+      <div class="stat tie">
+        <p>{{ currentUser?.totalTies }} Unentschieden</p>
+      </div>
+      <div class="stat loss">
+        <p>{{ currentUser?.totalLosses }} Niederlagen</p>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="matches-card">
+    <h3>Meine gespielten Matches</h3>
+
+    @for (match of userMatches; track match.gameId) {
+      <div class="match" [ngClass]="getMatchResultClass(match)">
+        <p>Gegner Score: {{ match.opponentScore }}</p>
+        <p>{{ getMatchResultText(match) }}</p>
+        <p>User Score: {{ match.userScore }}</p>
+      </div>
+    }
+
+    <!--
+    <div *ngFor="let match of userMatches">
+      <div class="match" [ngClass]="getMatchResultClass(match)">
+        <p>Gegner Score: {{match.opponentScore}}</p>
+        <p>{{getMatchResultText(match)}}</p>
+        <p>User Score: {{match.userScore}}</p>
+      </div>
+    </div>
+    -->
+  </div>
+</div>

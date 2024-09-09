@@ -1,4 +1,10 @@
+
 <div class="register-container">
+
+  <img ngSrc="app/assets/tictactoe1.png" class="tictactoe-image tictactoe-top-left" alt="Tic Tac Toe" fill>
+  <img ngSrc="app/assets/tictactoe2.png" class="tictactoe-image tictactoe-bottom-right" alt="Tic Tac Toe" height="589"
+       width="589">
+
   <h2>Schön dass du dabei sein möchtest!</h2>
   <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
     <div>
@@ -22,9 +28,9 @@
     <div class="form-check">
       <input type="checkbox"  name="agb" id="agb" [(ngModel)]="agb" value="" required>
       <label class="form-check-label" for="agb">
-        AGBs sind toll lalala
+        AGBs bestätigen
       </label>
     </div>
-    <button type="submit">Weiter</button>
   </form>
+  <button type="submit">Registrieren</button>
 </div>
