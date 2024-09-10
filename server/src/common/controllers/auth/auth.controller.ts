@@ -26,7 +26,7 @@ import {IsLoggedInGuard} from "../../guards/is-logged-in/is-logged-in.guard";
 import {ErrorDto} from "../../dtos/auth/ErrorDto";
 import {ReadUserDto} from "../../dtos/auth/ReadUserDto";
 
-@ApiTags('auth')
+@ApiTags('Authentification')
 @Controller('auth')
 export class AuthController {
     constructor(
@@ -58,6 +58,7 @@ export class AuthController {
         try {
             const user = await this.authService.register(body);
             session.currentUser = user.userId;
+            session.role = user.role
             return new ReadUserDto(user);
         } catch (error) {
             if (error instanceof BadRequestException) {
@@ -91,6 +92,7 @@ export class AuthController {
         try {
             const user = await this.authService.login(body);
             session.currentUser = user.userId;
+            session.role = user.role
             return new ReadUserDto(user);
         } catch (error) {
             if (error instanceof NotFoundException) {

@@ -7,7 +7,7 @@ export class IsLoggedInGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const http = context.switchToHttp();
     const request = http.getRequest<Request>();
-    const session: SessionData = request.session;
+    const session = request.session as Partial<SessionData>;
 
     return session.currentUser !== undefined;
   }
