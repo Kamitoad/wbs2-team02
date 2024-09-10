@@ -3,7 +3,6 @@ import {
     WebSocketServer,
     OnGatewayConnection,
     OnGatewayDisconnect,
-    SubscribeMessage
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
@@ -21,8 +20,7 @@ export class UserdataGateway implements OnGatewayConnection, OnGatewayDisconnect
         console.log(`Client disconnected: ${client.id}`);
     }
 
-    @SubscribeMessage('editUser-registered')
     notifyUserRegistered(newUser: any) {
-        this.server.emit('editUser-registered', newUser);
+        this.server.emit('user-registered', newUser);
     }
 }

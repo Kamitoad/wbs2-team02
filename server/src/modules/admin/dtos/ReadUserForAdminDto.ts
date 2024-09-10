@@ -26,10 +26,13 @@ export class ReadUserForAdminDto {
     @ApiProperty({example: "maxPb.png"})
     profilePic: string;
 
-    @ApiProperty({example: 20})
+    @ApiProperty( { example: 20})
     totalWins: number;
 
-    @ApiProperty({example: 10})
+    @ApiProperty( { example: 5})
+    totalTies: number;
+
+    @ApiProperty( { example: 10})
     totalLosses: number;
 
     constructor(user: User) {
@@ -42,6 +45,7 @@ export class ReadUserForAdminDto {
         this.elo = user.elo;
         this.profilePic = user.profilePic;
         this.totalWins = user.totalWins;
+        this.totalTies = user.totalTies;
         this.totalLosses = user.totalLosses;
     }
 }
