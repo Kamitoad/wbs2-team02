@@ -53,9 +53,10 @@ export class QueueService {
         const opponent = await this.findMatches(userId);
 
         if (opponent) {
+
             // End queue for both players
-            await this.userRepository.update(user.userId, { inQueue: false, queueStartTime: null });
-            await this.userRepository.update(opponent.userId, { inQueue: false, queueStartTime: null });
+            await this.removeFromQueue(user.userId);
+            await this.removeFromQueue(opponent.userId);
 
             // Create new Game between the two players
             const newGame = this.gameRepository.create();
@@ -68,6 +69,7 @@ export class QueueService {
 
             await this.gameRepository.save(newGame);
 
+            this.gamedataGateway.notifyGameAdded(newGame);
 
             return {
                 opponent: {
@@ -130,7 +132,7 @@ export class QueueService {
         user.inQueue = false;
         await this.userRepository.save(user);
 
-        await this.gamedataGateway.handleLeaveQueue(user);
+        await this.gamedataGateway.handleLeaveQueue(user.userId);
     }
 
     async getUserQueueDuration(userId: number): Promise<number> {

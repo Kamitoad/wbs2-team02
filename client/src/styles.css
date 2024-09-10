@@ -45,6 +45,14 @@ body{
   font-size: 60px;
 }
 
+.vs-text-small {
+  font-size: 30px;
+}
+
+.font-small {
+  font-size: 18px;
+}
+
 .custom-container {
   background-color: #00a8cc;
   color: white;
@@ -53,4 +61,10 @@ body{
 
 .error-message{
   color: #bd2a2c;
+}
+
+.blueline {
+  border-width: 2px;
+  color: #00a8cc;
+  opacity: 1;
 }
