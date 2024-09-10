@@ -1,9 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {NgIf} from "@angular/common";
-import {HttpClient} from "@angular/common/http";
-import {EditPasswordService} from "../../services/editUser/edit-password.service";
 import {EditProfilePicService} from "../../services/editProfilePic/edit-profile-pic.service";
-import {Router} from "@angular/router";
 
 
 @Component({
@@ -19,16 +16,20 @@ export class ProfilePicComponent implements OnInit {
 
   profilePic: string = "";
 
+  @Input() userName: string = "";
+
   constructor(private editProfilePic: EditProfilePicService) {}
 
   ngOnInit() {
-    // Abonniere das Observable für das Profilbild
-    this.editProfilePic.currentProfilePic$.subscribe(newProfilePic => {
-      this.profilePic = newProfilePic;
-    });
-
-    // Initiales Laden des Profilbilds
-    this.editProfilePic.getProfilePic().subscribe();
+    if (this.userName) {
+      this.editProfilePic.getProfilePicOfUser(this.userName).subscribe((response: any) => {
+        this.profilePic = response.profilePic || '';
+      });
+    } else {
+      this.editProfilePic.getProfilePic().subscribe((response: any) => {
+        this.profilePic = response.profilePic || '';
+      });
+    }
   }
-    protected readonly window = window;
+  protected readonly window = window;
 }

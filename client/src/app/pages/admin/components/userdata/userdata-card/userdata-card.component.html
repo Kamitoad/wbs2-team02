@@ -4,9 +4,7 @@
       <div class="row d-flex align-items-center h-100 me-2">
         <div class="hstack">
           <div class="me-4">
-            <img [src]="user.profilePic || '/assets/default-profile.png'" alt="Profilbild eines Benutzers"
-                 class="rounded-circle" width="100px"
-                 height="100px">
+            <app-profile-pic [userName]="user.userName"></app-profile-pic>
           </div>
           <div class="me-4 text-start w-50 word-wrap">
             <h5><span class="fw-semibold">User: </span>{{ user.userId }}</h5>

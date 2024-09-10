@@ -45,6 +45,29 @@ export class EditProfilePicService {
     );
   }
 
+
+  // Profilbild vom Server abrufen und lokalen Wert setzen
+  getProfilePicOfUser(userName: string) {
+    return this.http.get<any>(`${this.apiUrl}/profilepic/user/` + userName).pipe(
+        tap(registeredUser => {
+          this.user = registeredUser;
+          if (registeredUser && registeredUser.profilePic) {
+            // Wenn erfolgreich, Profilbild aktualisieren
+            this.profilePicSource.next(registeredUser.profilePic);
+          }
+          return registeredUser;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          // Fehlerbehandlung
+          return of({
+            error: true,
+            status: error.status,
+            message: error.message
+          });
+        })
+    );
+  }
+
   // Profilbild auf dem Server löschen und lokalen Wert aktualisieren
   deleteProfilePic() {
     return this.http.delete<any>(`${this.apiUrl}/profilepic`).pipe(

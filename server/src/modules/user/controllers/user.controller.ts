@@ -5,27 +5,26 @@ import {
     Controller,
     Delete,
     Get,
-    InternalServerErrorException,
-    Param,
-    Patch,
-    Res,
+    InternalServerErrorException, Param,
+    Patch, Res,
     Session,
     UploadedFile,
     UseGuards,
     UseInterceptors
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiResponse, ApiTags} from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { join } from 'path';
+import {  join } from 'path';
 import { SessionData } from 'express-session';
 import { ReadUserDto } from '../../../common/dtos/auth/ReadUserDto';
 import { UserService } from '../services/user.service';
+import { EditPasswordDto } from '../dtos/editUser/EditPasswordDTO';
 import { IsLoggedInGuard } from '../../../common/guards/is-logged-in/is-logged-in.guard';
-import { UploadProfilePicDto } from "../dtos/editUser/UploadProfilePicDto";
-import { ProfilePicResponseDto } from "../dtos/editUser/ProfilePicResponseDto";
+import { AuthService } from '../../../common/services/auth/auth.service';
+import { UploadProfilePicDto} from "../dtos/editUser/UploadProfilePicDto";
+import {ProfilePicResponseDto} from "../dtos/editUser/ProfilePicResponseDto";
 import { Response } from 'express';
-import {EditPasswordDto} from "../dtos/editUser/EditPasswordDto";
 
 @ApiTags('user')
 @ApiBearerAuth()
@@ -33,6 +32,7 @@ import {EditPasswordDto} from "../dtos/editUser/EditPasswordDto";
 export class UserController {
     constructor(
         public readonly userService: UserService,
+        private authService: AuthService
     ) {}
 
     @UseGuards(IsLoggedInGuard)
@@ -46,12 +46,14 @@ export class UserController {
         @Body() body: EditPasswordDto,
     ): Promise<ReadUserDto> {
         try {
-            const userId: number = session.currentUser;
-            const updatedUser = await this.userService.editPassword(body, userId);
-            return new ReadUserDto(updatedUser);
+            const user: number = session.currentUser;
+            const editPassword = await this.userService.editPassword(body, user);
+            return new ReadUserDto(editPassword);
         } catch (error) {
-            if (error instanceof BadRequestException || error instanceof ConflictException) {
-                throw error;
+            if (error instanceof BadRequestException) {
+                throw new BadRequestException(error.message);
+            } else if (error instanceof ConflictException) {
+                throw new ConflictException(error.message);
             } else {
                 throw new InternalServerErrorException("Fehler bei der Änderung");
             }
@@ -67,11 +69,62 @@ export class UserController {
         @Session() session: SessionData,
     ): Promise<ReadUserDto> {
         try {
-            const userId: number = session.currentUser;
-            const userData = await this.userService.deleteProfilePic(userId);
+            const user: number = session.currentUser;
+            const userData = await this.userService.deleteProfilePic(user);
             return new ReadUserDto(userData);
         } catch (error) {
-            throw new InternalServerErrorException("Fehler beim Löschen des Profilbildes");
+            if (error instanceof BadRequestException) {
+                throw new BadRequestException(error.message);
+            } else if (error instanceof ConflictException) {
+                throw new ConflictException(error.message);
+            } else {
+                throw new InternalServerErrorException("Fehler bei der Änderung");
+            }
+        }
+    }
+
+    @UseGuards(IsLoggedInGuard)
+    @Get('profilepic')
+    @ApiOperation({ summary: 'Ruft das Profilbild des aktuellen Benutzers ab' })
+    @ApiResponse({ status: 200, description: 'Das Profilbild wurde erfolgreich abgerufen.', type: ReadUserDto })
+    @ApiResponse({ status: 500, description: 'Interner Serverfehler' })
+    async getProfilePic(
+        @Session() session: SessionData,
+    ): Promise<ReadUserDto> {
+        try {
+            const user: number = session.currentUser;
+            const userData = await this.authService.getUserByUserId(user);
+            return new ReadUserDto(userData);
+        } catch (error) {
+            if (error instanceof BadRequestException) {
+                throw new BadRequestException(error.message);
+            } else if (error instanceof ConflictException) {
+                throw new ConflictException(error.message);
+            } else {
+                throw new InternalServerErrorException("Fehler bei der Änderung");
+            }
+        }
+    }
+
+    @UseGuards(IsLoggedInGuard)
+    @Get('profilepic/user/:userName')
+    @ApiOperation({ summary: 'Ruft das Profilbild des aktuellen Benutzers ab' })
+    @ApiResponse({ status: 200, description: 'Das Profilbild wurde erfolgreich abgerufen.', type: ReadUserDto })
+    @ApiResponse({ status: 500, description: 'Interner Serverfehler' })
+    async getProfilePicOfUser(
+        @Param('userName') userName: string,
+    ): Promise<ReadUserDto> {
+        try {
+            const userData = await this.authService.getUserByUserName(userName);
+            return new ReadUserDto(userData);
+        } catch (error) {
+            if (error instanceof BadRequestException) {
+                throw new BadRequestException(error.message);
+            } else if (error instanceof ConflictException) {
+                throw new ConflictException(error.message);
+            } else {
+                throw new InternalServerErrorException("Fehler bei der Änderung");
+            }
         }
     }
 
@@ -112,6 +165,7 @@ export class UserController {
         }
     }
 
+
     @UseGuards(IsLoggedInGuard)
     @Get('profilepic/:profilepic')
     @ApiOperation({ summary: 'Lädt ein Profilbild herunter' })
@@ -124,7 +178,12 @@ export class UserController {
     @ApiResponse({ status: 400, description: 'Ungültige Anforderung oder Datei nicht gefunden.' })
     async getImage(@Param('profilepic') profilepic: string, @Res() res: Response) {
         try {
-            const imgPath: string = join(process.cwd(), 'uploads', 'profilePictures', profilepic);
+            const imgPath: string = join(
+                process.cwd(),
+                'uploads',
+                'profilePictures',
+                profilepic,
+            );
             res.sendFile(imgPath);
         } catch (err) {
             throw new BadRequestException(err);
