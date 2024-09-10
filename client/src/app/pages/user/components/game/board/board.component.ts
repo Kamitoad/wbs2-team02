@@ -1,23 +1,31 @@
-import {Component, Input, Output, EventEmitter} from '@angular/core';
-import {GameService} from '../../../services/game.service';  // Korrigiere den Pfad entsprechend
+import { Component, Input } from '@angular/core';
+import { SquareComponent } from '../square/square.component';
+import { GameService } from '../../../services/game.service';
 
 @Component({
   selector: 'app-board',
-  standalone: true,
-  imports: [],
   templateUrl: './board.component.html',
-  styleUrl: './board.component.css'
+  styleUrls: ['./board.component.css'],
+  standalone: true,
+  imports: [SquareComponent],
 })
 export class BoardComponent {
-  @Input() board: string[][] = [['', '', ''], ['', '', ''], ['', '', '']];
+  @Input() board: string[][] = [
+    ['', '', ''],
+    ['', '', ''],
+    ['', '', ''],
+  ];
+  indices: number[] = Array.from({ length: 9 }, (_, i) => i);
+  squares: string[] = Array(9).fill('');
 
-  constructor(private gameService: GameService) {
-  }
+    // Konstruktor, um GameService zu injizieren
+    constructor(private gameService: GameService) {}
 
-  makeMove(row: number, col: number) {
-    if (this.board[row][col] === '') {
-      this.board[row][col] = 'X';  // Beispiel: aktueller Spieler
-      this.gameService.makeMove('gameId', row, col);  // Füge eine gameId ein
-    }
+  async makeMove(index: number) {
+    // Handle the square click logic here
+    const row = Math.floor(index / 3);
+    const col = index % 3;
+    await this.gameService.makeMove('game-id-placeholder', row, col); // Setze hier die richtige Game-ID
+    console.log('Square clicked at index:', index);
   }
 }

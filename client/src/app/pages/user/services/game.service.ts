@@ -2,6 +2,7 @@ import {Injectable, Inject, PLATFORM_ID} from '@angular/core';
 import {BehaviorSubject, Observable} from "rxjs";
 import {HttpClient} from '@angular/common/http';
 import {isPlatformBrowser} from '@angular/common';
+import io from 'socket.io-client'; 
 
 @Injectable({
   providedIn: 'root'
@@ -26,21 +27,21 @@ export class GameService {
     this.baseUrl = isPlatformBrowser(this.platformId) ? '' : 'http://localhost:3000';
 
     if (isPlatformBrowser(this.platformId)) {
-      this.socket = require('socket.io-client')('http://localhost:3000/ws-game');
-
+      this.socket = io('http://localhost:3000/ws-game');
+    
       this.socket.on('game-update', (gameState: any) => {
         this.updateGameState(gameState);
       });
-
+    
       this.socket.on('game-error', (error: any) => {
         console.error('Game error:', error);
         this.errorSubject.next(error.message);
       });
-
+    
       this.socket.on('join-game-success', () => {
         this.errorSubject.next(null);  // Clear error on successful join
       });
-    }
+    }    
   }
 
   joinGame(gameId: string): Observable<any> {

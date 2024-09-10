@@ -1,12 +1,14 @@
 <div class="game-container">
   <div class="grid-container">
     <div class="grid-item player-left">
-      <app-player
-        [playerName]="parsedGame.player1Name"
-        [playerScore]="parsedGame.player1Score"
-        [playerIcon]="parsedGame.player1Icon"
-        [isCurrentPlayer]="isPlayer1Turn">
-      </app-player>
+      @if (player1Name && player1Score && player1Icon) {
+        <app-player
+          [playerName]="player1Name"
+          [playerScore]="player1Score"
+          [playerIcon]="player1Icon"
+          [isCurrentPlayer]="isPlayer1Turn">
+        </app-player>
+      }
     </div>
 
     <div class="grid-item board-center">
@@ -14,12 +16,14 @@
     </div>
 
     <div class="grid-item player-right">
-      <app-player
-        [playerName]="parsedGame.player2Name"
-        [playerScore]="parsedGame.player2Score"
-        [playerIcon]="parsedGame.player2Icon"
-        [isCurrentPlayer]="!isPlayer1Turn">
-      </app-player>
+      @if (player2Name && player2Score && player2Icon) {
+        <app-player
+          [playerName]="player2Name"
+          [playerScore]="player2Score"
+          [playerIcon]="player2Icon"
+          [isCurrentPlayer]="!isPlayer1Turn">
+        </app-player>
+      }
     </div>
   </div>
 

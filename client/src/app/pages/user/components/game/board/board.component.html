@@ -1,9 +1,5 @@
-<div class="game-board">
-  <div *ngFor="let row of board; let rowIndex = index" class="board-row">
-    <div *ngFor="let cell of row; let cellIndex = index"
-         class="board-cell"
-         (click)="makeMove(rowIndex, cellIndex)">
-      {{ cell }}
-    </div>
-  </div>
+<div class="board">
+  @for (i of indices; track i) {
+    <app-square [value]="squares[i]" (click)="makeMove(i)"></app-square>
+  }
 </div>
