@@ -7,6 +7,7 @@ import {EditPasswordService} from "../../../services/editUser/edit-password.serv
 import {EditProfilePicService} from "../../../services/editProfilePic/edit-profile-pic.service";
 import {subscribe} from "node:diagnostics_channel";
 import {NgIf, NgOptimizedImage} from "@angular/common";
+import {ProfilePicComponent} from "../../profile-pic/profile-pic.component";
 
 
 @Component({
@@ -15,12 +16,13 @@ import {NgIf, NgOptimizedImage} from "@angular/common";
   imports: [
     FormsModule,
     NgOptimizedImage,
-    NgIf
+    NgIf,
+    ProfilePicComponent
   ],
   templateUrl: './edit-password-profilepic.component.html',
   styleUrl: './edit-password-profilepic.component.css'
 })
-export class EditPasswordProfilepicComponent implements OnInit {
+export class EditPasswordProfilepicComponent  {
   httpclient: HttpClient = inject(HttpClient);
 
   @ViewChild('#messageError') messageError: ElementRef<HTMLSpanElement> | undefined;
@@ -39,15 +41,6 @@ export class EditPasswordProfilepicComponent implements OnInit {
   }
 
 
-  ngOnInit() {
-    this.editProfilePic.getProfilePic().subscribe(success => {
-      if (success.error) {
-      } else if (success) {
-        this.profilePic = success.profilePic;
-      }
-    });
-  }
-
   onFileChange(event: any) {
     const file = event.target.files[0];
     if (file) {
@@ -62,8 +55,9 @@ export class EditPasswordProfilepicComponent implements OnInit {
 
       this.http.patch<{ newProfilePic: string }>("http://localhost:3000/api/user/profilepic", formData, { withCredentials: true }).subscribe(
         response => {
-          this.profilePic = response.newProfilePic; // Aktualisiere das Profilbild
-          this.refreshCurrentRoute(); // Route neu laden
+          this.profilePic = response.newProfilePic;
+          // Aktualisiere das Profilbild im Service, damit alle Abonnenten die Änderung sehen
+          this.editProfilePic.setProfilePic(response.newProfilePic);
           this.enableImgUpload();
         },
         error => {
@@ -76,23 +70,23 @@ export class EditPasswordProfilepicComponent implements OnInit {
 
   deleteProfilePic() {
     this.editProfilePic.deleteProfilePic().subscribe(success => {
-      if (success.error) {
-      } else if (success) {
-        this.profilePic = success.profilePic;
-
-        this.refreshCurrentRoute(); // Route neu laden
+      if (success && !success.error) {
+        this.editProfilePic.setProfilePic(success.profilePic); // Profilbild nach dem Löschen setzen
       }
     });
-
   }
-
 
   refreshCurrentRoute() {
-    // Navigiere zur aktuellen Route mit einem Trick, um die Route neu zu laden
-    this.router.navigate([this.router.url]).then(() => {
-      // Optional: Hier kannst du zusätzliche Logik hinzufügen, die nach dem Neuladen der Route ausgeführt werden soll
+    // Verwende hier anstelle eines Seiten-Reloads einen Service oder ein einfaches EventEmitter-System
+    this.editProfilePic.getProfilePic().subscribe(success => {
+      if (success && success.profilePic) {
+        this.profilePic = success.profilePic;
+      } else {
+        this.profilePic = ''; // oder das Default-Bild setzen, falls kein Bild vorhanden
+      }
     });
   }
+
 
   removeErrorMessage(): void {
     setTimeout(() => {
