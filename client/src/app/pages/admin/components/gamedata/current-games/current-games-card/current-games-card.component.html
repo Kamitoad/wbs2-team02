@@ -4,9 +4,8 @@
       <div class="row d-flex align-items-center h-100 justify-content-center">
         <div class="hstack">
           <div>
-            <img [src]="currentGame.player1ProfilePic || '/assets/default-profile.png'" alt="Profilbild eines Benutzers"
-                 class="rounded-circle" width="100px"
-                 height="100px">
+            <app-profile-pic [userName]="currentGame.player1UserName"></app-profile-pic>
+
           </div>
           <div class="text-center border-2 border border-tie rounded-pill py-2 ms-3 my-1 w-100">
             <span class="h4"><span
@@ -28,9 +27,9 @@
               class="fw-semibold">{{ currentGame.player2UserName }}</span></span>
           </div>
           <div>
-            <img [src]="currentGame.player2ProfilePic || '/assets/default-profile.png'" alt="Profilbild eines Benutzers"
-                 class="rounded-circle" width="100px"
-                 height="100px">
+
+            <app-profile-pic [userName]="currentGame.player2UserName"></app-profile-pic>
+
           </div>
         </div>
       </div>

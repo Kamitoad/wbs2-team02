@@ -21,9 +21,8 @@
               <div class="row d-flex align-items-center h-100 justify-content-center">
                 <div class="hstack">
                   <div>
-                    <img [src]="user.profilePic || '/assets/default-profile.png'" alt="Dein Profilbild"
-                         class="rounded-circle" width="100px"
-                         height="100px">
+                    <app-profile-pic [userName]="user.userName"></app-profile-pic>
+
                   </div>
                   <div class="text-center border-2 border border-tie rounded-pill py-2 ms-3 my-1 w-100">
                   <span class="h4"><span class="fw-semibold">{{ user.userName }} </span>
@@ -50,10 +49,9 @@
                       class="fw-semibold h4">{{ (queueService.opponent$ | async)?.userName || 'Gegner wird gesucht' }}</span>
                   </div>
                   <div>
-                    <img [src]="(queueService.opponent$ | async)?.profilePic || '/assets/default-profile.png'"
-                         alt="Profilbild des Gegners" class="rounded-circle"
-                         width="100px"
-                         height="100px">
+
+                    <app-profile-pic [userName]="(queueService.opponent$ | async)?.userName "></app-profile-pic>
+
                   </div>
                 </div>
               </div>
