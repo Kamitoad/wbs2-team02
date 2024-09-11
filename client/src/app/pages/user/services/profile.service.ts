@@ -21,8 +21,4 @@ export class ProfileService {
   joinQueue(): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/queue`, {});
   }
-
-  logout(): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/logout`, {});
-  }
 }

@@ -31,16 +31,6 @@ export class LoginComponent {
       userName: this.userName,
       password: this.password,
     }
-    /*
-    this.authService.login(user).subscribe(success => {
-      if (success) {
-        this.router.navigate(['/profile']);
-      } else {
-        this.statusMessage = "Falscher Nutzername oder falsches Passwort";
-        this.removeStatusMessage()
-      }
-    });
-    */
     this.authService.login(user).subscribe({
       next: (response) => {
         // Hier prüfen, ob die Rolle 'admin' ist und entsprechend weiterleiten

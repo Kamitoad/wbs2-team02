@@ -5,7 +5,7 @@ import {
     Controller,
     Delete,
     Get,
-    InternalServerErrorException, Param,
+    InternalServerErrorException, NotFoundException, Param,
     Patch, Res,
     Session,
     UploadedFile,
@@ -188,5 +188,34 @@ export class UserController {
         } catch (err) {
             throw new BadRequestException(err);
         }
+    }
+
+    @Get('current')
+    getCurrentUser(
+        @Session() session: SessionData,
+    ) {
+        try {
+            const userId = session.currentUser;
+            return this.userService.getCurrentUser(userId);
+        } catch (error) {
+            if (error instanceof NotFoundException) {
+                throw new NotFoundException(error.message);
+            } else if (error instanceof BadRequestException) {
+                throw new BadRequestException(error.message);
+            } else if (error instanceof InternalServerErrorException) {
+                throw new InternalServerErrorException("Fehler beim Betreten der Queue");
+            }
+        }
+    }
+
+    @Get('matches')
+    getUserMatches(
+        @Session() session: SessionData,
+    ) {
+        const userId = session.currentUser;
+        if (!userId) {
+            throw new BadRequestException('User is not authenticated.');
+        }
+        return this.userService.getUserMatches(userId);
     }
 }

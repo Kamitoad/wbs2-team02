@@ -1,4 +1,4 @@
-p{
+p {
   font-family: Roboto Condensed, sans-serif;
   font-size: 22px;
 }
@@ -56,6 +56,10 @@ h3 {
   background-color: #127897;
   border: 3px solid #ffffff;
   border-radius: 10px;
+}
+
+.logout-button {
+  background-color: #BD2A2C;
 }
 
 .statistics-card, .matches-card {

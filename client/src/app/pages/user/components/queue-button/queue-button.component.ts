@@ -3,13 +3,13 @@ import {Router} from "@angular/router";
 import {QueueService} from "../../services/queue.service";
 
 @Component({
-  selector: 'app-test-queue-button',
+  selector: 'app-queue-button',
   standalone: true,
   imports: [],
-  templateUrl: './test-queue-button.component.html',
-  styleUrl: './test-queue-button.component.css'
+  templateUrl: './queue-button.component.html',
+  styleUrl: './queue-button.component.css'
 })
-export class TestQueueButtonComponent {
+export class QueueButtonComponent {
 
   statusMessage: string = "";
 

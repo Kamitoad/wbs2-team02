@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import { ProfileService } from '../../services/profile.service';
 import { Router } from '@angular/router';
 import {NgClass} from "@angular/common";
 import {UserdataCardComponent} from "../../../admin/components/userdata/userdata-card/userdata-card.component";
+import {AuthService} from "../../../../shared/services/auth/auth.service";
+import {QueueButtonComponent} from "../queue-button/queue-button.component";
 
 @Component({
   selector: 'app-profile',
@@ -11,10 +13,14 @@ import {UserdataCardComponent} from "../../../admin/components/userdata/userdata
   standalone: true,
   imports: [
     NgClass,
-    UserdataCardComponent
+    UserdataCardComponent,
+    QueueButtonComponent
   ]
 })
 export class ProfileComponent implements OnInit {
+
+  public authService: AuthService = inject(AuthService);
+
   currentUser: any;
   userMatches: any[] =[];
 
@@ -44,8 +50,13 @@ export class ProfileComponent implements OnInit {
   }
 
   logout(): void {
-    this.profileService.logout().subscribe(() => {
-      this.router.navigate(['/login']);
+    this.authService.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/login']);
+      },
+      error: (error) => {
+        console.error(error)
+      }
     });
   }
 
