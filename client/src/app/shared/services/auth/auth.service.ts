@@ -29,11 +29,14 @@ export class AuthService {
     );
   }
 
-  logout(user: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/logout`, user).pipe(
+  logout(): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/logout`, {}).pipe(
       tap(() => {
         localStorage.removeItem('user');
       }),
     );
   }
+
+
+
 }

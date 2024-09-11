@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TestQueueButtonComponent } from './test-queue-button.component';
+import { ProfileComponent } from './profile.component';
 
-describe('TestQueueButtonComponent', () => {
-  let component: TestQueueButtonComponent;
-  let fixture: ComponentFixture<TestQueueButtonComponent>;
+describe('ProfileComponent', () => {
+  let component: ProfileComponent;
+  let fixture: ComponentFixture<ProfileComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TestQueueButtonComponent]
+      imports: [ProfileComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(TestQueueButtonComponent);
+    fixture = TestBed.createComponent(ProfileComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

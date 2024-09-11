@@ -1,0 +1,67 @@
+<div class="profile-page">
+  <app-queue-button class="w-100"></app-queue-button>
+  <div class="user-info">
+    <div class="container text-center">
+      <div class="row">
+        <div class="col"> </div>
+        <div class="col">
+          <img [src]="currentUser?.profilePic || 'default-avatar.png'" alt="Profile Picture" class="profile-pic">
+        </div>
+        <div class="col">
+          <h2>{{ currentUser?.userName }}</h2>
+          <p>{{ currentUser?.elo }}</p>
+        </div>
+        <div class="col">
+          <button (click)="editProfile()" class="edit-button">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 17 17" class="bi bi-pencil">
+              <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
+            </svg>
+          </button>
+        </div>
+          <div class="col">
+          <button (click)="logout()" class="logout-button">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 17 17" class="bi bi-power">
+              <path d="M7.5 1v7h1V1z"/>
+              <path d="M3 8.812a5 5 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="statistics-card">
+    <h3>Meine Statistiken</h3>
+    <div class="statistics">
+      <div class="stat win">
+        <p>{{ currentUser?.totalWins }} Siege</p>
+      </div>
+      <div class="stat tie">
+        <p>{{ currentUser?.totalTies }} Unentschieden</p>
+      </div>
+      <div class="stat loss">
+        <p>{{ currentUser?.totalLosses }} Niederlagen</p>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="matches-card">
+    <h3>Meine gespielten Matches</h3>
+
+    @for (match of userMatches; track match.gameId) {
+      <div class="matchrow">
+      <div class="match opponent" [ngClass]="getMatchResultClass(match)">
+        <p>{{ match.player1UserName }} {{ match.changeEloPlayer1 }}</p>
+      </div>
+      <div class="match result" [ngClass]="getMatchResultClass(match)">
+        <p>{{ getMatchResultText(match) }}</p>
+      </div>
+      <div class="match user" [ngClass]="getMatchResultClass(match)">
+        <p>{{ currentUser.userName }} {{ match.changeEloPlayer2 }}</p>
+      </div>
+      </div>
+
+    }
+  </div>
+</div>

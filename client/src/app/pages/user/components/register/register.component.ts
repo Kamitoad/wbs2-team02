@@ -1,8 +1,9 @@
 import {Component, inject} from '@angular/core';
-import { Router } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import { AuthService } from '../../../../shared/services/auth/auth.service';
 import {FormsModule} from "@angular/forms";
 import {HttpClient} from "@angular/common/http";
+import {NgOptimizedImage} from "@angular/common";
 
 @Component({
   selector: 'app-register',
@@ -10,6 +11,8 @@ import {HttpClient} from "@angular/common/http";
   standalone: true,
   imports: [
     FormsModule,
+    NgOptimizedImage,
+    RouterLink,
   ],
   styleUrls: ['./register.component.css']
 })

@@ -1,26 +1,11 @@
-.register-container {
-  text-align: center;
-  margin-top: 50px;
+/* Custom CSS for Registration Form */
+
+.login-form {
+  background-color: #fff;
+  color: #127897;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-form {
-  display: inline-block;
-  text-align: left;
-}
-
-input {
-  display: block;
-  margin: 10px 0;
-  padding: 10px;
-  width: 300px;
-}
-
-button {
-  margin-top: 20px;
-  padding: 10px 20px;
-}
-
-.error {
-  color: red;
-  font-size: 12px;
+.custom-checkbox {
+  border-color: #127897;
 }

@@ -1,5 +1,5 @@
 import {Component, inject} from '@angular/core';
-import { Router } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import { AuthService } from '../../../../shared/services/auth/auth.service';
 import {FormsModule} from "@angular/forms";
 import {CommonModule, NgIf} from "@angular/common";
@@ -12,6 +12,7 @@ import {HttpClient} from "@angular/common/http";
     FormsModule,
     NgIf,
     CommonModule,
+    RouterLink,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
@@ -21,7 +22,7 @@ export class LoginComponent {
 
   userName: string = '';
   password: string = '';
-  loginFailed: boolean = false;
+  statusMessage: string = " ";
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -30,16 +31,26 @@ export class LoginComponent {
       userName: this.userName,
       password: this.password,
     }
-    this.authService.login(user).subscribe(success => {
-      if (success) {
-        this.router.navigate(['/profile']);
-      } else {
-        this.loginFailed = true;
+    this.authService.login(user).subscribe({
+      next: (response) => {
+        // Hier prüfen, ob die Rolle 'admin' ist und entsprechend weiterleiten
+        if (response.role === 'admin') {
+          this.router.navigate(['/admin/user']);
+        } else {
+          this.router.navigate(['/profile']);
+        }
+      },
+      error: (error) => {
+        // Fehler anzeigen
+        this.statusMessage = error.error.message || "Ein unbekannter Fehler ist aufgetreten";
+        this.removeStatusMessage();
       }
     });
   }
 
-  navigateToRegister() {
-    this.router.navigate(['/register']);
+  removeStatusMessage(): void {
+    setTimeout(() => {
+      this.statusMessage = " ";
+    }, 5000);
   }
 }
