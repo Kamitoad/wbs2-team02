@@ -50,7 +50,7 @@
                   </div>
                   <div>
 
-                    <app-profile-pic [userName]="(queueService.opponent$ | async)?.userName "></app-profile-pic>
+                    <app-profile-pic *ngIf="(queueService.opponent$ | async)?.userName" [userName]="(queueService.opponent$ | async)?.userName"></app-profile-pic>
 
                   </div>
                 </div>

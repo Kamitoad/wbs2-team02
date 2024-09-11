@@ -22,6 +22,7 @@ export class ProfilePicComponent implements OnInit {
 
   ngOnInit() {
     if (this.userName) {
+      console.log(this.userName);
       this.editProfilePic.getProfilePicOfUser(this.userName).subscribe((response: any) => {
         this.profilePic = response.profilePic || '';
       });
