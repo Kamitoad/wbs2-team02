@@ -74,6 +74,10 @@ body{
   color: #bd2a2c;
 }
 
+.success-message{
+  color: #18a01d;
+}
+
 .blueline {
   border-width: 2px;
   color: #00a8cc;

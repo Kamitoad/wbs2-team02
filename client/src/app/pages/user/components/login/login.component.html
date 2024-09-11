@@ -6,49 +6,90 @@
       <div class="col"></div>
     </div>
   </div>
-  <h1 class="text-center">Willkommen bei TikTakToe-World!</h1>
-  <div class="row my-5">
-    <div class="col"></div>
+  <h1 class="text-center my-5">Willkommen bei TikTakToe-World!</h1>
+  <div class="d-none d-xxl-block">
+    <div class="row my-5">
+      <div class="col"></div>
+    </div>
   </div>
   <!---->
+  <div class="d-none d-xxl-block">
+    <div class="row justify-content-center w-auto m-0">
+      <div class="col-6">
+        <form (ngSubmit)="onSubmit()">
+          <div class="login-form rounded-5 px-5 pt-4 pb-3 w-100 mb-4">
+            <h2 class="text-center mb-4">Gebe deine Login Daten ein</h2>
 
-  <div class="row justify-content-center">
-    <div class="col-6">
-      <form (ngSubmit)="onSubmit()">
-        <div class="login-form rounded-5 px-5 pt-4 pb-3 w-100 mb-4">
-          <h2 class="text-center mb-4">Gebe deine Login Daten ein</h2>
+            <div class="hstack mb-3">
+              <input class="border border-tie border-2 rounded-pill me-3 w-50 p-2"
+                     type="text" placeholder="Username" [(ngModel)]="userName" name="userName" required>
+              <input class="border border-tie border-2 rounded-pill ms-3 w-50 p-2"
+                     type="password" placeholder="Passwort" [(ngModel)]="password" name="password" required>
+            </div>
 
-          <div class="hstack mb-3">
-            <input class="border border-tie border-2 rounded-pill me-3 w-50 p-2"
-                   type="text" placeholder="Username" [(ngModel)]="userName" name="userName" required>
-            <input class="border border-tie border-2 rounded-pill ms-3 w-50 p-2"
-                   type="password" placeholder="Passwort" [(ngModel)]="password" name="password" required>
+            <div class="error-message text-end">
+              <span>{{ statusMessage }}</span>
+            </div>
           </div>
 
-          <div class="error-message text-end">
-            <span>{{ statusMessage }}</span>
+          <div class="row justify-content-center">
+            <div class="col-4">
+              <button type="submit" class="big-green-button py-2 w-100">
+                <h3 class="mb-0">Einloggen</h3>
+              </button>
+            </div>
           </div>
-        </div>
 
-        <div class="row justify-content-center">
-          <div class="col-4">
-            <button type="submit" class="big-green-button py-2 w-100">
-              <h3 class="mb-0">Einloggen</h3>
-            </button>
+          <hr class="whiteline my-4">
+
+          <div class="row justify-content-center">
+            <div class="col-4 text-center">
+              <p class="mb-1">Noch keinen Account?</p>
+              <button routerLink="/register" type="button" class="big-button py-2 w-100">
+                <h3 class="mb-0">Registrieren</h3>
+              </button>
+            </div>
           </div>
-        </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
-        <hr class="whiteline my-4">
-
-        <div class="row justify-content-center">
-          <div class="col-4 text-center">
-            <p class="mb-1">Noch keinen Account?</p>
-            <button routerLink="/register" type="button" class="big-button py-2 w-100">
-              <h3 class="mb-0">Registrieren</h3>
-            </button>
+  <div class="d-block d-xxl-none">
+    <div class="row justify-content-center w-auto m-0">
+      <div class="col-10">
+        <form (ngSubmit)="onSubmit()">
+          <div class="login-form rounded-5 px-5 pt-4 pb-3 w-100 mb-4">
+            <h2 class="text-center mb-4">Gebe deine Login Daten ein</h2>
+              <input class="border border-tie border-2 rounded-pill mb-3 w-100 p-2"
+                     type="text" placeholder="Username" [(ngModel)]="userName" name="userName" required>
+              <input class="border border-tie border-2 rounded-pill mb-3 w-100 p-2"
+                     type="password" placeholder="Passwort" [(ngModel)]="password" name="password" required>
+            <div class="error-message text-end">
+              <span>{{ statusMessage }}</span>
+            </div>
           </div>
-        </div>
-      </form>
+
+          <div class="row justify-content-center">
+            <div class="col-8">
+              <button type="submit" class="big-green-button py-2 w-100">
+                <h3 class="mb-0">Einloggen</h3>
+              </button>
+            </div>
+          </div>
+
+          <hr class="whiteline my-4">
+
+          <div class="row justify-content-center">
+            <div class="col-8 text-center">
+              <p class="mb-1">Noch keinen Account?</p>
+              <button routerLink="/register" type="button" class="big-button py-2 w-100">
+                <h3 class="mb-0">Registrieren</h3>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </div>
