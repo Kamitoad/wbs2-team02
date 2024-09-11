@@ -1,8 +1,9 @@
 import {Component} from '@angular/core';
 import {Router, RouterLink} from "@angular/router";
 import {QueueService} from "../../services/queue.service";
-import {AsyncPipe} from "@angular/common";
+import {AsyncPipe, NgIf} from "@angular/common";
 import {TimeCodePipe} from "../../../../shared/pipes/time-code.pipe";
+import {ProfilePicComponent} from "../profile-pic/profile-pic.component";
 
 @Component({
   selector: 'app-queue',
@@ -10,7 +11,9 @@ import {TimeCodePipe} from "../../../../shared/pipes/time-code.pipe";
   imports: [
     RouterLink,
     AsyncPipe,
-    TimeCodePipe
+    TimeCodePipe,
+    ProfilePicComponent,
+    NgIf
   ],
   templateUrl: './queue.component.html',
   styleUrl: './queue.component.css'

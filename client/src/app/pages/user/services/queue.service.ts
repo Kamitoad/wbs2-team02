@@ -32,8 +32,10 @@ export class QueueService {
       this.socket = require('socket.io-client')('http://localhost:3000/ws-user-queue');
 
       this.socket.on('opponent-data', (opponent: any) => {
+        console.log('Opponent Data:', opponent);  // Prüfen, ob opponent.profilePic vorhanden ist
         this.readOpponent(opponent);
       });
+
 
       this.socket.on('queue-error', (error: any) => {
         console.error('Queue error:', error);
