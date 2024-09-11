@@ -1,83 +1,11 @@
 /* Custom CSS for Registration Form */
-.register-container {
-  background-color: #36a6c7; /* A turquoise background similar to the screenshot */
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  padding: 20px;
-  color: white;
-  font-family: Arial, sans-serif;
+
+.login-form {
+  background-color: #fff;
+  color: #127897;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.register-container h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 24px;
-  font-weight: 500;
-}
-
-form {
-  background-color: white;
-  padding: 30px;
-  border-radius: 15px;
-  width: 100%;
-  max-width: 500px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  color: black;
-}
-
-form div {
-  margin-bottom: 15px;
-}
-
-.error {
-  color: red;
-  font-size: 12px;
-  margin-top: 5px;
-}
-
-button[type="submit"] {
-  width: 100%;
-  max-width: 300px;
-  margin-top: 20px;
-  padding: 10px;
-  background-color: #18A01D;
-  color: white;
-  border: none;
-  border-radius: 15px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-
-.form-check {
-  display: flex;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.form-check-label {
-  margin-left: 5px;
-  font-size: 14px;
-}
-
-.tictactoe-image {
-  position: absolute;
-  width: 150px;
-  height: auto;
-  opacity: 0.8; /* Slightly transparent */
-}
-
-.tictactoe-top-left {
-  top: 20px;
-  left: 20px;
-}
-
-.tictactoe-bottom-right {
-  bottom: 20px;
-  right: 20px;
+.custom-checkbox {
+  border-color: #127897;
 }

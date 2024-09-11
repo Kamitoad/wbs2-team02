@@ -23,10 +23,21 @@ body{
   border-radius: 10px;
 }
 
+.big-green-button {
+  color: #f8f8ff;
+  background-color: #18A01D;
+  border: 2px solid #f8f8ff;
+  border-radius: 10px;
+}
+
 .custom-card {
   background-color: #fff;
   color: #127897;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.roundedBoarders{
+  border-radius: 20px;
 }
 
 .border-tie {
@@ -66,5 +77,11 @@ body{
 .blueline {
   border-width: 2px;
   color: #00a8cc;
+  opacity: 1;
+}
+
+.whiteline {
+  border-width: 2px;
+  color: #f8f8ff;
   opacity: 1;
 }
