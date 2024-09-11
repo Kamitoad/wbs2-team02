@@ -82,8 +82,8 @@ export class UserService {
         if (!user) {
             throw new NotFoundException(`User with ID ${userId} not found.`);
         }
-        const gamesAsPlayer1 = await this.gameRepository.find({ where: { player1: { userId }, hasEnded: 1 }, relations: ['player2'] });
-        const gamesAsPlayer2 = await this.gameRepository.find({ where: { player2: { userId }, hasEnded: 1 }, relations: ['player1'] });
+        const gamesAsPlayer1 = await this.gameRepository.find({ where: { player1: { userId }, hasEnded: true }, relations: ['player2'] });
+        const gamesAsPlayer2 = await this.gameRepository.find({ where: { player2: { userId }, hasEnded: true }, relations: ['player1'] });
 
         return [...gamesAsPlayer1, ...gamesAsPlayer2];
     }
