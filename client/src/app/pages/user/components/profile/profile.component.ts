@@ -60,35 +60,24 @@ export class ProfileComponent implements OnInit {
     });
   }
 
- getMatchResultClass(match: any): string {
-    return match.result === 'win' ? 'win' : match.result === 'loss' ? 'loss' : 'tie';
+  getMatchResultClass(match:any):string{
+    if(match.winner===this.currentUser.userId){return 'win'}
+    else if (match.loser===this.currentUser.userId){return 'loss'}
+    return 'tie';
   }
-
-  getMatchResultText(match: any): string {
-    return match.result === 'win' ? 'Gewonnen' : match.result === 'loss' ? 'Verloren' : 'Unentschieden';
+  getMatchResultText(match:any):string{
+    if(match.winner===this.currentUser.userId){return 'Gewonnen'}
+    else if (match.loser===this.currentUser.userId){return 'Verloren'}
+    return 'Unentschieden';
   }
-
- /**
-  getMatchResultClass(match: any, session: any): string {
-    const userId = session.userId; // Lese die userId aus der Session
-    if (match.winner === userId) {
-      return 'win';
-    } else if (match.loser === userId) {
-      return 'loss';
-    } else {
-      return 'tie';
-    }
+/**
+  getMatchSelf(match:any):any{
+    if(match.match.player1.userId===this.currentUser.userId){return match.player1.userName.toString()}
+    else return match.player2.userName.toString()
   }
-
-  getMatchResultText(match: any, session: any): string {
-    const userId = session.userId; // Lese die userId aus der Session
-    if (match.winner === userId) {
-      return 'Gewonnen';
-    } else if (match.loser === userId) {
-      return 'Verloren';
-    } else {
-      return 'Unentschieden';
-    }
+  getMatchOpponent(match:any):any{
+    if(match.match.player1.userId!==this.currentUser.userId){return match.player2.userName.toString()}
+    else return match.player1.userName.toString()
   }
 **/
 }

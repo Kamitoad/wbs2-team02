@@ -52,13 +52,13 @@
     @for (match of userMatches; track match.gameId) {
       <div class="matchrow">
       <div class="match opponent" [ngClass]="getMatchResultClass(match)">
-        <p>{{ match.player1UserName }} {{ match.changeEloPlayer1 }}</p>
+        <p>{{ match.player1.userName }} {{match.changeEloPlayer1}}</p> <!--{{ getMatchSelf(match) }}-->
       </div>
       <div class="match result" [ngClass]="getMatchResultClass(match)">
         <p>{{ getMatchResultText(match) }}</p>
       </div>
       <div class="match user" [ngClass]="getMatchResultClass(match)">
-        <p>{{ currentUser.userName }} {{ match.changeEloPlayer2 }}</p>
+        <p>{{ match.player2.userName }} {{match.changeEloPlayer2}}</p><!--{{ getMatchOpponent(match) }}-->
       </div>
       </div>
 
