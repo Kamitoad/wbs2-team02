@@ -8,7 +8,7 @@ import {
 import { Socket, Server } from 'socket.io';
 import { GameService } from '../../services/game/game.service';
 
-@WebSocketGateway()
+@WebSocketGateway({namespace: 'ws-user-game'} )
 export class GameGateway {
   @WebSocketServer()
   server: Server;

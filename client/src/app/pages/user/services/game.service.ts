@@ -1,25 +1,40 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable, PLATFORM_ID} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable, Subject} from 'rxjs';
-import {tap} from 'rxjs/operators';
-import io from 'socket.io-client';
+import {isPlatformBrowser} from "@angular/common";
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameService {
+
+  private socket: any;
+
+  private baseUrl: string;  //Needed to test project rather in Angular or Nest.js Server
+
   private apiUrl = 'http://localhost:3000/api/game';
-  private socket = io('http://localhost:3000'); // WebSocket-Verbindung
+  //private socket = io('http://localhost:3000'); // WebSocket-Verbindung
   private currentPlayer: 'X' | 'O' = 'X'; // Der Spieler, der aktuell am Zug ist
   gameId!: number; // Speichere die gameId hier für spätere Zugriffe
 
   // Subject für WebSocket-Zug-Updates
   moveSubject = new Subject<{ row: number, col: number, player: 'X' | 'O' }>();
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    //@ts-ignore
+    @Inject(PLATFORM_ID) private platformId: Object
+    ) {
+    this.baseUrl = isPlatformBrowser(this.platformId) ? '' : 'http://localhost:3000';
+
+    //To make sure Angular can be build properly with sockets to test with Nest.js
+    if(isPlatformBrowser(this.platformId)) {
+      this.socket = require('socket.io-client')('http://localhost:3000/ws-user-game');
+    }
     this.setupSocketListeners();
   }
 
+  /*
   // Methode zum Erstellen eines neuen Spiels
   createGame(): Observable<any> {
     return this.http.post(`${this.apiUrl}`, {}).pipe(
@@ -28,6 +43,7 @@ export class GameService {
       })
     );
   }
+  */
 
   // Methode zum Abrufen des Spielstatus
   getGameState(gameId: number): Observable<any> {
