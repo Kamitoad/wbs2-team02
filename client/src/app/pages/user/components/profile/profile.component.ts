@@ -60,11 +60,35 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  getMatchResultClass(match: any): string {
-    return match.result === 'win' ? 'win' : match.result === 'tie' ? 'tie' : 'loss';
+ getMatchResultClass(match: any): string {
+    return match.result === 'win' ? 'win' : match.result === 'loss' ? 'loss' : 'tie';
   }
 
   getMatchResultText(match: any): string {
-    return match.result === 'win' ? 'Gewonnen' : match.result === 'tie' ? 'Unentschieden' : 'Verloren';
+    return match.result === 'win' ? 'Gewonnen' : match.result === 'loss' ? 'Verloren' : 'Unentschieden';
   }
+
+ /**
+  getMatchResultClass(match: any, session: any): string {
+    const userId = session.userId; // Lese die userId aus der Session
+    if (match.winner === userId) {
+      return 'win';
+    } else if (match.loser === userId) {
+      return 'loss';
+    } else {
+      return 'tie';
+    }
+  }
+
+  getMatchResultText(match: any, session: any): string {
+    const userId = session.userId; // Lese die userId aus der Session
+    if (match.winner === userId) {
+      return 'Gewonnen';
+    } else if (match.loser === userId) {
+      return 'Verloren';
+    } else {
+      return 'Unentschieden';
+    }
+  }
+**/
 }
