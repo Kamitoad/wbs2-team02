@@ -1,3 +1,16 @@
+button {
+  width: 100px;
+  height: 100px;
+  font-size: 2rem;
+  justify-content: center;
+  display: block;
+  margin: auto;
+  padding: auto;
+  border: 3px lightcoral solid;
+  background-color: transparent;
+}
+
+/* 
 .square {
     width: 100px;
     height: 100px;
@@ -12,3 +25,4 @@
     background-color: #f0f0f0;
   }
   
+  */

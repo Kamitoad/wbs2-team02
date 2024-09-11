@@ -1,3 +1,19 @@
+import { Component, Input } from "@angular/core";
+
+@Component({
+  selector: 'app-player',
+  templateUrl: './player.component.html',
+  styleUrls: ['./player.component.css'],
+  standalone: true
+})
+
+export class PlayerComponent {
+  @Input() username!: string;
+  @Input() symbol!: 'X' | 'O';
+  @Input() elo!: number;
+}
+
+/*
 import {Component, Input} from '@angular/core';
 
 @Component({
@@ -13,3 +29,4 @@ export class PlayerComponent {
   @Input() playerIcon!: string;
   @Input() isCurrentPlayer!: boolean;
 }
+*/

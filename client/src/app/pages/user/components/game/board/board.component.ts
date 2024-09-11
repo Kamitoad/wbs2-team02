@@ -1,3 +1,25 @@
+import { Component } from "@angular/core";
+import { SquareComponent } from "../square/square.component";
+import { GameService } from "../../../services/game.service";
+
+@Component({
+  selector: 'app-board',
+  templateUrl: './board.component.html',
+  styleUrls: ['./board.component.css'],
+  standalone: true,
+  imports: [SquareComponent]
+})
+
+export class BoardComponent {
+  board: ('X' | 'O' | null)[][] = Array(3).fill(null).map(() => Array(3).fill(null));
+
+  makeMove(rowIndex: number, colIndex: number) {
+    // Hier könnte man dann die Logik zum Setzen eines Spielzugs implementieren
+    console.log(`Button clicked: Row ${rowIndex}, Col ${colIndex}`);
+  }
+}
+
+/*
 import { Component, Input } from '@angular/core';
 import { SquareComponent } from '../square/square.component';
 import { GameService } from '../../../services/game.service';
@@ -29,3 +51,4 @@ export class BoardComponent {
     console.log('Square clicked at index:', index);
   }
 }
+*/

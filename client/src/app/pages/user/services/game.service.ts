@@ -1,105 +1,53 @@
-import {Injectable, Inject, PLATFORM_ID} from '@angular/core';
-import {BehaviorSubject, Observable} from "rxjs";
-import {HttpClient} from '@angular/common/http';
-import {isPlatformBrowser} from '@angular/common';
-import io from 'socket.io-client'; 
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import io from 'socket.io-client';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameService {
-  private currentGameStateSubject = new BehaviorSubject<any | null>(null);
-  currentGameState$ = this.currentGameStateSubject.asObservable();
+  private apiUrl = 'http://localhost:3000/api/game';
+  private socket = io('http://localhost:3000'); // WebSocket-Verbindung
+  private currentPlayer: 'X' | 'O' = 'X'; // Der Spieler, der aktuell am Zug ist
 
-  private errorSubject = new BehaviorSubject<string | null>(null);
-  error$ = this.errorSubject.asObservable();
-
-  private gameStatusSubject = new BehaviorSubject<string | null>(null);
-  gameStatus$ = this.gameStatusSubject.asObservable();
-
-  private socket: any;
-  private baseUrl: string;  // Base URL for API requests
-
-  constructor(
-    private http: HttpClient,
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {
-    this.baseUrl = isPlatformBrowser(this.platformId) ? '' : 'http://localhost:3000';
-
-    if (isPlatformBrowser(this.platformId)) {
-      this.socket = io('http://localhost:3000/ws-game');
-    
-      this.socket.on('game-update', (gameState: any) => {
-        this.updateGameState(gameState);
-      });
-    
-      this.socket.on('game-error', (error: any) => {
-        console.error('Game error:', error);
-        this.errorSubject.next(error.message);
-      });
-    
-      this.socket.on('join-game-success', () => {
-        this.errorSubject.next(null);  // Clear error on successful join
-      });
-    }    
+  constructor(private http: HttpClient) {
+    this.setupSocketListeners();
   }
 
-  joinGame(gameId: string): Observable<any> {
-    return this.http.patch<any>(`${this.baseUrl}/api/game/join/${gameId}`, {}, {
-      headers: {'Content-Type': 'application/json'}
+  // Methode zum Erstellen eines neuen Spiels
+  createGame(): Observable<any> {
+    return this.http.post(`${this.apiUrl}`, {});
+  }
+
+  // Methode zum Abrufen des Spielstatus
+  getGameState(gameId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${gameId}`);
+  }
+
+  // Methode zum Ausführen eines Zuges
+  makeMove(gameId: number, row: number, col: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${gameId}/move`, { row, col, player: this.currentPlayer });
+  }
+
+  // Methode zur Überprüfung des Gewinners
+  checkWinner(gameId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${gameId}/winner`);
+  }
+
+  // WebSocket-Verbindung einrichten
+  private setupSocketListeners() {
+    this.socket.on('move', (data: any) => {
+      // Handle move updates
+    });
+
+    this.socket.on('winner', (data: any) => {
+      // Handle winner updates
     });
   }
 
-  leaveGame(gameId: string): Observable<any> {
-    return this.http.patch<any>(`${this.baseUrl}/api/game/leave/${gameId}`, {}, {
-      headers: {'Content-Type': 'application/json'}
-    });
+  // Methode zum Emitten von Zügen
+  emitMove(gameId: number, row: number, col: number) {
+    this.socket.emit('move', { gameId, row, col, player: this.currentPlayer });
   }
-
-  emitJoinGame(gameId: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const userId = this.getUserIdFromLocalStorage();
-      this.socket.emit('joinGame', {gameId, userId});
-
-      const successHandler = () => {
-        this.socket.off('join-game-success', successHandler);
-        this.socket.off('game-error', errorHandler);
-        resolve();
-      };
-
-      const errorHandler = (error: any) => {
-        this.socket.off('join-game-success', successHandler);
-        this.socket.off('game-error', errorHandler);
-        reject(error);
-      };
-
-      this.socket.on('join-game-success', successHandler);
-      this.socket.on('game-error', errorHandler);
-    });
-  }
-
-  private updateGameState(gameState: any) {
-    this.currentGameStateSubject.next(gameState);
-    this.gameStatusSubject.next('Spiel läuft');  // Update game status
-  }
-
-  private getUserIdFromLocalStorage(): number {
-    const savedUser = localStorage.getItem('user');
-    return savedUser ? JSON.parse(savedUser).userId : null;
-  }
-
-  // Funktion, um einen Zug zu machen
-  makeMove(gameId: string, row: number, col: number): void {
-    const userId = this.getUserIdFromLocalStorage();
-    this.socket.emit('make-move', {gameId, userId, row, col});
-  }
-
-// WebSocket-Event-Listener für den Zug
-  listenForMoves() {
-    this.socket.on('move-made', (moveData: any) => {
-      // Aktualisiere den Spielstatus
-      this.updateGameState(moveData);
-    });
-  }
-
 }

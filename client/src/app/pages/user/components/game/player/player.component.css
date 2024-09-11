@@ -1,3 +1,29 @@
+.player-info {
+  text-align: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+img {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+}
+
+div.plaer-info{
+  border: 2px solid #ccc;
+  padding: 20px;
+  text-align: center;
+  border-radius: 10px;
+  margin: 0px 10px 0px 10px;
+  background-color: darkblue;
+  p{
+    font-weight: bold;
+    color: orange;
+  }
+}
+
+/*
 .player-container {
   border: 2px solid #ccc;
   padding: 20px;
@@ -13,3 +39,4 @@
   font-weight: bold;
   color: green;
 }
+*/

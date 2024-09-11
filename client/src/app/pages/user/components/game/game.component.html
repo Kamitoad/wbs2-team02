@@ -1,38 +1,45 @@
 <div class="game-container">
-  <div class="grid-container">
-    <div class="grid-item player-left">
-      @if (player1Name && player1Score && player1Icon) {
-        <app-player
-          [playerName]="player1Name"
-          [playerScore]="player1Score"
-          [playerIcon]="player1Icon"
-          [isCurrentPlayer]="isPlayer1Turn">
-        </app-player>
-      }
-    </div>
-
-    <div class="grid-item board-center">
-      <app-board [board]="gameBoard"></app-board>
-    </div>
-
-    <div class="grid-item player-right">
-      @if (player2Name && player2Score && player2Icon) {
-        <app-player
-          [playerName]="player2Name"
-          [playerScore]="player2Score"
-          [playerIcon]="player2Icon"
-          [isCurrentPlayer]="!isPlayer1Turn">
-        </app-player>
-      }
-    </div>
-  </div>
-
-  @if (gameFinished) {
-    <app-modal
-      [isGameFinished]="gameFinished"
-      [resultMessage]="gameResult!"
-      (newGame)="startNewGame()"
-      (end)="quitGame()">
-    </app-modal>
-  }
+    <app-player [username]="'Player 1'" [symbol]="currentPlayer"></app-player>
+    <app-board></app-board>
+    <app-player [username]="'Player 2'" [symbol]="currentPlayer === 'X' ? 'O' : 'X'"></app-player>
 </div>
+<!--
+<div class="game-container">
+    <div class="grid-container">
+      <div class="grid-item player-left">
+        @if (player1Name && player1Score && player1Icon) {
+          <app-player
+            [playerName]="player1Name"
+            [playerScore]="player1Score"
+            [playerIcon]="player1Icon"
+            [isCurrentPlayer]="isPlayer1Turn">
+          </app-player>
+        }
+      </div>
+  
+      <div class="grid-item board-center">
+        <app-board [board]="gameBoard"></app-board>
+      </div>
+  
+      <div class="grid-item player-right">
+        @if (player2Name && player2Score && player2Icon) {
+          <app-player
+            [playerName]="player2Name"
+            [playerScore]="player2Score"
+            [playerIcon]="player2Icon"
+            [isCurrentPlayer]="!isPlayer1Turn">
+          </app-player>
+        }
+      </div>
+    </div>
+  
+    @if (gameFinished) {
+      <app-modal
+        [isGameFinished]="gameFinished"
+        [resultMessage]="gameResult!"
+        (newGame)="startNewGame()"
+        (end)="quitGame()">
+      </app-modal>
+    }
+  </div>
+  -->

@@ -1,5 +1,9 @@
 <div class="board">
-  @for (i of indices; track i) {
-    <app-square [value]="squares[i]" (click)="makeMove(i)"></app-square>
+  @for (row of board; track $index) {
+    <div class="row">
+      @for (square of row; track $index) {
+        <app-square [value]="square" (squareClick)="makeMove($index, $index)"></app-square>
+      }
+    </div>
   }
 </div>

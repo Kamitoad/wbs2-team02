@@ -16,6 +16,12 @@ declare module 'express-session' {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+    // CORS aktivieren
+    app.enableCors({
+      origin: 'http://localhost:4200', // Erlaubt Anfragen von deinem Angular-Frontend
+      credentials: true,
+    });
+
     app.setGlobalPrefix('api');
 
     const secret: string = randomBytes(64).toString('hex')

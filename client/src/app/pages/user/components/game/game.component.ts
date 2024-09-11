@@ -1,3 +1,27 @@
+import { Component } from '@angular/core';
+import { PlayerComponent } from './player/player.component';
+import { BoardComponent } from './board/board.component';
+import { GameService } from '../../services/game.service';
+
+@Component({
+  selector: 'app-game',
+  templateUrl: './game.component.html',
+  styleUrls: ['./game.component.css'],
+  standalone: true,
+  imports: [PlayerComponent, BoardComponent, ]  // Weitere Komponenten und Module später hier importieren
+})
+export class GameComponent {
+  // Spielstatus, Spielerinformationen
+  currentPlayer: 'X' | 'O' = 'X';  // Startspieler
+  gameOver: boolean = false;
+
+  constructor(gameservice:GameService ){}
+}
+
+
+
+/**
+
 import { Component, OnInit } from '@angular/core';
 import { PlayerComponent } from "./player/player.component";
 import { BoardComponent } from "./board/board.component";
@@ -79,3 +103,5 @@ export class GameComponent implements OnInit {
     // Logik, um das Spiel zu verlassen und zum Hauptbildschirm zu wechseln
   }
 }
+
+ */

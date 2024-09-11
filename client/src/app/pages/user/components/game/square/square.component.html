@@ -1,1 +1,6 @@
+<button (click)="onClick()" [disabled]="value !== null">
+    {{ value || '' }}
+  </button>
+<!--
 <div class="square" @if(value) [innerText]="value" @else (click)="handleClick()"></div>
+-->

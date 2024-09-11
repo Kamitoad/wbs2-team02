@@ -1,5 +1,24 @@
 .board {
   display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 Spalten */
+  gap: 10px;
+  margin: 10px;
+  justify-content: center;
+
+  .row {
+    display: contents;
+  }
+
+  app-square {
+    border: 1px rebeccapurple solid;
+    padding: 10px 0px;
+    margin: auto 0px;
+  }
+}
+
+/*
+.board {
+  display: grid;
   grid-template-columns: repeat(3, 100px);
   grid-template-rows: repeat(3, 100px);
   gap: 5px;
@@ -16,3 +35,5 @@
   border: 1px solid #ccc;
   cursor: pointer;
 }
+
+*/
