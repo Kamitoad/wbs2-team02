@@ -33,6 +33,7 @@
 }
 
 .statistics-card, .matches-card {
+  z-index: -1;
   width: 80%;
   margin-bottom: 20px;
   padding: 20px;
@@ -41,15 +42,23 @@
   background-color: #f9f9f9;
 }
 
+
 .statistics {
   display: flex;
   justify-content: space-around;
+}
+
+#headerstats{
+  color: #127897;
+  text-align: center;
+  z-index: 1;
 }
 
 .stat {
   padding: 10px;
   border-radius: 5px;
   text-align: center;
+  padding-top:18px;
 }
 
 .win {
@@ -74,4 +83,9 @@
   margin: 5px 0;
   border-radius: 5px;
   border: 1px solid #ddd;
+}
+
+#headermatch{
+  color: #127897;
+  text-align: center;
 }
