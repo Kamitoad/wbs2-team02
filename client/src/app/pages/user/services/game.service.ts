@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable, Subject} from 'rxjs';
+import {tap} from 'rxjs/operators';
 import io from 'socket.io-client';
 
 @Injectable({
@@ -10,6 +11,10 @@ export class GameService {
   private apiUrl = 'http://localhost:3000/api/game';
   private socket = io('http://localhost:3000'); // WebSocket-Verbindung
   private currentPlayer: 'X' | 'O' = 'X'; // Der Spieler, der aktuell am Zug ist
+  gameId!: number; // Speichere die gameId hier für spätere Zugriffe
+
+  // Subject für WebSocket-Zug-Updates
+  moveSubject = new Subject<{ row: number, col: number, player: 'X' | 'O' }>();
 
   constructor(private http: HttpClient) {
     this.setupSocketListeners();
@@ -17,7 +22,11 @@ export class GameService {
 
   // Methode zum Erstellen eines neuen Spiels
   createGame(): Observable<any> {
-    return this.http.post(`${this.apiUrl}`, {});
+    return this.http.post(`${this.apiUrl}`, {}).pipe(
+      tap((response: any) => {
+        this.gameId = response.gameId; // Speichere die gameId beim Erstellen des Spiels
+      })
+    );
   }
 
   // Methode zum Abrufen des Spielstatus
@@ -25,29 +34,28 @@ export class GameService {
     return this.http.get(`${this.apiUrl}/${gameId}`);
   }
 
-  // Methode zum Ausführen eines Zuges
-  makeMove(gameId: number, row: number, col: number): Observable<any> {
-    return this.http.post(`${this.apiUrl}/${gameId}/move`, { row, col, player: this.currentPlayer });
-  }
 
-  // Methode zur Überprüfung des Gewinners
-  checkWinner(gameId: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/${gameId}/winner`);
+  // Methode zum Ausführen eines Zuges
+  makeMove(row: number, col: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${this.gameId}/move`, {row, col, player: this.currentPlayer});
   }
 
   // WebSocket-Verbindung einrichten
+// Debuggen der WebSocket-Verbindung
   private setupSocketListeners() {
-    this.socket.on('move', (data: any) => {
-      // Handle move updates
+    this.socket.on('move', (data: { row: number, col: number, player: 'X' | 'O' }) => {
+      console.log(`Move received from server:`, data);
+      this.moveSubject.next(data);
     });
 
     this.socket.on('winner', (data: any) => {
-      // Handle winner updates
+      console.log(`Winner detected: ${data.winner}`);
     });
   }
 
-  // Methode zum Emitten von Zügen
-  emitMove(gameId: number, row: number, col: number) {
-    this.socket.emit('move', { gameId, row, col, player: this.currentPlayer });
+// Debuggen von Spielzügen
+  emitMove(row: number, col: number) {
+    console.log(`Emitting move: Row: ${row}, Col: ${col}, Player: ${this.currentPlayer}`);
+    this.socket.emit('move', {gameId: this.gameId, row, col, player: this.currentPlayer});
   }
 }

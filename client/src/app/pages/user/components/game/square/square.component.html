@@ -1,6 +1,4 @@
-<button (click)="onClick()" [disabled]="value !== null">
-    {{ value || '' }}
-  </button>
-<!--
-<div class="square" @if(value) [innerText]="value" @else (click)="handleClick()"></div>
--->
+<!-- Kachel-Template mit einfachem Klick-Listener -->
+<button (click)="onClick()">
+  {{ value || '-' }} <!-- Zeige X, O oder ein "-" für ein leeres Feld an -->
+</button>

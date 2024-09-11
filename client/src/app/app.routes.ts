@@ -17,7 +17,6 @@ export const routes: Routes = [
   { path: 'queue', component: QueueComponent },
   { path: 'game', component: GameComponent },
   { path: 'game/:gameId', component: GameComponent },
-
   { path: 'admin/user', component: UserdataComponent },
   { path: 'admin/game', component: GamedataComponent,
     children: [

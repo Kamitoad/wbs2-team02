@@ -8,18 +8,9 @@
 </div>
 
 <!--
-<div class="player">
-  <div class="player-status">
-    <p>{{ isCurrentPlayer ? 'Du bist dran' : 'Gegner ist dran' }}</p>
-  </div>
-  <div class="player-info">
-    <div class="player-icon">
-      <img [src]="playerIcon" alt="Player Icon">
-    </div>
-    <div class="player-score">
-      <p>{{ playerName }}</p>
-      <p>Score: {{ playerScore }}</p>
-    </div>
-  </div>
+<div [class.current-player]="isCurrentPlayer">
+  <h2>{{ playerName }}</h2>
+  <p>Score: {{ playerScore }}</p>
+  <p>Icon: {{ playerIcon }}</p>
 </div>
 -->
