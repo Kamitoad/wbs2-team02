@@ -1,6 +1,6 @@
 <img
   *ngIf="profilePic; else fallbackImage"
-  class="img-fluid bild sizeRegulator roundImage"
+  class="bild sizeRegulator roundImage"
   [src]="window.location.protocol + '//' + window.location.host + '/api/user/profilepic/' + profilePic"
   alt="Profile Picture">
 
