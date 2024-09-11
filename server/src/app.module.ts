@@ -14,8 +14,6 @@ import { UserdataGateway } from "./modules/admin/gateways/userdata/userdata.gate
 import { GamedataController } from "./modules/admin/controllers/gamedata/gamedata.controller";
 import { GamedataService } from "./modules/admin/services/gamedata/gamedata.service";
 import { GamedataGateway } from "./modules/admin/gateways/gamedata/gamedata.gateway";
-import { UserController } from "./modules/user/controllers/user.controller";
-import { UserService } from "./modules/user/services/user.service";
 import { QueueController } from "./modules/user/controllers/queue/queue.controller";
 import { QueueService } from "./modules/user/services/queue/queue.service";
 import { QueueGateway } from "./modules/user/gateways/queue/queue.gateway";

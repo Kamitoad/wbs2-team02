@@ -41,8 +41,8 @@ h3 {
 
 .profile-pic {
   fill: #bd2a2c;
-  width: 5rem;
-  height: 5rem;
+  width: 10rem;
+  height: 10rem;
   border-radius: 75%;
 }
 
@@ -75,12 +75,11 @@ h3 {
 
 .stat {
   color: white;
-
   text-align: center;
   height: 2.2rem;
   width: 17rem;
   border-radius: 3rem;
-  border: 1rem #127897;
+  border: 2px solid #127897;
   margin-bottom: 1rem;
 }
 
@@ -96,12 +95,22 @@ h3 {
   background-color: #BD2A2C;
 }
 
-.match {
-  font-family: Roboto Condensed, sans-serif;
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-  margin-bottom: 2rem;
+.opponent, .user {
+  background-color: white;
+  color: #127897;
+  text-align: center;
+  height: 2.2rem;
+  width: 17rem;
+  border-radius: 3rem;
+  border: 2px solid #127897;
+  margin-bottom: 1rem;
+}
+
+.result{
+  text-align: center;
+  height: 2.2rem;
+  width: 17rem;
+  border-radius: 3rem;
+  border: 2px solid #127897;
+  margin-bottom: 1rem;
 }
