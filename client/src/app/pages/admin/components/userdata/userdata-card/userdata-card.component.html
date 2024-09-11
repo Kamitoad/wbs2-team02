@@ -1,16 +1,15 @@
-<div class="rounded-5 custom-card p-3">
+<div class="d-none d-xxl-block rounded-5 custom-card p-3">
   <div class="row mx-2">
     <div class="col-4">
       <div class="row d-flex align-items-center h-100 me-2">
         <div class="hstack">
           <div class="me-4">
-            <img [src]="user.profilePic || '/assets/default-profile.png'" alt="Profilbild eines Benutzers" class="rounded-circle" width="100px"
-                 height="100px">
+            <app-profile-pic [userName]="user.userName"></app-profile-pic>
           </div>
-          <div class="me-4 text-start">
-            <h5><span class="fw-semibold">User: </span>{{user.userId}}</h5>
-            <h5 class="fw-semibold">{{user.userName}}</h5>
-            <h6><span class="fw-semibold">Eloscore: </span>{{user.elo}}</h6>
+          <div class="me-4 text-start w-50 word-wrap">
+            <h5><span class="fw-semibold">User: </span>{{ user.userId }}</h5>
+            <h5 class="fw-semibold">{{ user.userName }}</h5>
+            <h6><span class="fw-semibold">Eloscore: </span>{{ user.elo }}</h6>
             <h6 class="mb-0"><span class="fw-semibold">Rolle: </span>
               @if (user.role == 'admin') {
                 <span>Admin</span>
@@ -48,18 +47,81 @@
     </div>
     <div class="col-3">
       <div class="row d-flex align-items-center h-100">
-        <p class="mb-0 p-0 text-center fw-semibold">
-          Match-Statistiken:
+        <div class="text-center">
+          <p class="mb-0 p-0 fw-semibold">
+            Match-Statistiken:
+          </p>
+          <div class="border-2 border border-win rounded-pill px-3 me-2 my-1 w-100">
+            <span>{{ user.totalWins }} Gewonnen</span>
+          </div>
+          <div class="border-2 border border-tie rounded-pill px-3 me-2 my-1 w-100">
+            <span>{{ user.totalTies }} Unentschieden</span>
+          </div>
+          <div class="border-2 border border-lose rounded-pill px-3 me-2 my-1 w-100">
+            <span>{{ user.totalLosses }} Verloren</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="d-block d-xxl-none rounded-5 custom-card p-3">
+  <div class="hstack mb-3">
+    <div class="me-4">
+      <img [src]="user.profilePic || '/assets/default-profile.png'" alt="Profilbild eines Benutzers"
+           class="rounded-circle" width="50px"
+           height="50px">
+    </div>
+    <div class="me-4 word-wrap w-75">
+      <h5><span class="fw-semibold">User: </span>{{ user.userId }}</h5>
+      <h5 class="fw-semibold mb-2">
+        {{ user.userName }}
+      </h5>
+      <h6><span class="fw-semibold">Eloscore: </span>{{ user.elo }}</h6>
+      <h6 class="mb-0"><span class="fw-semibold">Rolle: </span>
+        @if (user.role == 'admin') {
+          <span>Admin</span>
+        } @else if (user.role == 'user') {
+          <span>User</span>
+        } @else {
+          <span>Fehler</span>
+        }
+      </h6>
+    </div>
+  </div>
+  <div class="mb-3 word-wrap">
+    <p class="mb-3">
+      <span class="fw-semibold">Email:</span> <br>
+      {{ user.email }}
+    </p>
+    <div class="row w-100">
+      <div class="col-6">
+        <p class="mb-0">
+          <span class="fw-semibold">Vorname: </span><br>
+          {{ user.firstName }}
         </p>
-        <div class="text-center border-2 border border-win rounded-pill px-3 me-2 my-1 w-100">
-          <span>{{ user.totalWins }} Gewonnen</span>
-        </div>
-        <div class="text-center border-2 border border-tie rounded-pill px-3 me-2 my-1 w-100">
-          <span>{{ user.totalTies }} Unentschieden</span>
-        </div>
-        <div class="text-center border-2 border border-lose rounded-pill px-3 me-2 my-1 w-100">
-          <span>{{ user.totalLosses }} Verloren</span>
-        </div>
+      </div>
+      <div class="col-6">
+        <p class="mb-0">
+          <span class="fw-semibold">Nachname: </span><br>
+          {{ user.lastName }}
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="row d-flex align-items-center h-100">
+    <p class="mb-0 p-0 text-center fw-semibold">
+      Match-Statistiken:
+    </p>
+    <div class="px-3">
+      <div class="text-center border-2 border border-win rounded-pill my-1">
+        <span>{{ user.totalWins }} Gewonnen</span>
+      </div>
+      <div class="text-center border-2 border border-tie rounded-pill my-1">
+        <span>{{ user.totalTies }} Unentschieden</span>
+      </div>
+      <div class="text-center border-2 border border-lose rounded-pill my-1">
+        <span>{{ user.totalLosses }} Verloren</span>
       </div>
     </div>
   </div>

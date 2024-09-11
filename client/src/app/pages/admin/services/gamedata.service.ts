@@ -41,8 +41,8 @@ export class GamedataService {
         this.addUserToQueue(user);
       });
 
-      this.gameSocket.on('queue-user-removed', (user: any) => {
-        this.removeUserFromQueue(user.userId);
+      this.gameSocket.on('queue-user-removed', (userId: number) => {
+        this.removeUserFromQueue(userId);
       });
     }
     this.loadInitialCurrentGames();

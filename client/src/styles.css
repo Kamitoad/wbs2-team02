@@ -29,6 +29,10 @@ body{
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+.roundedBoarders{
+  border-radius: 20px;
+}
+
 .border-tie {
   border-color: #127897 !important;
 }
@@ -45,10 +49,28 @@ body{
   font-size: 60px;
 }
 
+.vs-text-small {
+  font-size: 30px;
+}
+
+.font-small {
+  font-size: 18px;
+}
+
 .custom-container {
   background-color: #00a8cc;
   color: white;
   height: 100vh;
+}
+
+.error-message{
+  color: #bd2a2c;
+}
+
+.blueline {
+  border-width: 2px;
+  color: #00a8cc;
+  opacity: 1;
 }
 
 .error-message{

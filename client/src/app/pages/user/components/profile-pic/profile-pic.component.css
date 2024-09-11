@@ -1,0 +1,11 @@
+.sizeRegulator  {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  object-position: center;
+}
+
+.roundImage {
+  border-radius: 50%;
+  overflow: hidden;
+}
