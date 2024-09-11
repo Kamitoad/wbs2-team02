@@ -49,7 +49,7 @@ export class QueueComponent {
           this.startCountdown -= 1;
           if (this.startCountdown <= 0) {
             clearInterval(countdownInterval);
-            this.router.navigate([`/game/${this.gameId}`]); // Weiterleitung zur Spiel-Route
+            this.router.navigate([`/game/${this.gameId}`]);
           }
         }, 1000);
       }

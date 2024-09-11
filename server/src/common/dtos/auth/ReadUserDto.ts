@@ -1,5 +1,7 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {User} from "../../../database/User";
+import {Column} from "typeorm";
+import {RoleEnum} from "../../../database/enums/RoleEnum";
 
 export class ReadUserDto {
     @ApiProperty( { example: "1"})
@@ -10,6 +12,9 @@ export class ReadUserDto {
 
     @ApiProperty( { example: "max@mustermann.de"})
     email: string;
+
+    @Column()
+    role: RoleEnum;
 
     @ApiProperty( { example: "Max"})
     firstName: string;
@@ -36,6 +41,7 @@ export class ReadUserDto {
         this.userId = user.userId;
         this.userName = user.userName;
         this.email = user.email;
+        this.role = user.role;
         this.firstName = user.firstName;
         this.lastName = user.lastName;
         this.elo = user.elo;

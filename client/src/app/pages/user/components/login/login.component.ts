@@ -33,7 +33,7 @@ export class LoginComponent {
     }
     this.authService.login(user).subscribe({
       next: (response) => {
-        // Hier prüfen, ob die Rolle 'admin' ist und entsprechend weiterleiten
+        console.log(response)
         if (response.role === 'admin') {
           this.router.navigate(['/admin/user']);
         } else {
@@ -41,7 +41,6 @@ export class LoginComponent {
         }
       },
       error: (error) => {
-        // Fehler anzeigen
         this.statusMessage = error.error.message || "Ein unbekannter Fehler ist aufgetreten";
         this.removeStatusMessage();
       }

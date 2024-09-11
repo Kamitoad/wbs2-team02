@@ -39,10 +39,9 @@ export class QueueService {
 
       this.socket.on('queue-error', (error: any) => {
         console.error('Queue error:', error);
-        this.errorSubject.next(error.message);  // Setze den Fehler im Fehler-Subject
+        this.errorSubject.next(error.message);
       });
 
-      // Setze den Fehler auf null, wenn die Verbindung erfolgreich ist
       this.socket.on('join-queue-success', () => {
         this.errorSubject.next(null);
       });
@@ -95,7 +94,7 @@ export class QueueService {
 
   private readOpponent(opponent: any) {
     this.opponentSubject.next(opponent);
-    this.gameStatusSubject.next('Spiel wird gestartet');  // Status aktualisieren
+    this.gameStatusSubject.next('Spiel wird gestartet');
   }
 
   private getUserIdFromLocalStorage(): number {

@@ -94,6 +94,7 @@ export class AuthService {
 
     async getUserByUserName(userName: string) {
         const user = await this.userRepository.findOne({where: {userName}});
+        console.log(user)
         if (!user) {
             throw new NotFoundException('User nicht gefunden');
         }
