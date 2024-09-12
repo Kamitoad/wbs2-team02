@@ -49,7 +49,7 @@
   <div class="matches-card">
     <h3>Meine gespielten Matches</h3>
 
-    @for (match of userMatches; track match.gameId) {
+    @for (match of userMatches.slice().reverse(); track match.gameId) {
       <div class="matchrow">
       <div class="match opponent" [ngClass]="getMatchResultClass(match)">
         <p>{{getMatchOpponent(match)}}</p><!--{{ match.player1.userName }} {{match.changeEloPlayer1}}-->
