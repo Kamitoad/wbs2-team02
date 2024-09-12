@@ -70,14 +70,14 @@ export class ProfileComponent implements OnInit {
     else if (match.loser===this.currentUser.userId){return 'Verloren'}
     return 'Unentschieden';
   }
-/**
+
   getMatchSelf(match:any):any{
-    if(match.match.player1.userId===this.currentUser.userId){return match.player1.userName.toString()}
-    else return match.player2.userName.toString()
+    if(match.player1.userId===this.currentUser.userId){return `${match.player1.userName} (${match.changeEloPlayer1})`}
+    else return `${match.player2.userName} (${match.changeEloPlayer2})`
   }
   getMatchOpponent(match:any):any{
-    if(match.match.player1.userId!==this.currentUser.userId){return match.player2.userName.toString()}
-    else return match.player1.userName.toString()
+    if(match.player1.userId!==this.currentUser.userId){return `${match.player1.userName} (${match.changeEloPlayer1})`}
+    else return `${match.player2.userName} (${match.changeEloPlayer2})`
   }
-**/
+
 }
