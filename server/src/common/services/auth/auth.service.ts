@@ -118,9 +118,12 @@ export class AuthService {
 
     async logout(userId: number) {
         const user = await this.getUserByUserId(userId);
-
         if (!user) {
             throw new NotFoundException('User nicht gefunden');
+        }
+
+        if (!user.inQueue) {
+            throw new BadRequestException("Nutzer nicht in der Queue");
         }
 
         user.queueStartTime = null;

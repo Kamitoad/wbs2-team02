@@ -124,6 +124,8 @@ export class AuthController {
         } catch (error) {
             if (error instanceof NotFoundException) {
                 throw new NotFoundException(error.message);
+            } else if (error instanceof BadRequestException) {
+                throw new BadRequestException(error.message);
             } else if (error instanceof InternalServerErrorException) {
                 throw new InternalServerErrorException("Fehler beim Betreten der Queue");
             }
