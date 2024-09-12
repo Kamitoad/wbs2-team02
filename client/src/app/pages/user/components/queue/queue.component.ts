@@ -60,8 +60,23 @@ export class QueueComponent {
     }, 1000)
   }
 
+  ngOnDestroy(): void {
+    this.leaveQueue();
+  }
+
+  joinQueue() {
+    this.queueService.initiateSocketConnection();
+
+    this.queueService.emitJoinQueue()
+      .then(() => {
+      })
+      .catch((error) => {
+        console.error('Error detected:', error);
+      });
+  }
+
   leaveQueue() {
-    this.router.navigate(['/queuebutton']);
+    this.router.navigate(['/profile']);
     this.queueService.leaveQueue().subscribe();
   }
 }
