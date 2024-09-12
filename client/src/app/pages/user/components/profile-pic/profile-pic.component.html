@@ -1,12 +1,11 @@
-<img
-  *ngIf="profilePic; else fallbackImage"
-  class="bild sizeRegulator roundImage"
-  [src]="window.location.protocol + '//' + window.location.host + '/api/user/profilepic/' + profilePic"
-  alt="Profile Picture">
-
-<ng-template #fallbackImage>
+@if (profilePic) {
+  <img
+    class="bild sizeRegulator roundImage"
+    [src]="window.location.protocol + '//' + window.location.host + '/api/user/profilepic/' + profilePic"
+    alt="Profile Picture">
+} @else {
   <img
     class="img-fluid bild sizeRegulator roundImage"
     src="../../../../../assets/default-profile.png"
     alt="Default Profile Picture">
-</ng-template>
+}
