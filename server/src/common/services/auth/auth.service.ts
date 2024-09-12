@@ -116,6 +116,18 @@ export class AuthService {
         return user;
     }
 
+    async logout(userId: number) {
+        const user = await this.getUserByUserId(userId);
+
+        if (!user) {
+            throw new NotFoundException('User nicht gefunden');
+        }
+
+        user.queueStartTime = null;
+        user.inQueue = false;
+        await this.userRepository.save(user);
+    }
+
     async getUserByUserName(userName: string) {
         const user = await this.userRepository.findOne({where: {userName}});
         if (!user) {

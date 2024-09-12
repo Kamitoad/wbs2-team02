@@ -116,8 +116,17 @@ export class AuthController {
     @Post('logout')
     @HttpCode(200)
     @UseGuards(IsLoggedInGuard)
-    logout(@Session() session: SessionData): OkDto {
-        session.currentUser = undefined;
-        return new OkDto(true, 'User erfolgreich ausgeloggt');
+    async logout(@Session() session: SessionData): Promise<OkDto> {
+        try {
+            await this.authService.logout(session.currentUser);
+            session.currentUser = undefined;
+            return new OkDto(true, 'User erfolgreich ausgeloggt');
+        } catch (error) {
+            if (error instanceof NotFoundException) {
+                throw new NotFoundException(error.message);
+            } else if (error instanceof InternalServerErrorException) {
+                throw new InternalServerErrorException("Fehler beim Betreten der Queue");
+            }
+        }
     }
 }
