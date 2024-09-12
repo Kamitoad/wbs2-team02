@@ -42,6 +42,27 @@ export class AuthService {
     }
 
     private async validateRegister(createUserDto: CreateUserDto) {
+        const usernameRegex = /^[a-zA-Z0-9]{6,20}$/;
+
+        createUserDto.userName = createUserDto.userName.trim();
+        createUserDto.firstName = createUserDto.firstName.trim();
+        createUserDto.lastName = createUserDto.lastName.trim();
+        createUserDto.email = createUserDto.email.trim();
+        createUserDto.confirmEmail = createUserDto.confirmEmail.trim();
+        createUserDto.password = createUserDto.password.trim();
+        createUserDto.confirmPassword = createUserDto.confirmPassword.trim();
+
+        // Validierung für den Benutzernamen
+        if (!usernameRegex.test(createUserDto.userName)) {
+            if (createUserDto.userName.length < 6) {
+                throw new BadRequestException("Dein Nutzername muss mindestens 6 Zeichen lang sein");
+            } else if (createUserDto.userName.length > 20) {
+                throw new BadRequestException("Dein Nutzername darf nicht länger als 20 Zeichen sein");
+            } else {
+                throw new BadRequestException("Dein Nutzername darf nur Buchstaben und Zahlen enthalten");
+            }
+        }
+
         //checks if email is already in auth table of database
         const checkUserByEmail = await this.userRepository.findOne({
             where: {email: createUserDto.email}
@@ -84,6 +105,9 @@ export class AuthService {
     }
 
     async login(loginDto: LoginDto): Promise<User> {
+        loginDto.userName = loginDto.userName.trim();
+        loginDto.password = loginDto.password.trim();
+
         const user: User | null = await this.getUserByUserName(loginDto.userName);
         const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
         if (!isPasswordValid) {

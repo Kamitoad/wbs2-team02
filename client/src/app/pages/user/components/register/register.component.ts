@@ -37,6 +37,29 @@ export class RegisterComponent {
   httpclient: HttpClient = inject(HttpClient);
 
   onSubmit() {
+    const usernameRegex = /^[a-zA-Z0-9]{6,20}$/;
+
+    this.userName = this.userName.trim();
+    this.firstName = this.firstName.trim();
+    this.lastName = this.lastName.trim();
+    this.email = this.email.trim();
+    this.confirmEmail = this.confirmEmail.trim();
+    this.password = this.password.trim();
+    this.confirmPassword = this.confirmPassword.trim();
+
+    // Validierung für den Benutzernamen
+    if (!usernameRegex.test(this.userName)) {
+      if (this.userName.length < 6) {
+        this.statusMessage = "Dein Nutzername muss mindestens 6 Zeichen lang sein";
+      } else if (this.userName.length > 20) {
+        this.statusMessage = "Dein Nutzername darf nicht länger als 20 Zeichen sein";
+      } else {
+        this.statusMessage = "Dein Nutzername darf nur Buchstaben und Zahlen enthalten";
+      }
+      this.removeStatusMessage();
+      return;
+    }
+
     if (this.email !== this.confirmEmail) {
       this.statusMessage = "Bitte bestätige deine Email";
       this.removeStatusMessage();
@@ -92,7 +115,7 @@ export class RegisterComponent {
             }
           }
         } else {
-          this.statusMessage = "Ein unbekannter Fehler ist aufgetreten.";
+          this.statusMessage = error.error.message || "Ein unbekannter Fehler ist aufgetreten.";
         }
         this.removeStatusMessage()
       }

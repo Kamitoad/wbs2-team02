@@ -34,6 +34,9 @@ export class LoginComponent {
   }
 
   onSubmit() {
+    this.userName = this.userName.trim();
+    this.password = this.password.trim();
+
     let user: any = {
       userName: this.userName,
       password: this.password,
