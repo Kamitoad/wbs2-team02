@@ -12,11 +12,14 @@ import {QueueComponent} from "./pages/user/components/queue/queue.component";
 export const routes: Routes = [
 
   { path: 'login', component: LoginComponent},
+  { path: '', redirectTo: 'login', pathMatch: 'full'},
+
   { path: 'register', component: RegisterComponent},
   { path: 'profile', component: ProfileComponent},
-  { path: 'admin/editUser', component: UserdataComponent },
-  {path: 'editPassword', component: EditPasswordProfilepicComponent },
+  { path: 'editPassword', component: EditPasswordProfilepicComponent },
   { path: 'queue', component: QueueComponent },
+
+  { path: 'admin/editUser', component: UserdataComponent },
 
   { path: 'admin/user', component: UserdataComponent },
   { path: 'admin/game', component: GamedataComponent,
@@ -29,4 +32,8 @@ export const routes: Routes = [
       },
     ]
   },
+
+  { path: 'admin', redirectTo: 'admin/user', pathMatch: 'full' },
+
+  { path: '**', redirectTo: 'login', pathMatch: 'full'},
 ];
