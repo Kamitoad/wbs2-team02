@@ -33,7 +33,6 @@ export class LoginComponent {
     }
     this.authService.login(user).subscribe({
       next: (response) => {
-        console.log(response)
         if (response.role === 'admin') {
           this.router.navigate(['/admin/user']);
         } else {
@@ -41,7 +40,7 @@ export class LoginComponent {
         }
       },
       error: (error) => {
-        this.statusMessage = error.error.message || "Ein unbekannter Fehler ist aufgetreten";
+        this.statusMessage = "Falscher Nutzername oder Passwort";
         this.removeStatusMessage();
       }
     });

@@ -13,66 +13,120 @@
       <div class="col"></div>
     </div>
   </div>
-  <h1 class="text-center">Schön dass du dabei sein möchtest!</h1>
-  <div class="row my-5">
-    <div class="col"></div>
+  <h1 class="text-center my-5">Schön dass du dabei sein möchtest!</h1>
+  <div class="d-none d-xxl-block">
+    <div class="row my-5">
+      <div class="col"></div>
+    </div>
   </div>
   <!---->
 
-  <div class="row justify-content-center">
-    <div class="col-6">
-      <form (ngSubmit)="onSubmit()">
-        <div class="login-form rounded-5 px-5 pt-4 pb-3 w-100 mb-4">
-          <h2 class="text-center mb-4">Gebe deine Daten zum Registrieren ein</h2>
+  <div class="d-none d-xxl-block">
+    <div class="row justify-content-center w-auto m-0">
+      <div class="col-6">
+        <form (ngSubmit)="onSubmit()">
+          <div class="login-form rounded-5 px-5 pt-4 pb-3 w-100 mb-4">
+            <h2 class="text-center mb-4">Gebe deine Daten zum Registrieren ein</h2>
 
-          <div class="row mb-3">
-            <div class="col-12">
-              <input class="border border-tie border-2 rounded-pill w-100 p-2 text-center"
-                     type="text" placeholder="Username" [(ngModel)]="userName" name="userName" required>
+            <div class="row mb-3">
+              <div class="col-12">
+                <input class="border border-tie border-2 rounded-pill w-100 p-2 text-center"
+                       type="text" placeholder="Username" [(ngModel)]="userName" name="userName" required>
+              </div>
+            </div>
+
+            <div class="hstack mb-3">
+              <input class="border border-tie border-2 rounded-pill me-3 w-50 p-2"
+                     type="text" name="firstName" placeholder="Vorname" [(ngModel)]="firstName" required/>
+              <input class="border border-tie border-2 rounded-pill ms-3 w-50 p-2"
+                     type="text" name="lastName" placeholder="Nachname" [(ngModel)]="lastName" required/>
+            </div>
+
+            <div class="hstack mb-3">
+              <input class="border border-tie border-2 rounded-pill me-3 w-50 p-2"
+                     type="email" name="email" placeholder="Email" [(ngModel)]="email" required/>
+              <input class="border border-tie border-2 rounded-pill ms-3 w-50 p-2"
+                     type="email" name="confirmEmail" placeholder="Email bestätigen" [(ngModel)]="confirmEmail"
+                     required/>
+            </div>
+
+            <div class="hstack mb-3">
+              <input class="border border-tie border-2 rounded-pill me-3 w-50 p-2"
+                     type="password" name="password" placeholder="Passwort" [(ngModel)]="password" required/>
+              <input class="border border-tie border-2 rounded-pill ms-3 w-50 p-2"
+                     type="password" name="confirmPassword" placeholder="Passwort bestätigen"
+                     [(ngModel)]="confirmPassword" required/>
+            </div>
+
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input custom-checkbox border-2" name="agb" id="agb"
+                     [(ngModel)]="agb" value="" required>
+              <label class="form-check-label" for="agb">
+                Für die Nutzung von diesem Service, stimme ich den AGBs und der Datenschutzerklärung zu
+              </label>
+            </div>
+
+            <div [ngClass]="statusMessage == 'Du wurdest erfolgreich registriert' ? 'success-message' : 'error-message'" class="text-end">
+              <span>{{ statusMessage }}</span>
             </div>
           </div>
 
-          <div class="hstack mb-3">
-            <input class="border border-tie border-2 rounded-pill me-3 w-50 p-2"
-              type="text" name="firstName" placeholder="Vorname" [(ngModel)]="firstName" required/>
-            <input class="border border-tie border-2 rounded-pill ms-3 w-50 p-2"
-              type="text" name="lastName" placeholder="Nachname" [(ngModel)]="lastName" required/>
+          <div class="row justify-content-center">
+            <div class="col-4">
+              <button type="submit" class="big-green-button py-2 w-100">
+                <h3 class="mb-0">Registrieren</h3>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="d-block d-xxl-none">
+    <div class="row justify-content-center w-auto m-0">
+      <div class="col-10">
+        <form (ngSubmit)="onSubmit()">
+          <div class="login-form rounded-5 px-5 pt-4 pb-3 w-100 mb-4">
+            <h2 class="text-center mb-4">Gebe deine Daten zum Registrieren ein</h2>
+
+            <input class="border border-tie border-2 rounded-pill mb-3 w-100 p-2"
+                   type="text" placeholder="Username" [(ngModel)]="userName" name="userName" required>
+            <input class="border border-tie border-2 rounded-pill mb-3 w-100 p-2"
+                   type="text" name="firstName" placeholder="Vorname" [(ngModel)]="firstName" required/>
+            <input class="border border-tie border-2 rounded-pill mb-3 w-100 p-2"
+                   type="text" name="lastName" placeholder="Nachname" [(ngModel)]="lastName" required/>
+            <input class="border border-tie border-2 rounded-pill mb-3 w-100 p-2"
+                   type="email" name="email" placeholder="Email" [(ngModel)]="email" required/>
+            <input class="border border-tie border-2 rounded-pill mb-3 w-100 p-2"
+                   type="email" name="confirmEmail" placeholder="Email bestätigen" [(ngModel)]="confirmEmail" required/>
+            <input class="border border-tie border-2 rounded-pill mb-3 w-100 p-2"
+                   type="password" name="password" placeholder="Passwort" [(ngModel)]="password" required/>
+            <input class="border border-tie border-2 rounded-pill mb-3 w-100 p-2"
+                   type="password" name="confirmPassword" placeholder="Passwort bestätigen"
+                   [(ngModel)]="confirmPassword" required/>
+
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input custom-checkbox border-2" name="agb" id="agb-mobile"
+                     [(ngModel)]="agb" value="" required>
+              <label class="form-check-label" for="agb-mobile">
+                Für die Nutzung von diesem Service, stimme ich den AGBs und der Datenschutzerklärung zu
+              </label>
+            </div>
+
+            <div [ngClass]="statusMessage == 'Du wurdest erfolgreich registriert' ? 'success-message' : 'error-message'" class="text-end">
+              <span>{{ statusMessage }}</span>
+            </div>
           </div>
 
-          <div class="hstack mb-3">
-            <input class="border border-tie border-2 rounded-pill me-3 w-50 p-2"
-              type="email" name="email" placeholder="Email" [(ngModel)]="email" required/>
-            <input class="border border-tie border-2 rounded-pill ms-3 w-50 p-2"
-              type="email" name="confirmEmail" placeholder="Email bestätigen" [(ngModel)]="confirmEmail" required/>
+          <div class="row justify-content-center mb-4">
+            <div class="col-8">
+              <button type="submit" class="big-green-button py-2 w-100">
+                <h3 class="mb-0">Registrieren</h3>
+              </button>
+            </div>
           </div>
-
-          <div class="hstack mb-3">
-            <input class="border border-tie border-2 rounded-pill me-3 w-50 p-2"
-              type="password" name="password" placeholder="Passwort" [(ngModel)]="password" required/>
-            <input class="border border-tie border-2 rounded-pill ms-3 w-50 p-2"
-              type="password" name="confirmPassword" placeholder="Passwort bestätigen" [(ngModel)]="confirmPassword" required/>
-          </div>
-
-          <div class="form-check">
-            <input type="checkbox" class="form-check-input custom-checkbox border-2" name="agb" id="agb" [(ngModel)]="agb" value="" required>
-            <label class="form-check-label" for="agb">
-              Für die Nutzung von diesem Service, stimme ich den AGBs und der Datenschutzerklärung zu
-            </label>
-          </div>
-
-          <div class="error-message text-end">
-            <span>{{ "" }}</span>
-          </div>
-        </div>
-
-        <div class="row justify-content-center">
-          <div class="col-4">
-            <button type="submit" class="big-green-button py-2 w-100">
-              <h3 class="mb-0">Registrieren</h3>
-            </button>
-          </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   </div>
 </div>
