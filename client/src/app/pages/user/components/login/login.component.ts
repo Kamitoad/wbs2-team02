@@ -4,6 +4,7 @@ import { AuthService } from '../../../../shared/services/auth/auth.service';
 import {FormsModule} from "@angular/forms";
 import {CommonModule, NgIf} from "@angular/common";
 import {HttpClient} from "@angular/common/http";
+import {ProfileService} from "../../services/profile.service";
 
 @Component({
   selector: 'app-login',
@@ -24,13 +25,24 @@ export class LoginComponent {
   password: string = '';
   statusMessage: string = " ";
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private profileService: ProfileService,
+  ) {}
 
   ngOnInit(): void {
+    /*
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
       this.router.navigate(['profile']);
     }
+    */
+
+    this.profileService.getCurrentUser().subscribe({
+      next: () => { this.router.navigate(['profile']); },
+      error: () => {}
+    });
   }
 
   onSubmit() {
@@ -49,7 +61,7 @@ export class LoginComponent {
           this.router.navigate(['/profile']);
         }
       },
-      error: (error) => {
+      error: () => {
         this.statusMessage = "Falscher Nutzername oder Passwort";
         this.removeStatusMessage();
       }

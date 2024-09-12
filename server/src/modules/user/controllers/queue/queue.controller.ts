@@ -1,6 +1,6 @@
 import {
     BadRequestException,
-    Controller,
+    Controller, Get,
     InternalServerErrorException,
     NotFoundException,
     Patch,
@@ -72,6 +72,56 @@ export class QueueController {
                 throw new NotFoundException(error.message);
             } else if (error instanceof BadRequestException) {
                 throw new BadRequestException(error.message);
+            } else if (error instanceof InternalServerErrorException) {
+                throw new InternalServerErrorException("Fehler beim Betreten der Queue");
+            }
+        }
+    }
+
+    @ApiOkResponse({
+        description: 'Nutzer erfolgreich der Queue beigetreten und Match gefunden ' +
+            '(Wenn kein Match gefunden: opponent: null, gameId: null)',
+        type: User,
+        example: {
+            "opponent": {
+                "userName": "MaxUserman",
+                "userId": 1,
+                "elo": 1000,
+                "profilePic": null
+            },
+            "currentUser": {
+                "userName": "Kamitoad",
+                "elo": 1000,
+                "profilePic": null
+            },
+            "gameId": 1
+        }
+    })
+    @ApiNotFoundResponse({
+        type: ErrorDto,
+        description: 'Benutzer nicht gefunden'
+    })
+    @ApiBadRequestResponse({
+        type: ErrorDto,
+        description: 'Nutzer bereits in der Queue'
+    })
+    @ApiInternalServerErrorResponse({
+        type: ErrorDto,
+        description: 'Fehler beim Betreten der Queue'
+    })
+    @Get('checkIfInGame')
+    @UseGuards(IsLoggedInGuard)
+    async checkIfInGame(
+        @Session() session: SessionData,
+    ): Promise<OkDto> {
+        try {
+            const isInGame: boolean = await this.queueService.checkIfInGame(session.currentUser);
+            return isInGame ?
+                new OkDto(isInGame, 'Nutzer ist bereits in einem laufenden Spiel') :
+                new OkDto(isInGame, 'Nutzer ist nicht in einem laufenden Spiel');
+        } catch (error) {
+            if (error instanceof NotFoundException) {
+                throw new NotFoundException(error.message);
             } else if (error instanceof InternalServerErrorException) {
                 throw new InternalServerErrorException("Fehler beim Betreten der Queue");
             }

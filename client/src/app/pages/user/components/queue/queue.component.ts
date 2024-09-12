@@ -1,9 +1,10 @@
-import {Component} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router, RouterLink} from "@angular/router";
 import {QueueService} from "../../services/queue.service";
 import {AsyncPipe, NgIf} from "@angular/common";
 import {TimeCodePipe} from "../../../../shared/pipes/time-code.pipe";
 import {ProfilePicComponent} from "../profile-pic/profile-pic.component";
+import {ProfileService} from "../../services/profile.service";
 
 @Component({
   selector: 'app-queue',
@@ -18,7 +19,7 @@ import {ProfilePicComponent} from "../profile-pic/profile-pic.component";
   templateUrl: './queue.component.html',
   styleUrl: './queue.component.css'
 })
-export class QueueComponent {
+export class QueueComponent implements OnDestroy, OnInit {
   user: any | null = null;
   opponent: any | null = null;
   waitingTime: number = 0;
@@ -28,12 +29,33 @@ export class QueueComponent {
 
   constructor(
     public queueService: QueueService,
-    private router: Router) {
+    private router: Router,
+    private profileService: ProfileService,
+  ) {
     const savedUser = localStorage.getItem('user');
     this.user = savedUser ? JSON.parse(savedUser) : null;
   }
 
   ngOnInit(): void {
+
+    this.profileService.getCurrentUser().subscribe({
+      next: () => {
+        this.queueService.checkIfInGame().subscribe({
+          next: (res) => {
+            if (res.ok) {
+              this.router.navigate(['profile']);
+            }
+          },
+          error: () => {
+          }
+        });
+      },
+      error: () => {
+        this.router.navigate(['login']);
+      }
+    });
+
+
     this.queueService.opponent$.subscribe((opponent: any) => {
       this.opponent = opponent;
       if (opponent?.gameId) {

@@ -63,6 +63,10 @@ export class QueueService {
     });
   }
 
+  checkIfInGame(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/api/queue/checkIfInGame`);
+  }
+
   initiateSocketConnection() {
     this.socket.on('opponent-data', (opponent: any) => {
       this.opponentSubject.next(opponent);

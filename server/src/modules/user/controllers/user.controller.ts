@@ -28,6 +28,7 @@ import { Response } from 'express';
 
 @ApiTags('user')
 @ApiBearerAuth()
+@UseGuards(IsLoggedInGuard)
 @Controller('user')
 export class UserController {
     constructor(

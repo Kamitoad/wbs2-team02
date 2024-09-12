@@ -29,13 +29,7 @@ export class QueueService {
             throw new BadRequestException('Nutzer bereits in der Queue');
         }
 
-        const ongoingGame = await this.gameRepository.findOne({
-            where: [
-                { player1: user, hasEnded: 0 },
-                { player2: user, hasEnded: 0 }
-            ]
-        });
-        if (ongoingGame) {
+        if (await this.checkIfInGame(userId)) {
             throw new BadRequestException('Nutzer ist bereits in einem laufenden Spiel');
         }
 
@@ -92,7 +86,24 @@ export class QueueService {
         };
     }
 
-    async findMatches(userId: number): Promise<User | null> {
+    async checkIfInGame(userId: number): Promise<any> {
+        const user = await this.userRepository.findOne({ where: { userId } });
+
+        // Error Handling
+        if (!user) {
+            throw new NotFoundException('Benutzer nicht gefunden');
+        }
+
+        const ongoingGame = await this.gameRepository.findOne({
+            where: [
+                { player1: user, hasEnded: 0 },
+                { player2: user, hasEnded: 0 }
+            ]
+        });
+        return !!ongoingGame;
+    }
+
+        async findMatches(userId: number): Promise<User | null> {
         const usersInQueue = await this.userRepository.find({
             where: {inQueue: true},
             order: {queueStartTime: 'ASC'}
