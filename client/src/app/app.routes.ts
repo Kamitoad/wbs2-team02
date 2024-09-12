@@ -11,8 +11,21 @@ import {QueueComponent} from "./pages/user/components/queue/queue.component";
 
 export const routes: Routes = [
 
+  /*
+    If the redirect-routes don't work:
+    Replace this:
+    { path: '', component: LoginComponent},
+    with this:
+    { path: '', redirectTo: 'login', pathMatch: 'full'},
+
+    or vice versa
+
+    I'm not sure if even god knows why...
+  */
+
+
   { path: 'login', component: LoginComponent},
-  { path: '', redirectTo: 'login', pathMatch: 'full'},
+  { path: '', component: LoginComponent},
 
   { path: 'register', component: RegisterComponent},
   { path: 'profile', component: ProfileComponent},
