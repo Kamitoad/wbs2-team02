@@ -1,8 +1,8 @@
 <div class="board">
-  @for (row of board; track $index) {
+  @for (row of board; track rowIndex; let rowIndex = $index) {
     <div class="row">
-      @for (square of row; track $index) {
-        <app-square [value]="square" (squareClick)="makeMove($index, $index)"></app-square>
+      @for (square of row; track colIndex; let colIndex = $index) {
+        <app-square [value]="square" (squareClick)="makeMove(rowIndex, colIndex)"></app-square>
       }
     </div>
   }

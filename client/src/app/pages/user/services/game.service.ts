@@ -3,6 +3,13 @@ import {Subject} from 'rxjs';
 import {isPlatformBrowser} from "@angular/common";
 import {io, Socket} from "socket.io-client";
 
+export interface Player {
+  id: number;
+  username: string;
+  symbol: 'X' | 'O';
+  isTurn: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -11,6 +18,8 @@ export class GameService {
   moveSubject = new Subject<{ row: number, col: number, player: 'X' | 'O' }>();
   winnerSubject = new Subject<{ gameId: number; winner: string }>();
   gameDataSubject = new Subject<any>(); // Fügt einen Subject für Game-Daten hinzu
+  currentPlayer: Player | undefined;
+  assignedPlayer: Player | undefined;
 
   constructor(
     //@ts-ignore
@@ -18,8 +27,8 @@ export class GameService {
   ) {
     if (isPlatformBrowser(this.platformId)) {
       this.socket = io('http://localhost:3000/ws-user-game'); // WebSocket-Verbindung zum NestJS-Server
+      this.setupSocketListeners();
     }
-    this.setupSocketListeners();
   }
 
   setupSocketListeners() {
@@ -45,9 +54,15 @@ export class GameService {
     }
   }
 
+  move(gameId: number, squareId: number, symbol: string) {
+    this.socket.emit('makeMove', { gameId, squareId, symbol });
+  }
+
   // Methode zum Senden eines Zugs
   emitMove(gameId: number, row: number, col: number, playerId: number) {
-    this.socket.emit('move', {gameId, userId: playerId, move: {x: row, y: col}});
+    if (this.currentPlayer === this.assignedPlayer) {
+      this.socket.emit('move', { gameId, userId: playerId, move: { x: row, y: col } });
+    }
   }
 
   // Methode zum Beitreten eines Spiels

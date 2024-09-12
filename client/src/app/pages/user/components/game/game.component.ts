@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { GameService } from '../../services/game.service';
 import { PlayerComponent } from './player/player.component';
 import { BoardComponent } from './board/board.component';
-import { QueueService } from '../../services/queue.service';
 
 @Component({
   selector: 'app-game',
@@ -16,55 +15,79 @@ import { QueueService } from '../../services/queue.service';
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit {
-  user: any;
-  opponent: any;
-  userId!: number;
+  user: any = null;
+  opponent: any = null;
   gameId!: number;
-  currentPlayer: 'X' | 'O' = 'X';  // oder ein dynamischer Wert, der deinen aktuellen Spieler repräsentiert
+  userTurn: boolean = false;
 
   constructor(
     private gameService: GameService,
     private route: ActivatedRoute,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    // Hole die gameId aus den Routenparametern
+    this.loadGameId();
+    this.loadUser();
+    this.setupOpponent();
+    this.joinGame();
+    this.setupWebSocketListeners();
+  }
+
+  // Lade die gameId aus den Routenparametern
+  private loadGameId(): void {
     this.route.paramMap.subscribe(params => {
       this.gameId = Number(params.get('gameId'));
     });
+  }
 
-    // Hole die userId aus dem LocalStorage
+  // Lade Benutzerinformationen aus LocalStorage
+  private loadUser(): void {
     const savedUser = localStorage.getItem('user');
-    this.userId = savedUser ? JSON.parse(savedUser).userId : null;
-
-    if (this.gameId && this.userId) {
-      // User tritt dem Spiel bei
-      this.gameService.joinGame(this.gameId, this.userId);
+    if (savedUser) {
+      this.user = JSON.parse(savedUser);
+      this.user.symbol = this.user.symbol || 'X';  // Fallback für Symbol
+    } else {
+      console.error('Benutzerinformationen nicht gefunden');
     }
+    console.log('User in GameComponent:', this.user);
+  }
 
-    // Abonniere die Spielzüge
+  // Simuliere einen Gegner (oder lade Gegnerdaten über eine API)
+  private setupOpponent(): void {
+    this.opponent = {
+      userName: 'Gegner',
+      symbol: 'O',
+      elo: 1500
+    };
+    console.log('Opponent in GameComponent:', this.opponent);
+  }
+
+  // Beitritt zum Spiel
+  private joinGame(): void {
+    if (this.gameId && this.user) {
+      this.gameService.joinGame(this.gameId, this.user.userId);
+    }
+  }
+
+  // WebSocket-Listener einrichten
+  private setupWebSocketListeners(): void {
     this.gameService.moveSubject.subscribe(move => {
       console.log('Move received from WebSocket:', move);
     });
 
-    // Abonniere die Gewinner-Daten
     this.gameService.winnerSubject.subscribe(winnerData => {
       console.log(`Winner: ${winnerData.winner}`);
     });
-
-    // WebSocket-Verbindung einrichten
-    this.gameService.setupSocketListeners();
   }
 }
 
-
 // Mögliche spätere Methode zum Setzen eines Spielzugs
-  /*
-  makeMove(x: number, y: number) {
-    const move = { playerId: this.userId, x, y };
-    this.gameService.emitMove(this.gameId, move);
-  }
-  */
+/*
+makeMove(x: number, y: number) {
+  const move = { playerId: this.userId, x, y };
+  this.gameService.emitMove(this.gameId, move);
+}
+*/
 
 /*
 import { Component, OnInit } from '@angular/core';

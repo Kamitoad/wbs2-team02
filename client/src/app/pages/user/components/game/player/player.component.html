@@ -1,8 +1,22 @@
-<div class="plaer-info">
-  <img src="https://via.placeholder.com/100" alt="Profile" />
-  <h2>{{ username }}</h2>
-  <p> Rang: {{ elo }}</p>
-  <p> Symbol: {{ symbol }}</p>
+<div class="player-info">
+  <div class="row">
+    <div class="col-6">
+      <img src="https://via.placeholder.com/100" alt="Profile"/>
+    </div>
+    <div class="col-6">
+      <p>{{ symbol }}</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="row">
+      <div class="col-6">
+        <p>{{ username || 'DEMOUSER' }}</p>
+      </div>
+      <div class="col-6">
+        <p>Rang: {{ elo }}</p>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!--
