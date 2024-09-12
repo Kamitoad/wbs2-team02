@@ -16,6 +16,7 @@ export const routes: Routes = [
 
   { path: 'register', component: RegisterComponent},
   { path: 'profile', component: ProfileComponent},
+  { path: 'profil', redirectTo: 'profile', pathMatch: 'full'},
   { path: 'editPassword', component: EditPasswordProfilepicComponent },
   { path: 'queue', component: QueueComponent },
 
