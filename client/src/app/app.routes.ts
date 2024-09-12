@@ -5,7 +5,7 @@ import {UserdataComponent} from "./pages/admin/components/userdata/userdata.comp
 import {CurrentGamesComponent} from "./pages/admin/components/gamedata/current-games/current-games.component";
 import {GamedataComponent} from "./pages/admin/components/gamedata/gamedata.component";
 import {QueueOverviewComponent} from "./pages/admin/components/gamedata/queue-overview/queue-overview.component";
-import {EditPasswordProfilepicComponent} from "./pages/user/components/editUser/edit-password-profilpic/edit-password-profilepic.component";
+import {EditPasswordProfilepicComponent} from "./pages/user/components/edit-password-profilpic/edit-password-profilepic.component";
 import {TestQueueButtonComponent} from "./pages/user/components/test-queue-button/test-queue-button.component";
 import {QueueComponent} from "./pages/user/components/queue/queue.component";
 

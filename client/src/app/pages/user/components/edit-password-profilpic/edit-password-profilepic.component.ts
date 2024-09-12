@@ -1,12 +1,12 @@
 import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from "@angular/forms";
-import { AuthService } from "../../../../../shared/services/auth/auth.service";
+import { AuthService } from "../../../../shared/services/auth/auth.service";
 import { Router } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
-import { EditPasswordService } from "../../../services/editUser/edit-password.service";
-import { EditProfilePicService } from "../../../services/editProfilePic/edit-profile-pic.service";
+import { EditPasswordService } from "../../services/editUser/edit-password.service";
+import { EditProfilePicService } from "../../services/editProfilePic/edit-profile-pic.service";
 import { NgIf, NgOptimizedImage } from "@angular/common";
-import { ProfilePicComponent } from "../../profile-pic/profile-pic.component";
+import { ProfilePicComponent } from "../profile-pic/profile-pic.component";
 
 @Component({
   selector: 'app-edit-password-profilpic',
