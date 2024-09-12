@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import {Component, Input} from "@angular/core";
 
 @Component({
   selector: 'app-player',
@@ -11,25 +11,9 @@ export class PlayerComponent {
   @Input() username!: string;
   @Input() symbol!: 'X' | 'O';
   @Input() elo!: number;
-}
 
-/*
-import {Component, Input} from '@angular/core';
-import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-
-@Component({
-  selector: 'app-player',
-  standalone: true,
-  imports: [
-    FaIconComponent
-  ],
-  templateUrl: './player.component.html',
-  styleUrl: './player.component.css'
-})
-export class PlayerComponent {
-  @Input() playerName: string = '';
-  @Input() playerScore: number = 0;
-  @Input() playerIcon: 'X' | 'O' = 'X';
-  @Input() isCurrentPlayer: boolean = false;
+  // Optional: Dynamisches Handling falls kein ELO gesetzt ist
+  get hasElo(): boolean {
+    return !!this.elo;
+  }
 }
-*/

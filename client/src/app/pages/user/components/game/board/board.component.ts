@@ -1,4 +1,50 @@
 import { Component, Input, OnInit } from "@angular/core";
+import { GameService } from "../../../services/game.service";
+
+@Component({
+  selector: 'app-board',
+  templateUrl: './board.component.html',
+  styleUrls: ['./board.component.css'],
+  standalone: true
+})
+export class BoardComponent implements OnInit {
+  board: ('X' | 'O' | null)[][] = Array(3).fill(null).map(() => Array(3).fill(null));
+  currentPlayer: 'X' | 'O' = 'X';
+
+  @Input() gameId!: number; // Die `gameId` wird über den Input von der übergeordneten Komponente erhalten
+  @Input() userId!: number; // Füge userId hinzu, um den aktuellen Spieler zu identifizieren
+
+  constructor(private gameService: GameService) {}
+
+  ngOnInit() {
+    // Hören auf Zug-Updates, die über WebSocket empfangen werden
+    this.gameService.moveSubject.subscribe(data => {
+      this.updateBoard(data.row, data.col, data.player);
+    });
+  }
+
+  makeMove(rowIndex: number, colIndex: number) {
+    if (!this.board[rowIndex][colIndex]) {
+      this.updateBoard(rowIndex, colIndex, this.currentPlayer);
+      this.switchPlayer();
+      // Sende den Zug über WebSocket
+      this.gameService.emitMove(this.gameId, rowIndex, colIndex, this.userId);
+    }
+  }
+
+  updateBoard(row: number, col: number, player: 'X' | 'O') {
+    this.board[row][col] = player;
+    console.log(`Board updated: Player ${player} at Row: ${row}, Col: ${col}`, this.board);
+  }
+
+  switchPlayer() {
+    this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
+  }
+}
+
+
+/*
+import { Component, Input, OnInit } from "@angular/core";
 import { SquareComponent } from "../square/square.component";
 import { GameService } from "../../../services/game.service";
 
@@ -49,3 +95,4 @@ export class BoardComponent implements OnInit {
     this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
   }
 }
+*/
