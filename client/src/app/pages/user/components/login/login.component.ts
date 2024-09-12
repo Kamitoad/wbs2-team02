@@ -26,6 +26,13 @@ export class LoginComponent {
 
   constructor(private authService: AuthService, private router: Router) {}
 
+  ngOnInit(): void {
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      this.router.navigate(['profile']);
+    }
+  }
+
   onSubmit() {
     let user: any = {
       userName: this.userName,
