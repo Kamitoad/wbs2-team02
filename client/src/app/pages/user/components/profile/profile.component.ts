@@ -5,6 +5,7 @@ import {NgClass} from "@angular/common";
 import {UserdataCardComponent} from "../../../admin/components/userdata/userdata-card/userdata-card.component";
 import {AuthService} from "../../../../shared/services/auth/auth.service";
 import {QueueButtonComponent} from "../queue-button/queue-button.component";
+import {EditPasswordProfilepicComponent} from "../editUser/edit-password-profilpic/edit-password-profilepic.component";
 
 @Component({
   selector: 'app-profile',
@@ -14,17 +15,19 @@ import {QueueButtonComponent} from "../queue-button/queue-button.component";
   imports: [
     NgClass,
     UserdataCardComponent,
-    QueueButtonComponent
+    QueueButtonComponent,
+    EditPasswordProfilepicComponent
   ]
 })
 export class ProfileComponent implements OnInit {
 
   public authService: AuthService = inject(AuthService);
+  public profileService: ProfileService = inject(ProfileService);
 
   currentUser: any;
   userMatches: any[] =[];
 
-  constructor(private profileService: ProfileService, private router: Router) {}
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     this.profileService.getCurrentUser().subscribe({
@@ -84,6 +87,10 @@ export class ProfileComponent implements OnInit {
   getMatchOpponent(match:any):any{
     if(match.player1.userId!==this.currentUser.userId){return `${match.player1.userName} (${match.changeEloPlayer1})`}
     else return `${match.player2.userName} (${match.changeEloPlayer2})`
+  }
+
+  toggleEdit(){
+    this.profileService.displayEdit = true;
   }
 
 }

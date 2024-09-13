@@ -8,7 +8,7 @@ import {EditProfilePicService} from "../../../services/editProfilePic/edit-profi
 import {subscribe} from "node:diagnostics_channel";
 import {NgIf, NgOptimizedImage} from "@angular/common";
 import {ProfilePicComponent} from "../../profile-pic/profile-pic.component";
-
+import {ProfileService} from "../../../services/profile.service";
 
 @Component({
   selector: 'app-edit-password-profilpic',
@@ -24,6 +24,7 @@ import {ProfilePicComponent} from "../../profile-pic/profile-pic.component";
 })
 export class EditPasswordProfilepicComponent  {
   httpclient: HttpClient = inject(HttpClient);
+  public profileService: ProfileService = inject(ProfileService);
 
   @ViewChild('#messageError') messageError: ElementRef<HTMLSpanElement> | undefined;
   @ViewChild('#messageSuccess') messageSuccess: ElementRef<HTMLSpanElement> | undefined;
@@ -139,5 +140,7 @@ export class EditPasswordProfilepicComponent  {
     this.imgUpload = this.editProfilePic.enableImgUpload(this.imgUpload);
   }
 
-
+  closeEdit(){
+    this.profileService.displayEdit = false;
+  }
 }

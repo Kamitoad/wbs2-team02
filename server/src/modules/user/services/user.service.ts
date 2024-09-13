@@ -69,7 +69,9 @@ export class UserService {
 
     // Fetch the current user by ID
     async getCurrentUser(userId: number): Promise<User> {
-        const user = await this.userRepository.findOne({ where: { userId } });
+        const user = await this.userRepository.findOne({ where: { userId },
+            select:['userName','userId','elo','email','firstName','lastName','role','profilePic','totalWins','totalTies','totalLosses']
+            });
         if (!user) {
             throw new NotFoundException(`User with ID ${userId} not found.`);
         }
