@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { GameService } from '../../services/game.service';
-import { PlayerComponent } from './player/player.component';
-import { BoardComponent } from './board/board.component';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {GameService} from '../../services/game.service';
+import {PlayerComponent} from './player/player.component';
+import {BoardComponent} from './board/board.component';
 
 @Component({
   selector: 'app-game',
@@ -18,17 +18,24 @@ export class GameComponent implements OnInit {
   user: any = null;
   opponent: any = null;
   gameId!: number;
-  userTurn: boolean = false;
+  playerId!: number;
+  currentPlayer: 'X' | 'O' = 'X';  // Startspieler
+  gameOver: boolean = false;
+  board: ('X' | 'O' | null)[][] = [
+    [null, null, null],
+    [null, null, null],
+    [null, null, null]
+  ];  // 3x3 Spielfeld
 
   constructor(
     private gameService: GameService,
     private route: ActivatedRoute,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.loadGameId();
     this.loadUser();
-    this.setupOpponent();
+    this.loadGameFromLocalStorage();
     this.joinGame();
     this.setupWebSocketListeners();
   }
@@ -52,20 +59,35 @@ export class GameComponent implements OnInit {
     console.log('User in GameComponent:', this.user);
   }
 
-  // Simuliere einen Gegner (oder lade Gegnerdaten über eine API)
-  private setupOpponent(): void {
-    this.opponent = {
-      userName: 'Gegner',
-      symbol: 'O',
-      elo: 1500
-    };
-    console.log('Opponent in GameComponent:', this.opponent);
-  }
-
   // Beitritt zum Spiel
   private joinGame(): void {
     if (this.gameId && this.user) {
       this.gameService.joinGame(this.gameId, this.user.userId);
+
+      // Spiel-Daten im LocalStorage speichern
+      const gameData = {
+        gameId: this.gameId,
+        currentPlayerId: this.user.userId,
+        player1UserId: this.user.userId,
+        player2UserId: this.opponent?.userId // Stelle sicher, dass Gegnerdaten verfügbar sind
+      };
+      localStorage.setItem('gameData', JSON.stringify(gameData));
+
+      console.log('Game data saved in localStorage:', gameData);
+    }
+  }
+
+  // Lade Spiel-Daten aus LocalStorage
+  private loadGameFromLocalStorage(): void {
+    const savedGame = localStorage.getItem('gameData');
+    if (savedGame) {
+      const gameData = JSON.parse(savedGame);
+      this.gameId = gameData.gameId;
+      this.user = { userId: gameData.currentPlayerId };
+      this.opponent = { userId: gameData.player2UserId };
+      console.log('Game data loaded from localStorage:', gameData);
+    } else {
+      console.log('No game data found in localStorage.');
     }
   }
 
@@ -73,86 +95,65 @@ export class GameComponent implements OnInit {
   private setupWebSocketListeners(): void {
     this.gameService.moveSubject.subscribe(move => {
       console.log('Move received from WebSocket:', move);
+      this.updateBoard(move.row, move.col, move.player);
+      this.switchPlayer();
+    });
+
+    this.gameService.gameDataSubject.subscribe(gameData => {
+      console.log('Game data received:', gameData);
+
+      // Gegnerdaten prüfen
+      if (gameData.players) {
+        const opponentData = gameData.players.find((player: any) => player.userId !== this.user.userId);
+        if (opponentData) {
+          this.opponent = opponentData;
+          console.log('Opponent in GameComponent:', this.opponent);
+        } else {
+          console.error('Opponent data not found');
+        }
+      }
+
+      // Spiel-Daten in LocalStorage speichern
+      const savedGameData = {
+        gameId: this.gameId,
+        currentPlayerId: this.user.userId,
+        player1UserId: this.user.userId,
+        player2UserId: this.opponent?.userId ?? 'Gegner unbekannt'
+      };
+
+      localStorage.setItem('gameData', JSON.stringify(savedGameData));
+      console.log('Game data saved in localStorage:', savedGameData);
     });
 
     this.gameService.winnerSubject.subscribe(winnerData => {
       console.log(`Winner: ${winnerData.winner}`);
-    });
-  }
-}
-
-// Mögliche spätere Methode zum Setzen eines Spielzugs
-/*
-makeMove(x: number, y: number) {
-  const move = { playerId: this.userId, x, y };
-  this.gameService.emitMove(this.gameId, move);
-}
-*/
-
-/*
-import { Component, OnInit } from '@angular/core';
-import { PlayerComponent } from './player/player.component';
-import { BoardComponent } from './board/board.component';
-import { GameService } from '../../services/game.service';
-import {Router} from "@angular/router";
-
-@Component({
-  selector: 'app-game',
-  templateUrl: './game.component.html',
-  styleUrls: ['./game.component.css'],
-  standalone: true,
-  imports: [PlayerComponent, BoardComponent]
-})
-export class GameComponent implements OnInit {
-  currentPlayer: 'X' | 'O' = 'X';  // Startspieler
-  gameOver: boolean = false;
-  board: ('X' | 'O' | null)[][] = [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null]
-  ];  // 3x3 Spielbrett
-  gameId: number | null = null;
-  user: any | null = null;
-  gameStatus: string | null = null;
-
-  constructor(private gameService: GameService, private router: Router) {
-    const savedUser = localStorage.getItem('user');
-    this.user = savedUser ? JSON.parse(savedUser) : null;
-  }
-
-  ngOnInit(): void {
-    // Setup WebSocket-Verbindung
-    this.gameService.setupWebSocketConnection();
-    this.gameService.setupSocketListeners();
-
-    // WebSocket-Ereignisse für Züge empfangen
-    this.gameService.moveSubject.subscribe(move => {
-      this.updateBoard(move.row, move.col, move.player);
-      this.switchPlayer();
+      this.gameOver = true;  // Spiel als beendet markieren
     });
   }
 
-  // Führt einen Zug aus und sendet ihn über WebSocket
+  // Einen Zug ausführen und über WebSocket senden
   makeMove(rowIndex: number, colIndex: number): void {
     if (!this.board[rowIndex][colIndex] && !this.gameOver) {
-      this.updateBoard(rowIndex, colIndex, this.currentPlayer); // Lokale Aktualisierung des Boards
+      this.updateBoard(rowIndex, colIndex, this.currentPlayer);
       this.switchPlayer();
-      this.gameService.emitMove(rowIndex, colIndex);  // Zug über WebSocket senden
+      this.gameService.emitMove(this.gameId, rowIndex, colIndex, this.playerId);  // Zug über WebSocket senden
+    } else {
+      console.log('Ungültiger Zug oder Spiel ist beendet.');
     }
   }
 
-  // Aktualisiert das Spielfeld
-  updateBoard(row: number, col: number, player: 'X' | 'O') {
+  // Aktualisiere das Spielfeld
+  updateBoard(row: number, col: number, player: 'X' | 'O'): void {
     this.board[row][col] = player;
   }
 
-  // Wechselt den Spieler
-  switchPlayer() {
+  // Spieler wechseln
+  switchPlayer(): void {
     this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
   }
 
-  // Spiel neu starten
-  startNewGame() {
+  // Neues Spiel starten
+  startNewGame(): void {
     this.gameOver = false;
     this.board = [
       [null, null, null],
@@ -162,84 +163,3 @@ export class GameComponent implements OnInit {
     this.currentPlayer = 'X';
   }
 }
-
-/*
-import { Component, OnInit } from '@angular/core';
-import { PlayerComponent } from './player/player.component';
-import { BoardComponent } from './board/board.component';
-import { GameService } from '../../services/game.service';
-
-@Component({
-  selector: 'app-game',
-  templateUrl: './game.component.html',
-  styleUrls: ['./game.component.css'],
-  standalone: true,
-  imports: [PlayerComponent, BoardComponent]
-})
-export class GameComponent implements OnInit {
-  currentPlayer: 'X' | 'O' = 'X';  // Startspieler
-  gameOver: boolean = false;
-  board: ('X' | 'O' | null)[][] = [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null]
-  ];  // 3x3 Spielbrett
-  gameId: number = 1;  // Beispiel-GameId; sollte dynamisch bezogen werden
-
-  constructor(private gameService: GameService) {}
-
-  ngOnInit() {
-    // Spielstatus beim Start laden
-    this.loadGameState();
-
-    // WebSocket-Ereignisse für Züge empfangen
-    this.gameService.moveSubject.subscribe(move => {
-      this.updateBoard(move.row, move.col, move.player);
-      this.switchPlayer();
-    });
-  }
-
-  // Lädt den aktuellen Spielstatus
-  loadGameState() {
-    this.gameService.getGameState(this.gameId).subscribe(gameState => {
-      if (gameState && gameState.board) {
-        this.board = gameState.board;
-        this.currentPlayer = gameState.currentPlayer;
-        this.gameOver = gameState.gameOver;
-      }
-    });
-  }
-
-  // Führt einen Zug aus
-  makeMove(rowIndex: number, colIndex: number): void {
-    if (!this.board[rowIndex][colIndex] && !this.gameOver) {
-      this.gameService.makeMove(rowIndex, colIndex).subscribe(() => {
-        this.updateBoard(rowIndex, colIndex, this.currentPlayer);
-        this.switchPlayer();
-      });
-      this.gameService.emitMove(rowIndex, colIndex);  // Zug über WebSocket senden
-    }
-  }
-
-  // Aktualisiert das Spielfeld
-  updateBoard(row: number, col: number, player: 'X' | 'O') {
-    this.board[row][col] = player;
-  }
-
-  // Wechselt den Spieler
-  switchPlayer() {
-    this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
-  }
-
-  // Spiel neu starten
-  startNewGame() {
-    this.gameOver = false;
-    this.board = [
-      [null, null, null],
-      [null, null, null],
-      [null, null, null]
-    ];
-    this.currentPlayer = 'X';
-  }
-}
- */

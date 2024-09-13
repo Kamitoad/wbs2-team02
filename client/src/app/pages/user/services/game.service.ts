@@ -3,6 +3,7 @@ import {Subject} from 'rxjs';
 import {isPlatformBrowser} from "@angular/common";
 import {io, Socket} from "socket.io-client";
 
+
 export interface Player {
   id: number;
   username: string;
@@ -10,16 +11,19 @@ export interface Player {
   isTurn: boolean;
 }
 
+
 @Injectable({
   providedIn: 'root'
 })
 export class GameService {
   private socket!: Socket;
-  moveSubject = new Subject<{ row: number, col: number, player: 'X' | 'O' }>();
-  winnerSubject = new Subject<{ gameId: number; winner: string }>();
+  moveSubject = new Subject<any>();
+  winnerSubject = new Subject<any>();
+  // moveSubject = new Subject<{ row: number, col: number, player: 'X' | 'O' }>();
+  // winnerSubject = new Subject<{ gameId: number; winner: string }>();
   gameDataSubject = new Subject<any>(); // Fügt einen Subject für Game-Daten hinzu
-  currentPlayer: Player | undefined;
-  assignedPlayer: Player | undefined;
+  currentPlayer: Player | undefined = undefined;
+  assignedPlayer: Player | undefined = undefined;
 
   constructor(
     //@ts-ignore
@@ -32,16 +36,29 @@ export class GameService {
   }
 
   setupSocketListeners() {
+    // Listen for moves
+    this.socket.on('move', (data: any) => {
+      this.moveSubject.next(data);
+    });
+
+    // Listen for winner updates
+    this.socket.on('winner', (data: any) => {
+      this.winnerSubject.next(data);
+    });
+    /*
     if (this.socket) {
       // Empfang von Zügen vom Server
       this.socket.on('gameState', (gameData: any) => {
         console.log(`Game state updated:`, gameData);
+        if (gameData.players) {
+          console.log('Players:', gameData.players);  // Prüfe, ob die Spielerinformationen korrekt sind
+        }
         // Verarbeite die neue Spielfelddaten
         this.moveSubject.next(gameData);
         this.gameDataSubject.next(gameData); // Game-Daten für andere Komponenten bereitstellen
       });
 
-      // Empfang von Gewinnerinformationen vom Server
+      // Gewinnerinformationen vom Server
       this.socket.on('winner', (data: { gameId: number; winner: string }) => {
         console.log(`Winner for game ${data.gameId}: ${data.winner}`);
         this.winnerSubject.next(data);
@@ -51,23 +68,33 @@ export class GameService {
       this.socket.on('error', (error: { message: string }) => {
         console.error('WebSocket error:', error.message);
       });
-    }
+    } */
   }
 
   move(gameId: number, squareId: number, symbol: string) {
-    this.socket.emit('makeMove', { gameId, squareId, symbol });
+    this.socket.emit('makeMove', {gameId, squareId, symbol});
   }
 
   // Methode zum Senden eines Zugs
+  // Emit move
+  /*
+  emitMove(gameId: number, row: number, col: number, userId: number): void {
+    console.log('CurrentPlayer:' + this.currentPlayer);
+    console.log('AssignedPlayer:' + this.assignedPlayer);
+    this.socket.emit('makeMove', {gameId, row, col, userId});
+  }
+*/
   emitMove(gameId: number, row: number, col: number, playerId: number) {
+    console.log('CurrentPlayer:' + this.currentPlayer);
+    console.log('AssignedPlayer:' + this.assignedPlayer);
     if (this.currentPlayer === this.assignedPlayer) {
-      this.socket.emit('move', { gameId, userId: playerId, move: { x: row, y: col } });
+      this.socket.emit('move', {gameId, userId: playerId, move: {x: row, y: col}});
     }
   }
 
   // Methode zum Beitreten eines Spiels
-  joinGame(gameId: number, userId: number) {
-    this.socket.emit('joinGame', {gameId, userId});
+  joinGame(gameId: number, userId: number): void {
+    this.socket.emit('joinGame', { gameId, userId });
   }
 
   listenToGameData() {

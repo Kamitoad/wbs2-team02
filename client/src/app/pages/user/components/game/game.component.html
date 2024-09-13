@@ -1,13 +1,14 @@
 <div class="container"><h2 class="justify-content-center text-center">Möge das Glück mit dir sein</h2></div>
 <div class="game-container">
-  <!-- Überprüfen, ob der user vorhanden ist -->
   <div class="row">
     <div class="col-3">
       <div class="player-info left">
-        <!-- Spieleranzeige nur, wenn User-Daten vorhanden sind -->
-        @if (user) {
-          <app-player [username]="user.username" [symbol]="user.symbol" [elo]="user.elo"></app-player>
-        }      </div>
+        <app-player
+          [username]="user?.username"
+          [symbol]="user?.symbol"
+          [elo]="user?.elo">
+        </app-player>
+      </div>
     </div>
     <div class="col-6">
       <div class="board-container">
@@ -17,10 +18,12 @@
     <!-- Optional: opponent-Logik hinzufügen -->
     <div class="col-3">
       <div class="player-info right">
-        <!-- Gegneranzeige nur, wenn Gegner-Daten vorhanden sind -->
-        @if (opponent) {
-          <app-player [username]="opponent.username" [symbol]="opponent.symbol" [elo]="opponent.elo"></app-player>
-        }      </div>
+        <app-player
+          [username]="opponent?.username"
+          [symbol]="opponent?.symbol"
+          [elo]="opponent?.elo">
+        </app-player>
+      </div>
     </div>
   </div>
 </div>

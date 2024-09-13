@@ -13,7 +13,7 @@ export class SquareComponent {
 
   onClick() {
     console.log(`Square clicked: Current value = ${this.value}`);
-    if (!this.value) { // Nur, wenn das Feld leer ist, darf ein Zug gemacht werden
+    if (!this.value) {
       this.squareClick.emit();
     }
   }

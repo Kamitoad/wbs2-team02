@@ -1,24 +1,27 @@
 .board {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 Spalten */
-  gap: 10px;
-  margin: 10px;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+  margin: 20px auto;
   justify-content: center;
-
-  .row {
-    display: contents;
-  }
-
-  app-square {
-    border: 1px rebeccapurple solid;
-    padding: 10px 0px;
-    margin: auto 0px;
-  }
+  width: 200px; /* Optional, um die Größe zu kontrollieren */
 }
 
-/*
-.board {
-
+.row {
+  display: contents; /* Damit die Zeilen korrekt in das Grid passen */
 }
 
-*/
+.cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button {
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+  background-color: white;
+  border: 1px solid rebeccapurple;
+  cursor: pointer;
+}

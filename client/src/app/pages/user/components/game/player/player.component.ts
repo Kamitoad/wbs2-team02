@@ -1,5 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
-import { GameService } from '../../../services/game.service';
+import { Component, Input } from "@angular/core";
 
 @Component({
   selector: 'app-player',
@@ -7,19 +6,30 @@ import { GameService } from '../../../services/game.service';
   styleUrls: ['./player.component.css'],
   standalone: true
 })
-export class PlayerComponent implements OnChanges {
-  @Input() username: string = 'Default User';
-  @Input() symbol: 'X' | 'O' = 'X';
-  @Input() elo: number = 1000;
 
-  ngOnChanges(): void {
-    console.log('PlayerComponent Inputs:', { username: this.username, symbol: this.symbol, elo: this.elo });
-  }
-
-  constructor(private gameService: GameService) {}
-
-  ngOnInit(): void {
-    // Überprüfe, ob die Daten korrekt geladen sind
-    console.log('PlayerComponent initialized with:', this.username, this.symbol, this.elo);
-  }
+export class PlayerComponent {
+  @Input() username!: string;
+  @Input() symbol!: 'X' | 'O';
+  @Input() elo!: number;
 }
+
+/*
+import {Component, Input} from '@angular/core';
+import {FaIconComponent} from "@fortawesome/angular-fontawesome";
+
+@Component({
+  selector: 'app-player',
+  standalone: true,
+  imports: [
+    FaIconComponent
+  ],
+  templateUrl: './player.component.html',
+  styleUrl: './player.component.css'
+})
+export class PlayerComponent {
+  @Input() playerName: string = '';
+  @Input() playerScore: number = 0;
+  @Input() playerIcon: 'X' | 'O' = 'X';
+  @Input() isCurrentPlayer: boolean = false;
+}
+*/
