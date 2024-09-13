@@ -6,6 +6,7 @@ import {UserdataCardComponent} from "../../../admin/components/userdata/userdata
 import {AuthService} from "../../../../shared/services/auth/auth.service";
 import {QueueButtonComponent} from "../queue-button/queue-button.component";
 import {EditPasswordProfilepicComponent} from "../edit-password-profilpic/edit-password-profilepic.component";
+import {ProfilePicComponent} from "../profile-pic/profile-pic.component";
 
 @Component({
   selector: 'app-profile',
@@ -16,7 +17,8 @@ import {EditPasswordProfilepicComponent} from "../edit-password-profilpic/edit-p
     NgClass,
     UserdataCardComponent,
     QueueButtonComponent,
-    EditPasswordProfilepicComponent
+    EditPasswordProfilepicComponent,
+    ProfilePicComponent
   ]
 })
 export class ProfileComponent implements OnInit {
