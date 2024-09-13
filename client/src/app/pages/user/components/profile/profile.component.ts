@@ -5,7 +5,7 @@ import {NgClass} from "@angular/common";
 import {UserdataCardComponent} from "../../../admin/components/userdata/userdata-card/userdata-card.component";
 import {AuthService} from "../../../../shared/services/auth/auth.service";
 import {QueueButtonComponent} from "../queue-button/queue-button.component";
-import {EditPasswordProfilepicComponent} from "../editUser/edit-password-profilpic/edit-password-profilepic.component";
+import {EditPasswordProfilepicComponent} from "../edit-password-profilpic/edit-password-profilepic.component";
 
 @Component({
   selector: 'app-profile',
