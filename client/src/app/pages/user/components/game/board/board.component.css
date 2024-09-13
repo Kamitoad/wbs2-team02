@@ -1,8 +1,7 @@
 .board {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-gap: 10px;
-  margin: 20px auto;
+  margin: 0;
   justify-content: center;
   width: 200px; /* Optional, um die Größe zu kontrollieren */
 }
@@ -15,13 +14,17 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
 }
 
 button {
   width: 60px;
   height: 60px;
   font-size: 24px;
-  background-color: white;
-  border: 1px solid rebeccapurple;
-  cursor: pointer;
 }
+
+app-square{
+  margin: 0;
+  padding: 0;
+}
+
