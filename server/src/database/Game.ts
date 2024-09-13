@@ -14,6 +14,22 @@ export class Game {
 
   @IsEnum(FieldStateEnum)
   @Column({ enum: FieldStateEnum, default: FieldStateEnum.NotFilled })
+  field0_0: FieldStateEnum;
+
+  @IsEnum(FieldStateEnum)
+  @Column({ enum: FieldStateEnum, default: FieldStateEnum.NotFilled })
+  field0_1: FieldStateEnum;
+
+  @IsEnum(FieldStateEnum)
+  @Column({ enum: FieldStateEnum, default: FieldStateEnum.NotFilled })
+  field0_2: FieldStateEnum;
+
+  @IsEnum(FieldStateEnum)
+  @Column({ enum: FieldStateEnum, default: FieldStateEnum.NotFilled })
+  field1_0: FieldStateEnum;
+
+  @IsEnum(FieldStateEnum)
+  @Column({ enum: FieldStateEnum, default: FieldStateEnum.NotFilled })
   field1_1: FieldStateEnum;
 
   @IsEnum(FieldStateEnum)
@@ -22,7 +38,7 @@ export class Game {
 
   @IsEnum(FieldStateEnum)
   @Column({ enum: FieldStateEnum, default: FieldStateEnum.NotFilled })
-  field1_3: FieldStateEnum;
+  field2_0: FieldStateEnum;
 
   @IsEnum(FieldStateEnum)
   @Column({ enum: FieldStateEnum, default: FieldStateEnum.NotFilled })
@@ -31,22 +47,6 @@ export class Game {
   @IsEnum(FieldStateEnum)
   @Column({ enum: FieldStateEnum, default: FieldStateEnum.NotFilled })
   field2_2: FieldStateEnum;
-
-  @IsEnum(FieldStateEnum)
-  @Column({ enum: FieldStateEnum, default: FieldStateEnum.NotFilled })
-  field2_3: FieldStateEnum;
-
-  @IsEnum(FieldStateEnum)
-  @Column({ enum: FieldStateEnum, default: FieldStateEnum.NotFilled })
-  field3_1: FieldStateEnum;
-
-  @IsEnum(FieldStateEnum)
-  @Column({ enum: FieldStateEnum, default: FieldStateEnum.NotFilled })
-  field3_2: FieldStateEnum;
-
-  @IsEnum(FieldStateEnum)
-  @Column({ enum: FieldStateEnum, default: FieldStateEnum.NotFilled })
-  field3_3: FieldStateEnum;
 
   // ManyToOne relations for players
   @ManyToOne(() => User, (user) => user.gamesAsPlayer1)
@@ -75,10 +75,16 @@ export class Game {
   @Column({ nullable: true, default: null })
   changeEloPlayer2: number;
 
+  @IsInt()
+  @Column({ nullable: true, default: null })
+  currentPlayer: number;
+
+  /*
   // Set currentPlayer1 and currentPlayer2 as relations to User
   @ManyToOne(() => User, { nullable: true })
   currentPlayer1: User;
 
   @ManyToOne(() => User, { nullable: true })
   currentPlayer2: User;
+  */
 }

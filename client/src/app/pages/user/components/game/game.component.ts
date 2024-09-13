@@ -1,8 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {Component, inject, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {GameService} from '../../services/game.service';
 import {PlayerComponent} from './player/player.component';
 import {BoardComponent} from './board/board.component';
+import {ProfileService} from "../../services/profile.service";
 
 @Component({
   selector: 'app-game',
@@ -15,10 +16,14 @@ import {BoardComponent} from './board/board.component';
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit {
+  public profileService: ProfileService = inject(ProfileService);
+
+
   user: any = null;
   opponent: any = null;
   gameId!: number;
   playerId!: number;
+  currentPlayerId: number | null = null;
   currentPlayer: 'X' | 'O' = 'X';  // Startspieler
   gameOver: boolean = false;
   board: ('X' | 'O' | null)[][] = [
@@ -30,12 +35,21 @@ export class GameComponent implements OnInit {
   constructor(
     private gameService: GameService,
     private route: ActivatedRoute,
-  ) {}
+    private router: Router,
+  ) {
+  }
 
   ngOnInit(): void {
+    this.profileService.getCurrentUser().subscribe({
+      next: () => {
+      },
+      error: () => {
+        this.router.navigate(['login']);
+      }
+    });
     this.loadGameId();
     this.loadUser();
-    this.loadGameFromLocalStorage();
+    //this.loadGameFromLocalStorage();
     this.joinGame();
     this.setupWebSocketListeners();
   }
@@ -50,13 +64,11 @@ export class GameComponent implements OnInit {
   // Lade Benutzerinformationen aus LocalStorage
   private loadUser(): void {
     const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      this.user = JSON.parse(savedUser);
-      this.user.symbol = this.user.symbol || 'X';  // Fallback für Symbol
-    } else {
+    if (!savedUser) {
       console.error('Benutzerinformationen nicht gefunden');
+      return;
     }
-    console.log('User in GameComponent:', this.user);
+    this.user = JSON.parse(savedUser);
   }
 
   // Beitritt zum Spiel
@@ -64,30 +76,26 @@ export class GameComponent implements OnInit {
     if (this.gameId && this.user) {
       this.gameService.joinGame(this.gameId, this.user.userId);
 
-      // Spiel-Daten im LocalStorage speichern
-      const gameData = {
-        gameId: this.gameId,
-        currentPlayerId: this.user.userId,
-        player1UserId: this.user.userId,
-        player2UserId: this.opponent?.userId // Stelle sicher, dass Gegnerdaten verfügbar sind
-      };
-      localStorage.setItem('gameData', JSON.stringify(gameData));
+      this.gameService.joinedGameSubject.subscribe((data) => {
+        this.currentPlayerId = data.game.currentPlayer;
 
-      console.log('Game data saved in localStorage:', gameData);
-    }
-  }
+        // Spiel-Daten im LocalStorage speichern
+        const gameData = {
+          gameId: this.gameId,
+          currentPlayerId: this.currentPlayerId,
+          player1UserId: data.game.player1.userId,
+          player2UserId: data.game.player2.userId // Stelle sicher, dass Gegnerdaten verfügbar sind
+        };
+        localStorage.setItem('gameData', JSON.stringify(gameData));
 
-  // Lade Spiel-Daten aus LocalStorage
-  private loadGameFromLocalStorage(): void {
-    const savedGame = localStorage.getItem('gameData');
-    if (savedGame) {
-      const gameData = JSON.parse(savedGame);
-      this.gameId = gameData.gameId;
-      this.user = { userId: gameData.currentPlayerId };
-      this.opponent = { userId: gameData.player2UserId };
-      console.log('Game data loaded from localStorage:', gameData);
-    } else {
-      console.log('No game data found in localStorage.');
+        const savedGameData = localStorage.getItem('gameData');
+        if (!savedGameData) {
+          console.error('Spielinformationen nicht gefunden');
+          return;
+        }
+        // Player 1 of Game is 'X', Player 2 is 'O'
+        gameData.player1UserId == this.user.userId ? this.user.symbol = 'X' : this.user.symbol = 'O'
+      });
     }
   }
 
@@ -95,15 +103,26 @@ export class GameComponent implements OnInit {
   private setupWebSocketListeners(): void {
     this.gameService.moveSubject.subscribe(move => {
       console.log('Move received from WebSocket:', move);
-      this.updateBoard(move.row, move.col, move.player);
-      this.switchPlayer();
+      //this.updateBoard(move.row, move.col, move.player);
+      //this.switchPlayer();
     });
 
-    this.gameService.gameDataSubject.subscribe(gameData => {
+    this.gameService.joinedGameSubject.subscribe(gameData => {
       console.log('Game data received:', gameData);
 
+      const opponentString = localStorage.getItem('opponent');
+
+      if (!opponentString) {
+        console.error('Opponent not found in localStorage.');
+        return;
+      }
+
+      //TODO: Read opponent-data correctly in HTML
+      const opponent = JSON.parse(opponentString);
+
+      /*
       // Gegnerdaten prüfen
-      if (gameData.players) {
+      if (gameData.player1) {
         const opponentData = gameData.players.find((player: any) => player.userId !== this.user.userId);
         if (opponentData) {
           this.opponent = opponentData;
@@ -112,17 +131,17 @@ export class GameComponent implements OnInit {
           console.error('Opponent data not found');
         }
       }
+      */
 
       // Spiel-Daten in LocalStorage speichern
       const savedGameData = {
         gameId: this.gameId,
-        currentPlayerId: this.user.userId,
+        currentPlayerId: this.gameService.joinedGame$,
         player1UserId: this.user.userId,
         player2UserId: this.opponent?.userId ?? 'Gegner unbekannt'
       };
 
       localStorage.setItem('gameData', JSON.stringify(savedGameData));
-      console.log('Game data saved in localStorage:', savedGameData);
     });
 
     this.gameService.winnerSubject.subscribe(winnerData => {
@@ -131,27 +150,21 @@ export class GameComponent implements OnInit {
     });
   }
 
-  // Einen Zug ausführen und über WebSocket senden
-  makeMove(rowIndex: number, colIndex: number): void {
-    if (!this.board[rowIndex][colIndex] && !this.gameOver) {
-      this.updateBoard(rowIndex, colIndex, this.currentPlayer);
-      this.switchPlayer();
-      this.gameService.emitMove(this.gameId, rowIndex, colIndex, this.playerId);  // Zug über WebSocket senden
-    } else {
-      console.log('Ungültiger Zug oder Spiel ist beendet.');
-    }
-  }
-
+  /*
   // Aktualisiere das Spielfeld
   updateBoard(row: number, col: number, player: 'X' | 'O'): void {
     this.board[row][col] = player;
   }
+  */
 
+  /*
   // Spieler wechseln
   switchPlayer(): void {
     this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
   }
+  */
 
+  /*
   // Neues Spiel starten
   startNewGame(): void {
     this.gameOver = false;
@@ -162,4 +175,5 @@ export class GameComponent implements OnInit {
     ];
     this.currentPlayer = 'X';
   }
+  */
 }

@@ -19,10 +19,13 @@ export class GameService {
   private socket!: Socket;
   moveSubject = new Subject<any>();
   winnerSubject = new Subject<any>();
+  joinedGameSubject = new Subject<any>();
+  joinedGame$ = this.joinedGameSubject.asObservable();
+
   // moveSubject = new Subject<{ row: number, col: number, player: 'X' | 'O' }>();
   // winnerSubject = new Subject<{ gameId: number; winner: string }>();
   gameDataSubject = new Subject<any>(); // Fügt einen Subject für Game-Daten hinzu
-  currentPlayer: Player | undefined = undefined;
+  currentPlayer: number | undefined = undefined;
   assignedPlayer: Player | undefined = undefined;
 
   constructor(
@@ -36,14 +39,26 @@ export class GameService {
   }
 
   setupSocketListeners() {
+
     // Listen for moves
-    this.socket.on('move', (data: any) => {
-      this.moveSubject.next(data);
+    this.socket.on('joinedGame', (data: any) => {
+      this.joinedGameSubject.next(data);
     });
 
     // Listen for winner updates
     this.socket.on('winner', (data: any) => {
       this.winnerSubject.next(data);
+    });
+
+    this.socket.on('gameState', (gameData: any) => {
+      console.log(`Game state updated:`, gameData);
+      if (gameData.players) {
+        console.log('Players:', gameData.players);  // Prüfe, ob die Spielerinformationen korrekt sind
+      }
+      // Verarbeite die neue Spielfelddaten
+      this.moveSubject.next(gameData);
+      this.gameDataSubject.next(gameData); // Game-Daten für andere Komponenten bereitstellen
+      console.log(this.gameDataSubject)
     });
     /*
     if (this.socket) {
@@ -85,11 +100,7 @@ export class GameService {
   }
 */
   emitMove(gameId: number, row: number, col: number, playerId: number) {
-    console.log('CurrentPlayer:' + this.currentPlayer);
-    console.log('AssignedPlayer:' + this.assignedPlayer);
-    if (this.currentPlayer === this.assignedPlayer) {
-      this.socket.emit('move', {gameId, userId: playerId, move: {x: row, y: col}});
-    }
+    this.socket.emit('move', {gameId, userId: playerId, move: {x: row, y: col}});
   }
 
   // Methode zum Beitreten eines Spiels

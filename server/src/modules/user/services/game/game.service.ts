@@ -20,22 +20,28 @@ export class GameService {
     }
 
     async getGameById(gameId: number): Promise<Game> {
-        return this.gameRepository.findOne({where: {gameId}});
+        return this.gameRepository.findOne({
+            where: {gameId},
+            relations: ['player1', 'player2']
+        });
     }
 
-    async makeMove(gameId: number, playerId: number, move: { x: number, y: number }): Promise<void> {
-        const game = await this.gameRepository.findOne({
-            where: {gameId},
-            relations: ['player1', 'player2', 'currentPlayer1', 'currentPlayer2']
-        });
+    async makeMove(gameId: number, playerId: number, move: { x: number, y: number }): Promise<any> {
+        const game = await this.getGameById(gameId);
 
         if (!game) {
             throw new NotFoundException('Spiel nicht gefunden');
         }
 
+        if (game.hasEnded) {
+            throw new BadRequestException('Spiel wurde beendet');
+        }
+
+        console.log(game.currentPlayer)
+        console.log(playerId)
+
         // Überprüfung, ob der aktuelle Spieler am Zug ist
-        if ((game.currentPlayer1 && game.currentPlayer1.userId !== playerId) ||
-            (game.currentPlayer2 && game.currentPlayer2.userId !== playerId)) {
+        if (game.currentPlayer !== playerId) {
             throw new BadRequestException('Du bist nicht an der Reihe.');
         }
 
@@ -48,49 +54,47 @@ export class GameService {
 
         // Setze den Zug auf dem Spielfeld
         game[fieldKey] = game.player1.userId === playerId ? FieldStateEnum.FilledByPlayer1 : FieldStateEnum.FilledByPlayer2;
+
         await this.gameRepository.save(game);
 
         // Überprüfung auf Gewinner oder Unentschieden
         const winner = await this.checkWinner(game);
 
         if (winner === 'Player1') {
-            await this.endGame(gameId, game.player1.userId, game.player2.userId); // Spieler 1 hat gewonnen
-            return;
+            return await this.endGame(gameId, game.player1.userId, game.player2.userId); // Spieler 1 hat gewonnen
         } else if (winner === 'Player2') {
-            await this.endGame(gameId, game.player2.userId, game.player1.userId); // Spieler 2 hat gewonnen
-            return;
+            return await this.endGame(gameId, game.player2.userId, game.player1.userId); // Spieler 2 hat gewonnen
         } else if (winner === 'Tie') {
-            await this.endGame(gameId, null, null); // Unentschieden
-            return;
+            return await this.endGame(gameId, null, null); // Unentschieden
         }
 
-
-        // Wechsel des Zugspielers
-        if (game.currentPlayer1 && game.currentPlayer1.userId === playerId) {
-            game.currentPlayer1 = null;
-            game.currentPlayer2 = game.player2; // Spieler 2 ist nun am Zug
-        } else if (game.currentPlayer2 && game.currentPlayer2.userId === playerId) {
-            game.currentPlayer2 = null;
-            game.currentPlayer1 = game.player1;
+        if (game.currentPlayer == game.player1.userId) {
+            game.currentPlayer = game.player2.userId
+        } else if (game.currentPlayer == game.player2.userId) {
+            game.currentPlayer = game.player1.userId;
         } else {
             throw new BadRequestException('Ungültiger Spieler');
         }
 
         await this.gameRepository.save(game);
+
+        return game;
     }
 
     async checkWinner(game: Game): Promise<'Player1' | 'Player2' | 'Tie' | null> {
         const winningCombinations = [
-            ['field1_1', 'field1_2', 'field1_3'],
-            ['field2_1', 'field2_2', 'field2_3'],
-            ['field3_1', 'field3_2', 'field3_3'],
-            ['field1_1', 'field2_1', 'field3_1'],
-            ['field1_2', 'field2_2', 'field3_2'],
-            ['field1_3', 'field2_3', 'field3_3'],
-            ['field1_1', 'field2_2', 'field3_3'],
-            ['field1_3', 'field2_2', 'field3_1'],
+            ['field0_0', 'field0_1', 'field0_2'],
+            ['field1_0', 'field1_1', 'field1_2'],
+            ['field2_0', 'field2_1', 'field2_2'],
+            ['field0_0', 'field1_0', 'field2_0'],
+            ['field0_1', 'field1_1', 'field2_1'],
+            ['field0_2', 'field1_2', 'field2_2'],
+            ['field0_0', 'field1_1', 'field2_2'],
+            ['field0_2', 'field1_1', 'field2_0'],
         ];
 
+        // Checks the values of a, b, c if they are the same
+        // Example: a, b, c of winningCombinations are all filled by player1
         for (const combination of winningCombinations) {
             const [a, b, c] = combination;
 
@@ -119,10 +123,9 @@ export class GameService {
     }
 
 
-    async endGame(gameId: number, winnerId: number | null, loserId: number | null): Promise<void> {
+    async endGame(gameId: number, winnerId: number | null, loserId: number | null): Promise<any> {
         const game = await this.gameRepository.findOne({where: {gameId}, relations: ['player1', 'player2']});
         if (!game) {
-            console.log("Spiel nicht gefunden");
             throw new NotFoundException('Spiel nicht gefunden');
         }
 
@@ -133,16 +136,20 @@ export class GameService {
             game.loser = loserId; // Korrekt setzen
             console.log('Gewinner:', winnerId);
             console.log('Verlierer:', loserId);
+
+            //TODO: Update changeElo in Game DB
             await this.updateEloForPlayers(winnerId, loserId);
             await this.updatePlayerStats(winnerId, loserId);
         } else {
             // Unentschieden: Elo für beide Spieler aktualisieren
             game.isTie = true;
+            //TODO: Update changeElo in Game DB
             await this.updateEloForTie(game.player1.userId, game.player2.userId);
             await this.updatePlayerStatsForTie(game.player1.userId, game.player2.userId);
         }
 
         await this.gameRepository.save(game);
+        return game;
     }
 
     async resignGame(gameId: number, playerId: number): Promise<void> {

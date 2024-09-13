@@ -4,9 +4,10 @@
     <div class="col-3">
       <div class="player-info left">
         <app-player
-          [username]="user?.username"
-          [symbol]="user?.symbol"
-          [elo]="user?.elo">
+          [username]="user?.userName"
+          [elo]="user?.elo"
+          [profilePic]="user?.profilePic"
+          [symbol]="user?.symbol">
         </app-player>
       </div>
     </div>
@@ -21,7 +22,8 @@
         <app-player
           [username]="opponent?.username"
           [symbol]="opponent?.symbol"
-          [elo]="opponent?.elo">
+          [elo]="opponent?.elo"
+          [profilePic]="user?.profilePic">
         </app-player>
       </div>
     </div>

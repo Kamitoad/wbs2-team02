@@ -22,10 +22,9 @@ export class GameGateway {
         @MessageBody() moveData: { gameId: number; userId: number; move: { x: number, y: number } },
         @ConnectedSocket() client: Socket,
     ) {
-        this.logger.log(`Player ${moveData.userId} made a move in game ${moveData.gameId}`);
         try {
-            await this.gameService.makeMove(moveData.gameId, moveData.userId, moveData.move);
-            const game = await this.gameService.getGameById(moveData.gameId);
+            const game = await this.gameService.makeMove(moveData.gameId, moveData.userId, moveData.move);
+            this.logger.log(`Player ${moveData.userId} made a move in game ${moveData.gameId}`);
             this.server.to(`game_${moveData.gameId}`).emit('gameState', game);
         } catch (error) {
             this.logger.error(`Error handling move: ${error.message}`);
@@ -39,12 +38,14 @@ export class GameGateway {
     }
 
     @SubscribeMessage('joinGame')
-    handleJoinGame(
+    async handleJoinGame(
         @MessageBody() data: { gameId: number; userId: number },
         @ConnectedSocket() client: Socket,
     ) {
         client.join(`game_${data.gameId}`);
-        client.emit('joinedGame', {gameId: data.gameId});
+        const game = await this.gameService.getGameById(data.gameId);
+        console.log(game)
+        client.emit('joinedGame', {game});
         this.logger.log(`Player ${data.userId} joined game ${data.gameId}`);
     }
 
