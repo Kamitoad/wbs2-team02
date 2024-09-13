@@ -67,11 +67,14 @@ body{
 .custom-container {
   background-color: #00a8cc;
   color: white;
-  height: 100vh;
 }
 
 .error-message{
   color: #bd2a2c;
+}
+
+.success-message{
+  color: #18a01d;
 }
 
 .blueline {

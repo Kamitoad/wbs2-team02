@@ -5,6 +5,8 @@ import {NgClass} from "@angular/common";
 import {UserdataCardComponent} from "../../../admin/components/userdata/userdata-card/userdata-card.component";
 import {AuthService} from "../../../../shared/services/auth/auth.service";
 import {QueueButtonComponent} from "../queue-button/queue-button.component";
+import {EditPasswordProfilepicComponent} from "../edit-password-profilpic/edit-password-profilepic.component";
+import {ProfilePicComponent} from "../profile-pic/profile-pic.component";
 
 @Component({
   selector: 'app-profile',
@@ -14,19 +16,28 @@ import {QueueButtonComponent} from "../queue-button/queue-button.component";
   imports: [
     NgClass,
     UserdataCardComponent,
-    QueueButtonComponent
+    QueueButtonComponent,
+    EditPasswordProfilepicComponent,
+    ProfilePicComponent
   ]
 })
 export class ProfileComponent implements OnInit {
 
   public authService: AuthService = inject(AuthService);
+  public profileService: ProfileService = inject(ProfileService);
 
   currentUser: any;
   userMatches: any[] =[];
 
-  constructor(private profileService: ProfileService, private router: Router) {}
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
+    this.profileService.getCurrentUser().subscribe({
+      next: () => {},
+      error: () => {
+        this.router.navigate(['login']);
+      }
+    });
     this.loadUserData();
   }
 
@@ -60,11 +71,28 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  getMatchResultClass(match: any): string {
-    return match.result === 'win' ? 'win' : match.result === 'tie' ? 'tie' : 'loss';
+  getMatchResultClass(match:any):string{
+    if(match.winner===this.currentUser.userId){return 'win'}
+    else if (match.loser===this.currentUser.userId){return 'loss'}
+    return 'tie';
+  }
+  getMatchResultText(match:any):string{
+    if(match.winner===this.currentUser.userId){return 'Gewonnen'}
+    else if (match.loser===this.currentUser.userId){return 'Verloren'}
+    return 'Unentschieden';
   }
 
-  getMatchResultText(match: any): string {
-    return match.result === 'win' ? 'Gewonnen' : match.result === 'tie' ? 'Unentschieden' : 'Verloren';
+  getMatchSelf(match:any):any{
+    if(match.player1.userId===this.currentUser.userId){return `${match.player1.userName} (${match.changeEloPlayer1})`}
+    else return `${match.player2.userName} (${match.changeEloPlayer2})`
   }
+  getMatchOpponent(match:any):any{
+    if(match.player1.userId!==this.currentUser.userId){return `${match.player1.userName} (${match.changeEloPlayer1})`}
+    else return `${match.player2.userName} (${match.changeEloPlayer2})`
+  }
+
+  toggleEdit(){
+    this.profileService.displayEdit = true;
+  }
+
 }

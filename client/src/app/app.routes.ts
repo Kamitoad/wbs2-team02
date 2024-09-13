@@ -6,18 +6,32 @@ import {UserdataComponent} from "./pages/admin/components/userdata/userdata.comp
 import {CurrentGamesComponent} from "./pages/admin/components/gamedata/current-games/current-games.component";
 import {GamedataComponent} from "./pages/admin/components/gamedata/gamedata.component";
 import {QueueOverviewComponent} from "./pages/admin/components/gamedata/queue-overview/queue-overview.component";
-import {EditPasswordProfilepicComponent} from "./pages/user/components/editUser/edit-password-profilpic/edit-password-profilepic.component";
 import {QueueComponent} from "./pages/user/components/queue/queue.component";
 import { GameComponent } from './pages/user/components/game/game.component';
 
 export const routes: Routes = [
 
+  /*
+    If the redirect-routes don't work:
+    Replace this:
+    { path: '', component: LoginComponent},
+    with this:
+    { path: '', redirectTo: 'login', pathMatch: 'full'},
+
+    or vice versa
+
+    I'm not sure if even god knows why...
+  */
+
+
   { path: 'login', component: LoginComponent},
+  { path: '', component: LoginComponent},
+
   { path: 'register', component: RegisterComponent},
   { path: 'profile', component: ProfileComponent},
-  { path: 'admin/editUser', component: UserdataComponent },
-  {path: 'editPassword', component: EditPasswordProfilepicComponent },
+  { path: 'profil', redirectTo: 'profile', pathMatch: 'full'},
   { path: 'queue', component: QueueComponent },
+  { path: 'admin/editUser', component: UserdataComponent },
   { path: 'game', component: GameComponent },
   { path: 'game/:gameId', component: GameComponent },
   { path: 'admin/user', component: UserdataComponent },
@@ -31,4 +45,7 @@ export const routes: Routes = [
       },
     ]
   },
+
+  { path: 'admin', redirectTo: 'admin/user', pathMatch: 'full' },
+  { path: '**', redirectTo: 'login', pathMatch: 'full'},
 ];

@@ -8,6 +8,8 @@ import { Observable } from 'rxjs';
 export class ProfileService {
   private apiUrl = '/api/user';
 
+  public displayEdit: boolean = false;
+
   constructor(private http: HttpClient) {}
 
   getCurrentUser(): Observable<any> {

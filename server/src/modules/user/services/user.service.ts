@@ -44,6 +44,9 @@ export class UserService {
         if (!user) {
             throw new BadRequestException("Benutzer nicht gefunden");
         }
+        if (!file) {
+            throw new BadRequestException('Keine Datei hochgeladen');
+        }
 
         const validMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
         if (!validMimeTypes.includes(file.mimetype)) {
@@ -69,22 +72,73 @@ export class UserService {
 
     // Fetch the current user by ID
     async getCurrentUser(userId: number): Promise<User> {
-        const user = await this.userRepository.findOne({ where: { userId } });
+        const user = await this.userRepository.findOne({ where: { userId },
+            select:['userName','userId','elo','email','firstName','lastName','role','profilePic','totalWins','totalTies','totalLosses']
+            });
         if (!user) {
             throw new NotFoundException(`User with ID ${userId} not found.`);
         }
         return user;
     }
 
-    // Fetch matches for a specific user
-    async getUserMatches(userId: number): Promise<Game[]> {
+
+    async getUserMatches(userId: number): Promise<any[]> {
         const user = await this.userRepository.findOne({ where: { userId } });
         if (!user) {
             throw new NotFoundException(`User with ID ${userId} not found.`);
         }
-        const gamesAsPlayer1 = await this.gameRepository.find({ where: { player1: { userId }, hasEnded: true }, relations: ['player2'] });
-        const gamesAsPlayer2 = await this.gameRepository.find({ where: { player2: { userId }, hasEnded: true }, relations: ['player1'] });
 
-        return [...gamesAsPlayer1, ...gamesAsPlayer2];
+        // Todo Boolean as Number fix
+        //Select the games where userId = player1
+        const gamesAsPlayer1 = await this.gameRepository.find({
+            where: { player1: { userId }, hasEnded: 1 },
+            relations: ['player2'],
+            select: ['gameId', 'hasEnded', 'winner', 'loser', 'changeEloPlayer1', 'changeEloPlayer2'],
+        });
+
+        //Select the games where userId = player2
+        const gamesAsPlayer2 = await this.gameRepository.find({
+            where: { player2: { userId }, hasEnded: 1 },
+            relations: ['player1'],
+            select: ['gameId', 'hasEnded', 'winner', 'loser', 'changeEloPlayer1', 'changeEloPlayer2'],
+        });
+
+        // combine resulting arrays
+        const formatGames = [
+            ...gamesAsPlayer1.map(game => ({
+                gameId: game.gameId,
+                hasEnded: game.hasEnded,
+                winner: game.winner,
+                loser: game.loser,
+                changeEloPlayer1: game.changeEloPlayer1,
+                changeEloPlayer2: game.changeEloPlayer2,
+                player1: {
+                    userId: userId,
+                    userName: user.userName
+                },
+                player2: {
+                    userId: game.player2.userId,
+                    userName: game.player2.userName
+                }
+            })),
+            ...gamesAsPlayer2.map(game => ({
+                gameId: game.gameId,
+                hasEnded: game.hasEnded,
+                winner: game.winner,
+                loser: game.loser,
+                changeEloPlayer1: game.changeEloPlayer1,
+                changeEloPlayer2: game.changeEloPlayer2,
+                player1: {
+                    userId: game.player1.userId,
+                    userName: game.player1.userName
+                },
+                player2: {
+                    userId: userId,
+                    userName: user.userName
+                }
+            }))
+        ];
+
+        return formatGames;
     }
 }

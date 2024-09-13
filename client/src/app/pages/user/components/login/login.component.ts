@@ -4,6 +4,7 @@ import { AuthService } from '../../../../shared/services/auth/auth.service';
 import {FormsModule} from "@angular/forms";
 import {CommonModule, NgIf} from "@angular/common";
 import {HttpClient} from "@angular/common/http";
+import {ProfileService} from "../../services/profile.service";
 
 @Component({
   selector: 'app-login',
@@ -24,25 +25,44 @@ export class LoginComponent {
   password: string = '';
   statusMessage: string = " ";
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private profileService: ProfileService,
+  ) {}
+
+  ngOnInit(): void {
+    /*
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      this.router.navigate(['profile']);
+    }
+    */
+
+    this.profileService.getCurrentUser().subscribe({
+      next: () => { this.router.navigate(['profile']); },
+      error: () => {}
+    });
+  }
 
   onSubmit() {
+    this.userName = this.userName.trim();
+    this.password = this.password.trim();
+
     let user: any = {
       userName: this.userName,
       password: this.password,
     }
     this.authService.login(user).subscribe({
       next: (response) => {
-        // Hier prüfen, ob die Rolle 'admin' ist und entsprechend weiterleiten
         if (response.role === 'admin') {
           this.router.navigate(['/admin/user']);
         } else {
           this.router.navigate(['/profile']);
         }
       },
-      error: (error) => {
-        // Fehler anzeigen
-        this.statusMessage = error.error.message || "Ein unbekannter Fehler ist aufgetreten";
+      error: () => {
+        this.statusMessage = "Falscher Nutzername oder Passwort";
         this.removeStatusMessage();
       }
     });

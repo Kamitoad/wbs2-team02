@@ -2,16 +2,37 @@
   <div class="row justify-content-center w-auto m-0">
     <div class="col-10">
       <h1 class="text-center mt-4">Gamemanager</h1>
-      <div class="row mb-4 justify-content-start">
-        <div class="d-none d-xxl-block col-3">
-          <button routerLink="/admin/user" type="button" class="big-button w-100 p-2">
-            <span class="h4">{{ "<< Zur Nutzerübersicht" }}</span>
-          </button>
+
+      <div class="d-none d-xxl-block">
+        <div class="row mb-4 justify-content-between">
+          <div class="col-3">
+            <button routerLink="/profile" type="button" class="big-green-button w-100 p-2">
+              <span class="h4">{{ "<< Zum eigenen Profil" }}</span>
+            </button>
+          </div>
+          <div class="col-3">
+            <button routerLink="/admin/user" type="button" class="big-button w-100 p-2">
+              <span class="h4">{{ "<< Zur Nutzerübersicht" }}</span>
+            </button>
+          </div>
         </div>
-        <div class="d-block d-xxl-none">
-          <button routerLink="/admin/user" type="button" class="big-button w-100 p-2">
-            <span class="h4">{{ "<< Zur Nutzerübersicht" }}</span>
-          </button>
+      </div>
+
+      <div class="d-block d-xxl-none">
+        <div class="row mb-4 mt-4 justify-content-between">
+          <div class="col-12">
+            <button routerLink="/profile" type="button" class="big-green-button w-100 p-2">
+              <span class="h4">{{ "<< Zum eigenen Profil" }}</span>
+            </button>
+          </div>
+
+          <hr class="whiteline my-4">
+
+          <div class="col-12">
+            <button routerLink="/admin/user" type="button" class="big-button w-100 p-2">
+              <span class="h4">{{ "<< Zur Nutzerübersicht" }}</span>
+            </button>
+          </div>
         </div>
       </div>
 

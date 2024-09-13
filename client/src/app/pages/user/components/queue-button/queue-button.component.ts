@@ -20,7 +20,6 @@ export class QueueButtonComponent {
 
     this.queueService.emitJoinQueue()
       .then(() => {
-        // Navigation nur wenn kein Fehler aufgetreten ist
         this.router.navigate(['/queue']);
       })
       .catch((error) => {
