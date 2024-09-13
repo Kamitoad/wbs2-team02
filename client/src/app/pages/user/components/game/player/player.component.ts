@@ -9,8 +9,9 @@ import { Component, Input } from "@angular/core";
 
 export class PlayerComponent {
   @Input() username!: string;
-  @Input() symbol!: 'X' | 'O';
   @Input() elo!: number;
+  @Input() profilePic!: string;
+  @Input() symbol!: 'X' | 'O';
 }
 
 /*

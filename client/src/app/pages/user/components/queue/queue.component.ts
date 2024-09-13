@@ -60,6 +60,7 @@ export class QueueComponent implements OnDestroy, OnInit {
       this.opponent = opponent;
       if (opponent?.gameId) {
         this.gameId = opponent.gameId;
+        localStorage.setItem('opponent', JSON.stringify(opponent));
       }
     });
 

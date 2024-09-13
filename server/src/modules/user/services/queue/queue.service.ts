@@ -56,8 +56,12 @@ export class QueueService {
             newGame.player2 = opponent;  // Vollständiges User-Objekt zuweisen
 
             // Set the first player to move
-            newGame.currentPlayer1 = newGame.player1;  // Vollständiges User-Objekt
-            newGame.currentPlayer2 = null;  // null, weil es der Zug von player1 ist
+            const randomNum = Math.random()
+            if (randomNum < 0.5) {
+                newGame.currentPlayer = user.userId
+            } else {
+                newGame.currentPlayer = opponent.userId
+            }
 
             await this.gameRepository.save(newGame);
 
