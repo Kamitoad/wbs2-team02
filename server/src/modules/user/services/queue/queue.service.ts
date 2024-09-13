@@ -55,7 +55,7 @@ export class QueueService {
             newGame.player1 = user;  // Vollständiges User-Objekt zuweisen
             newGame.player2 = opponent;  // Vollständiges User-Objekt zuweisen
 
-            // Set the first player to move
+            // Set the first playerLeft to move
             const randomNum = Math.random()
             if (randomNum < 0.5) {
                 newGame.currentPlayer = user.userId

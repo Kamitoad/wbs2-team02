@@ -1,17 +1,19 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {GameService} from '../../services/game.service';
-import {PlayerComponent} from './player/player.component';
+import {PlayerLeftComponent} from './playerLeft/playerLeft.component';
 import {BoardComponent} from './board/board.component';
 import {ProfileService} from "../../services/profile.service";
+import {PlayerRightComponent} from "./playerRight/playerRight.component";
 
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
   standalone: true,
   imports: [
-    PlayerComponent,
-    BoardComponent
+    PlayerLeftComponent,
+    BoardComponent,
+    PlayerRightComponent
   ],
   styleUrls: ['./game.component.css']
 })
@@ -103,7 +105,7 @@ export class GameComponent implements OnInit {
   private setupWebSocketListeners(): void {
     this.gameService.moveSubject.subscribe(move => {
       console.log('Move received from WebSocket:', move);
-      //this.updateBoard(move.row, move.col, move.player);
+      //this.updateBoard(move.row, move.col, move.playerLeft);
       //this.switchPlayer();
     });
 
@@ -123,7 +125,7 @@ export class GameComponent implements OnInit {
       /*
       // Gegnerdaten prüfen
       if (gameData.player1) {
-        const opponentData = gameData.players.find((player: any) => player.userId !== this.user.userId);
+        const opponentData = gameData.players.find((playerLeft: any) => playerLeft.userId !== this.user.userId);
         if (opponentData) {
           this.opponent = opponentData;
           console.log('Opponent in GameComponent:', this.opponent);
@@ -152,8 +154,8 @@ export class GameComponent implements OnInit {
 
   /*
   // Aktualisiere das Spielfeld
-  updateBoard(row: number, col: number, player: 'X' | 'O'): void {
-    this.board[row][col] = player;
+  updateBoard(row: number, col: number, playerLeft: 'X' | 'O'): void {
+    this.board[row][col] = playerLeft;
   }
   */
 

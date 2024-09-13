@@ -1,0 +1,60 @@
+.player-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-top: 10px;
+}
+
+img {
+  border-radius: 50%;
+  width: 120px;  /* Etwas kleiner, um besser zu passen */
+  height: 120px;
+  margin-bottom: 10px;
+  object-fit: cover; /* Verhindert Verzerrung des Bildes */
+}
+
+p.gameSymbol {
+  display: block;
+  width: 100%;
+  font-size: 6rem;  /* Verkleinert für bessere Anpassung auf kleineren Bildschirmen */
+  background-color: transparent;
+  color: white;
+  margin: 5px 0;  /* Geringerer Abstand zwischen Bild und Symbol */
+}
+
+div.row {
+  display: flex;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  justify-content: center;
+}
+
+div.userNameElo {
+  font-weight: bold;
+  border: 1px solid white;
+  color: white;
+  padding: 5px 10px;  /* Polsterung reduzieren */
+  border-radius: 15px;  /* Rundung des Borders */
+  text-align: center;
+  display: inline-block;  /* Border passt sich dem Inhalt an */
+  margin-top: 10px;
+}
+
+/* Responsiveness für kleinere Bildschirme */
+@media screen and (max-width: 600px) {
+  img {
+    width: 90px;
+    height: 90px;
+  }
+
+  p.gameSymbol {
+    font-size: 4rem;
+  }
+
+  div.userNameElo {
+    font-size: 0.8rem;
+  }
+}

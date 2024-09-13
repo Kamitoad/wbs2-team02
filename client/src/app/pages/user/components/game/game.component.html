@@ -1,30 +1,36 @@
-<div class="container"><h2 class="justify-content-center text-center">Möge das Glück mit dir sein</h2></div>
-<div class="game-container">
+<div class="container-fluid"><h1 class="justify-content-center text-center align-content-center">Möge das Glück mit dir sein</h1></div>
+<div class="container-fluid game-container">
   <div class="row">
     <div class="col-3">
-      <div class="player-info left">
-        <app-player
+      <div class="container player-info left">
+        @if (currentPlayerId === user?.userId) {
+          <span>Du bist dran</span>
+        }
+        <app-playerLeft
           [username]="user?.userName"
           [elo]="user?.elo"
           [profilePic]="user?.profilePic"
           [symbol]="user?.symbol">
-        </app-player>
+        </app-playerLeft>
       </div>
     </div>
     <div class="col-6">
-      <div class="board-container">
+      <div class="container board-container">
         <app-board [gameId]="gameId"></app-board>
       </div>
     </div>
     <!-- Optional: opponent-Logik hinzufügen -->
     <div class="col-3">
-      <div class="player-info right">
-        <app-player
+      <div class="container player-info right">
+        @if (currentPlayerId !== user?.userId) {
+          <span>Gegner ist dran</span>
+        }
+        <app-playerRight
           [username]="opponent?.username"
           [symbol]="opponent?.symbol"
           [elo]="opponent?.elo"
           [profilePic]="user?.profilePic">
-        </app-player>
+        </app-playerRight>
       </div>
     </div>
   </div>

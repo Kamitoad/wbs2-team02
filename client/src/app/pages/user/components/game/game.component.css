@@ -1,63 +1,69 @@
-/* Hintergrund */
+/* Allgemeine Container */
+.container {
+  margin: 20px 0;
+}
+
+/* Spielcontainer mit Flexbox */
 .game-container {
-  background-color: #33a5c1;
-  color: white;
-  text-align: center;
-  padding: 50px;
-  height: 100vh;
-}
-
-/* Überschrift */
-.title {
-  font-size: 2rem;
-  margin-bottom: 30px;
-}
-
-/* Container für Spieler und Spielfeld */
-.players-container {
-  display: flex;
+  display: block;
   justify-content: space-between;
   align-items: center;
+  width: auto;
+  height: auto;
+  margin: 0 20px;
 }
 
-/* Spieleranzeige */
 .player-info {
-  display: flex;
   flex-direction: column;
   align-items: center;
-  width: 150px;
+  justify-content: center;
+  background-color: transparent;
+  padding: 20px;
+  border-radius: 10px;
 }
 
-/* Profilbild */
-.player-avatar {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  margin-bottom: 10px;
+.left, .right {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 
-/* Spieler-Details */
-.player-details {
-  text-align: center;
-}
-
-.player-symbol {
-  font-size: 3rem;
-  margin: 10px 0;
-}
-
-/* Spielfeld */
 .board-container {
-  flex-grow: 1;
-  max-width: 400px;
-  margin: 0 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
-/* Anpassungen für linke und rechte Spalte */
-.left {
-  justify-content: flex-start;
+.app-board {
+  border: 2px solid white;
+  padding: 20px;
+  background-color: transparent;
+  border-radius: 10px;
 }
 
-.right {
-  justify-content: flex-end;
+/* Spieler-Info anpassen */
+.player-info.left {
+  background-color: transparent;
+  color: white;
+  margin-left: 6rem;
+  padding: 0;
 }
+
+.player-info.right {
+  background-color: transparent;
+  color: white;
+  margin-right: 6rem;
+  padding: 0;
+}
+
+h1 {
+  color: white;
+  font-size: 2rem;
+  text-align: center;
+  width: 100%; /* Füge dies hinzu, um die Überschrift in der Mitte des Containers zu zentrieren */
+  margin: 10rem auto 10rem auto;
+}
+
+*{ height: auto}

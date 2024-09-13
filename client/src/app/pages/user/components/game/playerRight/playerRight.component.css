@@ -1,0 +1,68 @@
+.player-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-top: 10px;
+}
+
+img {
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 10px;
+  object-fit: cover;
+}
+
+p.gameSymbol {
+  display: block;
+  width: 100%;
+  font-size: 6rem;
+  background-color: transparent;
+  color: white;
+  margin: 5px 0;
+}
+
+div.row {
+  display: flex;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  justify-content: flex-end; /* Inhalt nach rechts schieben */
+}
+
+div.col-6:first-child {
+  order: 2; /* Text soll nach dem Bild erscheinen */
+}
+
+div.col-6:last-child {
+  order: 1; /* Bild nach vorne verschieben */
+}
+
+div.userNameElo {
+  font-weight: bold;
+  border: 1px solid white;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 15px;
+  text-align: center;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+/* Responsiveness für kleinere Bildschirme */
+@media screen and (max-width: 600px) {
+  img {
+    width: 90px;
+    height: 90px;
+  }
+
+  p.gameSymbol {
+    font-size: 4rem;
+  }
+
+  div.userNameElo {
+    font-size: 0.8rem;
+  }
+}

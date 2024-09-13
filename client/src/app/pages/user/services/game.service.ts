@@ -22,7 +22,7 @@ export class GameService {
   joinedGameSubject = new Subject<any>();
   joinedGame$ = this.joinedGameSubject.asObservable();
 
-  // moveSubject = new Subject<{ row: number, col: number, player: 'X' | 'O' }>();
+  // moveSubject = new Subject<{ row: number, col: number, playerLeft: 'X' | 'O' }>();
   // winnerSubject = new Subject<{ gameId: number; winner: string }>();
   gameDataSubject = new Subject<any>(); // Fügt einen Subject für Game-Daten hinzu
   currentPlayer: number | undefined = undefined;
@@ -169,7 +169,7 @@ export class GameService {
   gameId!: number; // Speichere die gameId hier für spätere Zugriffe
 
   // Subject für WebSocket-Zug-Updates
-  moveSubject = new Subject<{ row: number, col: number, player: 'X' | 'O' }>();
+  moveSubject = new Subject<{ row: number, col: number, playerLeft: 'X' | 'O' }>();
 
   constructor(
     private http: HttpClient,
@@ -218,7 +218,7 @@ createGame(): Observable<any> {
 // Methode zum Ausführen eines Zuges
 /*
   makeMove(row: number, col: number): Observable<any> {
-    return this.http.post(`${this.apiUrl}/${this.gameId}/move`, {row, col, player: this.currentPlayer});
+    return this.http.post(`${this.apiUrl}/${this.gameId}/move`, {row, col, playerLeft: this.currentPlayer});
   }
 */
 // WebSocket-Verbindung einrichten
@@ -226,7 +226,7 @@ createGame(): Observable<any> {
 
 /*
 private setupSocketListeners() {
-  this.socket.on('move', (data: { row: number, col: number, player: 'X' | 'O' }) => {
+  this.socket.on('move', (data: { row: number, col: number, playerLeft: 'X' | 'O' }) => {
     console.log(`Move received from server:`, data);
     this.moveSubject.next(data);
   });
@@ -240,7 +240,7 @@ private setupSocketListeners() {
 /*
 emitMove(row: number, col: number) {
   console.log(`Emitting move: Row: ${row}, Col: ${col}, Player: ${this.currentPlayer}`);
-  this.socket.emit('move', {gameId: this.gameId, row, col, player: this.currentPlayer});
+  this.socket.emit('move', {gameId: this.gameId, row, col, playerLeft: this.currentPlayer});
 }
 }
 */
@@ -268,7 +268,7 @@ setupWebSocketConnection() {
 /*
   setupSocketListeners() {
     if (this.socket) {
-      this.socket.on('move', (data: { row: number, col: number, player: 'X' | 'O' }) => {
+      this.socket.on('move', (data: { row: number, col: number, playerLeft: 'X' | 'O' }) => {
         console.log(`Move received from server:`, data);
         this.moveSubject.next(data);  // Aktualisiere den Spielstatus basierend auf den Daten vom Server
       });
@@ -286,7 +286,7 @@ setupWebSocketConnection() {
       gameId: this.getGameId(),  // Hole die GameID
       row: row,
       col: col,
-      player: this.currentPlayer
+      playerLeft: this.currentPlayer
     });
   }
 }
