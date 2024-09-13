@@ -44,6 +44,9 @@ export class UserService {
         if (!user) {
             throw new BadRequestException("Benutzer nicht gefunden");
         }
+        if (!file) {
+            throw new BadRequestException('Keine Datei hochgeladen');
+        }
 
         const validMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
         if (!validMimeTypes.includes(file.mimetype)) {

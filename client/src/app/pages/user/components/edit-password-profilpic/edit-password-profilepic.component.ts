@@ -1,3 +1,12 @@
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { FormsModule } from "@angular/forms";
+import { AuthService } from "../../../../shared/services/auth/auth.service";
+import { Router } from "@angular/router";
+import { HttpClient } from "@angular/common/http";
+import { EditPasswordService } from "../../services/editUser/edit-password.service";
+import { EditProfilePicService } from "../../services/editProfilePic/edit-profile-pic.service";
+import { NgIf, NgOptimizedImage } from "@angular/common";
+import { ProfilePicComponent } from "../profile-pic/profile-pic.component";
 import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {AuthService} from "../../../../../shared/services/auth/auth.service";
@@ -22,7 +31,7 @@ import {ProfileService} from "../../../services/profile.service";
   templateUrl: './edit-password-profilepic.component.html',
   styleUrl: './edit-password-profilepic.component.css'
 })
-export class EditPasswordProfilepicComponent  {
+export class EditPasswordProfilepicComponent implements OnInit {
   httpclient: HttpClient = inject(HttpClient);
   public profileService: ProfileService = inject(ProfileService);
 
@@ -38,9 +47,14 @@ export class EditPasswordProfilepicComponent  {
   private newPfp: any;
   protected errorMessage: string | undefined;
 
-  constructor(private http: HttpClient, private editUser: EditPasswordService, private editProfilePic: EditProfilePicService, private router: Router) {
-  }
+  constructor(private http: HttpClient, private editUser: EditPasswordService, private editProfilePic: EditProfilePicService, private router: Router) {}
 
+  ngOnInit() {
+    // Abonniere das Profilbild, um sofortige Aktualisierungen zu ermöglichen
+    this.editProfilePic.currentProfilePic$.subscribe(profilePic => {
+      this.profilePic = profilePic;
+    });
+  }
 
   onFileChange(event: any) {
     const file = event.target.files[0];
@@ -56,9 +70,7 @@ export class EditPasswordProfilepicComponent  {
 
       this.http.patch<{ newProfilePic: string }>("http://localhost:3000/api/user/profilepic", formData, { withCredentials: true }).subscribe(
         response => {
-          this.profilePic = response.newProfilePic;
-          // Aktualisiere das Profilbild im Service, damit alle Abonnenten die Änderung sehen
-          this.editProfilePic.setProfilePic(response.newProfilePic);
+          this.editProfilePic.setProfilePic(response.newProfilePic); // Sofortige Aktualisierung des Profilbilds
           this.enableImgUpload();
         },
         error => {
@@ -72,22 +84,10 @@ export class EditPasswordProfilepicComponent  {
   deleteProfilePic() {
     this.editProfilePic.deleteProfilePic().subscribe(success => {
       if (success && !success.error) {
-        this.editProfilePic.setProfilePic(success.profilePic); // Profilbild nach dem Löschen setzen
+        this.editProfilePic.setProfilePic(success.profilePic); // Profilbild nach dem Löschen aktualisieren
       }
     });
   }
-
-  refreshCurrentRoute() {
-    // Verwende hier anstelle eines Seiten-Reloads einen Service oder ein einfaches EventEmitter-System
-    this.editProfilePic.getProfilePic().subscribe(success => {
-      if (success && success.profilePic) {
-        this.profilePic = success.profilePic;
-      } else {
-        this.profilePic = ''; // oder das Default-Bild setzen, falls kein Bild vorhanden
-      }
-    });
-  }
-
 
   removeErrorMessage(): void {
     setTimeout(() => {
@@ -105,20 +105,17 @@ export class EditPasswordProfilepicComponent  {
         if (success.error) {
           this.showMessage('messageErrorOld', 5000);
         } else if (success) {
-
           this.showMessage('messageSuccess', 5000);
           this.clearInputFields();
         }
       });
     } else {
-
       this.showMessage('messageErrorNew', 5000);
     }
   }
 
   showMessage(elementId: string, duration: number) {
     const element = document.getElementById(elementId);
-    console.log(element)
     if (element) {
       element.style.display = 'inline'; // Show the message
       setTimeout(() => {
@@ -132,9 +129,6 @@ export class EditPasswordProfilepicComponent  {
     this.newPassword = '';
     this.newPasswordConfirm = '';
   }
-
-  protected readonly window = window;
-  protected readonly onclick = onclick;
 
   enableImgUpload() {
     this.imgUpload = this.editProfilePic.enableImgUpload(this.imgUpload);

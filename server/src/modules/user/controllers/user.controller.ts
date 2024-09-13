@@ -151,9 +151,7 @@ export class UserController {
         @UploadedFile() file: Express.Multer.File,
     ): Promise<ProfilePicResponseDto> {
         try {
-            if (!file) {
-                throw new BadRequestException('Keine Datei hochgeladen');
-            }
+
 
             const userId: number = session.currentUser;
             const updatedUser = await this.userService.updateProfilePic(userId, file);
