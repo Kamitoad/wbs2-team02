@@ -3,7 +3,6 @@
   <div class="user-info">
     <div class="container text-center">
       <div class="row">
-        <div class="col"> </div>
         <div class="col">
           <img [src]="currentUser?.profilePic || 'default-avatar.png'" alt="Profile Picture" class="profile-pic">
         </div>
@@ -29,9 +28,9 @@
       </div>
     </div>
   </div>
-    @if(this.profileService.displayEdit){
-        <app-edit-password-profilpic></app-edit-password-profilpic>
-    }
+  @if(this.profileService.displayEdit){
+    <app-edit-password-profilpic class="edit-card"></app-edit-password-profilpic>
+  }
   <div class="statistics-card">
     <h3>Meine Statistiken</h3>
     <div class="statistics">
