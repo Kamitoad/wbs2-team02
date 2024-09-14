@@ -1,15 +1,16 @@
- <div class="player-info">
-     <div class="row">
-       <div class="col-6">
-         <img src="https://via.placeholder.com/100" alt="Profile"/>
-       </div>
-       <div class="col-6">
-         <p class="gameSymbol">{{ symbol || '-' }}</p>
-       </div>
-     </div>
-     <div class="row">
-         <div class="col-12 userNameElo">
-          {{ username || 'DEMOUSER' }} {{ elo }}
-         </div>
-     </div>
-   </div>
+<div class="player-info">
+  <div class="row">
+    <div class="col-6">
+      <img src="https://via.placeholder.com/100" alt="Profile" class="profile-image" />
+    </div>
+    <div class="col-6">
+      <p class="gameSymbol">{{ symbol || 'X' }}</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 userNameElo">
+      <span class="m-1 px-2">{{ username || 'DEMOUSER' }}</span>
+      <span class="m-1">{{ elo || 1000 }}</span>
+    </div>
+  </div>
+</div>

@@ -1,15 +1,16 @@
 <div class="player-info">
   <div class="row">
     <div class="col-6">
-      <p class="gameSymbol">{{ symbol || '-' }}</p>
+      <p class="gameSymbol">{{ symbol || 'O' }}</p>
     </div>
     <div class="col-6">
-      <img src="https://via.placeholder.com/100" alt="Profile"/>
+      <img src="https://via.placeholder.com/100" alt="Profile" class="img-fluid"/>
     </div>
   </div>
   <div class="row">
-    <div class="col-12 userNameElo">
-      {{ username || 'DEMOUSER' }}{{ elo }}
+    <div class="col-12 userNameElo p-1 m-1">
+      <span class="m-1 px-2">{{ username || 'DEMOUSER' }}</span>
+      <span class="m-1">{{ elo || 1000 }}</span>
     </div>
   </div>
 </div>

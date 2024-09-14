@@ -24,9 +24,9 @@ export class GameComponent implements OnInit {
   user: any = null;
   opponent: any = null;
   gameId!: number;
-  playerId!: number;
+//  playerId!: number;
   currentPlayerId: number | null = null;
-  currentPlayer: 'X' | 'O' = 'X';  // Startspieler
+  currentPlayer: 'X' | 'O' = 'X';
   gameOver: boolean = false;
   board: ('X' | 'O' | null)[][] = [
     [null, null, null],
@@ -43,7 +43,9 @@ export class GameComponent implements OnInit {
 
   ngOnInit(): void {
     this.profileService.getCurrentUser().subscribe({
-      next: () => {
+      next: (profile) => {
+        this.user = profile
+        this.joinGame();
       },
       error: () => {
         this.router.navigate(['login']);
@@ -86,7 +88,7 @@ export class GameComponent implements OnInit {
           gameId: this.gameId,
           currentPlayerId: this.currentPlayerId,
           player1UserId: data.game.player1.userId,
-          player2UserId: data.game.player2.userId // Stelle sicher, dass Gegnerdaten verfügbar sind
+          player2UserId: data.game.player2.userId
         };
         localStorage.setItem('gameData', JSON.stringify(gameData));
 
@@ -96,7 +98,8 @@ export class GameComponent implements OnInit {
           return;
         }
         // Player 1 of Game is 'X', Player 2 is 'O'
-        gameData.player1UserId == this.user.userId ? this.user.symbol = 'X' : this.user.symbol = 'O'
+        // gameData.player1UserId == this.user.userId ? this.user.symbol = 'X' : this.user.symbol = 'O'
+        this.user.symbol = gameData.player1UserId === this.user.userId ? 'X' : 'O';
       });
     }
   }
@@ -122,6 +125,10 @@ export class GameComponent implements OnInit {
       //TODO: Read opponent-data correctly in HTML
       const opponent = JSON.parse(opponentString);
 
+      if (!opponent) {
+        console.error('Opponent not found in localStorage.');
+        return;
+      }
       /*
       // Gegnerdaten prüfen
       if (gameData.player1) {
@@ -143,12 +150,12 @@ export class GameComponent implements OnInit {
         player2UserId: this.opponent?.userId ?? 'Gegner unbekannt'
       };
 
-      localStorage.setItem('gameData', JSON.stringify(savedGameData));
+      // localStorage.setItem('gameData', JSON.stringify(savedGameData));
     });
 
     this.gameService.winnerSubject.subscribe(winnerData => {
       console.log(`Winner: ${winnerData.winner}`);
-      this.gameOver = true;  // Spiel als beendet markieren
+      this.gameOver = true;
     });
   }
 

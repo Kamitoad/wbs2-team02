@@ -12,11 +12,11 @@ export class PlayerRightComponent {
   @Input() elo!: number;
   @Input() profilePic!: string;
   @Input() symbol!: 'X' | 'O';
-
-  @Input() user: any;  // Benutzerdaten aus game.component.ts
   @Input() currentPlayerId: number | null = null;
-
-
+  // Du könntest eventuell prüfen, ob die Daten vollständig geladen wurden
+  get isReady(): boolean {
+    return !!this.username && !!this.symbol && !!this.profilePic;
+  }
 }
 
 /*

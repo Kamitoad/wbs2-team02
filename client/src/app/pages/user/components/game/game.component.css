@@ -1,69 +1,51 @@
-/* Allgemeine Container */
-.container {
-  margin: 20px 0;
+*{ border: #BD2A2C 1px dashed; }
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Inhalt zentrieren */
+  justify-content: center;
+  height: 100vh;
 }
 
-/* Spielcontainer mit Flexbox */
-.game-container {
-  display: block;
-  justify-content: space-between;
-  align-items: center;
-  width: auto;
-  height: auto;
-  margin: 0 20px;
+@media (min-width: 768px) {
+  .game-container {
+    flex-direction: row; /* Reihenlayout für größere Bildschirme */
+    justify-content: center; /* Bleibt zentriert */
+    align-items: center;
+  }
 }
 
 .player-info {
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent;
-  padding: 20px;
-  border-radius: 10px;
+  text-align: center;
+  margin: 0 10px; /* Abstand zu den Seiten */
 }
 
-.left, .right {
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
+.player-info.left {
+  text-align: right; /* Textausrichtung links für linken Spieler */
+}
+
+.player-info.right {
+  text-align: left; /* Textausrichtung rechts für rechten Spieler */
 }
 
 .board-container {
   display: flex;
-  align-items: center;
   justify-content: center;
-  width: 100%;
+  flex-wrap: wrap;
+  max-width: 400px;
 }
 
-.app-board {
-  border: 2px solid white;
-  padding: 20px;
-  background-color: transparent;
-  border-radius: 10px;
-}
-
-/* Spieler-Info anpassen */
-.player-info.left {
-  background-color: transparent;
-  color: white;
-  margin-left: 6rem;
-  padding: 0;
-}
-
-.player-info.right {
-  background-color: transparent;
-  color: white;
-  margin-right: 6rem;
-  padding: 0;
-}
-
-h1 {
-  color: white;
+.square {
+  width: 100px; /* Größere Button-Größe */
+  height: 100px;
+  margin: 10px; /* Abstand zwischen den Buttons */
   font-size: 2rem;
-  text-align: center;
-  width: 100%; /* Füge dies hinzu, um die Überschrift in der Mitte des Containers zu zentrieren */
-  margin: 10rem auto 10rem auto;
 }
 
-*{ height: auto}
+@media (max-width: 768px) {
+  .square {
+    width: 80px; /* Kleinere Buttons für kleinere Bildschirme */
+    height: 80px;
+    margin: 5px;
+  }
+}

@@ -16,28 +16,9 @@ img {
 }
 
 p.gameSymbol {
-  display: block;
-  width: 100%;
   font-size: 6rem;
-  background-color: transparent;
   color: white;
   margin: 5px 0;
-}
-
-div.row {
-  display: flex;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  justify-content: flex-end; /* Inhalt nach rechts schieben */
-}
-
-div.col-6:first-child {
-  order: 2; /* Text soll nach dem Bild erscheinen */
-}
-
-div.col-6:last-child {
-  order: 1; /* Bild nach vorne verschieben */
 }
 
 div.userNameElo {
@@ -46,12 +27,11 @@ div.userNameElo {
   color: white;
   padding: 5px 10px;
   border-radius: 15px;
-  text-align: center;
   display: inline-block;
   margin-top: 10px;
 }
 
-/* Responsiveness für kleinere Bildschirme */
+/* Responsive Anpassungen */
 @media screen and (max-width: 600px) {
   img {
     width: 90px;
