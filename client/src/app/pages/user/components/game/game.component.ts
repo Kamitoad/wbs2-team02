@@ -119,6 +119,8 @@ export class GameComponent implements OnInit, OnDestroy {
         console.error('Opponent not found in localStorage.');
         return;
       }
+
+      this.opponent = opponent;
       /*
       // Gegnerdaten prüfen
       if (gameData.player1) {
@@ -148,12 +150,20 @@ export class GameComponent implements OnInit, OnDestroy {
     });
   }
 
-  /*
-  // Spieler wechseln
+// Spieler wechseln
+  // Todo -> Prüfen ob currentplayer richtig übergeben wird
   switchPlayer(): void {
-    this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
+    // Spielerwechsel basierend auf dem aktuellen Spieler
+    this.currentPlayerId = this.currentPlayerId === this.user.userId ? this.opponent.userId : this.user.userId;
+
+    // Aktualisiere localStorage
+    const gameData = JSON.parse(localStorage.getItem('gameData')!);
+    gameData.currentPlayerId = this.currentPlayerId;
+    localStorage.setItem('gameData', JSON.stringify(gameData));
+
+    console.log('Neuer aktueller Spieler:', this.currentPlayerId);
   }
-  */
+
 
   /*
   // Neues Spiel starten

@@ -1,7 +1,8 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, Input, OnInit, EventEmitter, Output} from "@angular/core";
 import {GameService} from "../../../services/game.service";
 import {SquareComponent} from "../square/square.component";
 import {CommonModule} from "@angular/common";
+import {GameComponent} from "../game.component";
 
 @Component({
   selector: 'app-board',
@@ -16,7 +17,8 @@ export class BoardComponent implements OnInit {
   gamedata: any;
   board: ('X' | 'O' | null)[][] = Array(3).fill(null).map(() => Array(3).fill(null)); // Standard Tic-Tac-Toe 3x3 Board
   currentPlayer: 'X' | 'O' = 'X'; // Aktueller Spieler
-  updateCounter: number = 0;
+
+  @Output() playerSwitched: EventEmitter<void> = new EventEmitter();
 
   @Input() gameId!: number; // Spiel-ID wird von der Elternkomponente übergeben
   @Input() userId!: number; // Benutzer-ID des aktuellen Spielers
@@ -36,7 +38,7 @@ export class BoardComponent implements OnInit {
     this.gameService.resign(this.gameId, this.userId)
   }
 
-  makeMove(rowIndex: number, colIndex: number) {
+  makeMove(rowIndex: number, colIndex: number): void {
     const gameDataString = localStorage.getItem('gameData');
     const userDataString = localStorage.getItem('user');
 
@@ -56,13 +58,18 @@ export class BoardComponent implements OnInit {
 
 
     this.gameService.emitMove(this.gameId, rowIndex, colIndex, userData.userId);
-    //this.switchPlayer(); // Spieler nach dem Zug wechseln
+    // this.switchPlayer(); // Spieler nach dem Zug wechseln
+
+    // Spieler wechseln nach dem Zug
+    console.log("Player wird geswitched");
+    this.playerSwitched.emit();
 
     this.gameService.gameDataSubject.subscribe((data) => {
       console.log(data)
+      localStorage.setItem('gameData', JSON.stringify(data));
+
       this.putSymbolsInFields(data)
     });
-
   }
 
   putSymbolsInFields(data: any) {

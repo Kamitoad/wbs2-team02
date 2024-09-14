@@ -19,26 +19,4 @@ export class PlayerRightComponent {
   @Input() currentPlayerId: number | null = null;
   @Input() user: any;
   @Input() opponent: any;
-
 }
-
-/*
-import {Component, Input} from '@angular/core';
-import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-
-@Component({
-  selector: 'app-playerLeft',
-  standalone: true,
-  imports: [
-    FaIconComponent
-  ],
-  templateUrl: './playerLeft.component.html',
-  styleUrl: './playerLeft.component.css'
-})
-export class PlayerLeftComponent {
-  @Input() playerName: string = '';
-  @Input() playerScore: number = 0;
-  @Input() playerIcon: 'X' | 'O' = 'X';
-  @Input() isCurrentPlayer: boolean = false;
-}
-*/
