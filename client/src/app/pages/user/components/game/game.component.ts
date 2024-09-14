@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {GameService} from '../../services/game.service';
 import {PlayerComponent} from './player/player.component';
@@ -15,22 +15,16 @@ import {ProfileService} from "../../services/profile.service";
   ],
   styleUrls: ['./game.component.css']
 })
-export class GameComponent implements OnInit {
+export class GameComponent implements OnInit, OnDestroy {
   public profileService: ProfileService = inject(ProfileService);
 
 
   user: any = null;
   opponent: any = null;
   gameId!: number;
-  playerId!: number;
   currentPlayerId: number | null = null;
   currentPlayer: 'X' | 'O' = 'X';  // Startspieler
   gameOver: boolean = false;
-  board: ('X' | 'O' | null)[][] = [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null]
-  ];  // 3x3 Spielfeld
 
   constructor(
     private gameService: GameService,
@@ -49,7 +43,6 @@ export class GameComponent implements OnInit {
     });
     this.loadGameId();
     this.loadUser();
-    //this.loadGameFromLocalStorage();
     this.joinGame();
     this.setupWebSocketListeners();
   }
@@ -59,6 +52,12 @@ export class GameComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       this.gameId = Number(params.get('gameId'));
     });
+  }
+
+  ngOnDestroy() {
+    this.gameService.resign(this.gameId, this.user.userId);
+
+
   }
 
   // Lade Benutzerinformationen aus LocalStorage
@@ -86,7 +85,7 @@ export class GameComponent implements OnInit {
           player1UserId: data.game.player1.userId,
           player2UserId: data.game.player2.userId // Stelle sicher, dass Gegnerdaten verfügbar sind
         };
-        localStorage.setItem('gameData', JSON.stringify(gameData));
+        localStorage.setItem('gameData', JSON.stringify(data));
 
         const savedGameData = localStorage.getItem('gameData');
         if (!savedGameData) {
@@ -101,15 +100,8 @@ export class GameComponent implements OnInit {
 
   // WebSocket-Listener einrichten
   private setupWebSocketListeners(): void {
-    this.gameService.moveSubject.subscribe(move => {
-      console.log('Move received from WebSocket:', move);
-      //this.updateBoard(move.row, move.col, move.player);
-      //this.switchPlayer();
-    });
 
     this.gameService.joinedGameSubject.subscribe(gameData => {
-      console.log('Game data received:', gameData);
-
       const opponentString = localStorage.getItem('opponent');
 
       if (!opponentString) {
@@ -126,7 +118,6 @@ export class GameComponent implements OnInit {
         const opponentData = gameData.players.find((player: any) => player.userId !== this.user.userId);
         if (opponentData) {
           this.opponent = opponentData;
-          console.log('Opponent in GameComponent:', this.opponent);
         } else {
           console.error('Opponent data not found');
         }
@@ -141,7 +132,7 @@ export class GameComponent implements OnInit {
         player2UserId: this.opponent?.userId ?? 'Gegner unbekannt'
       };
 
-      localStorage.setItem('gameData', JSON.stringify(savedGameData));
+      localStorage.setItem('gameData', JSON.stringify(gameData));
     });
 
     this.gameService.winnerSubject.subscribe(winnerData => {
@@ -149,13 +140,6 @@ export class GameComponent implements OnInit {
       this.gameOver = true;  // Spiel als beendet markieren
     });
   }
-
-  /*
-  // Aktualisiere das Spielfeld
-  updateBoard(row: number, col: number, player: 'X' | 'O'): void {
-    this.board[row][col] = player;
-  }
-  */
 
   /*
   // Spieler wechseln

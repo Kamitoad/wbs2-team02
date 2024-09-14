@@ -122,12 +122,11 @@ export class AuthService {
             throw new NotFoundException('User nicht gefunden');
         }
 
-        if (!user.inQueue) {
-            throw new BadRequestException("Nutzer nicht in der Queue");
+        if (user.inQueue) {
+            user.queueStartTime = null;
+            user.inQueue = false;
         }
 
-        user.queueStartTime = null;
-        user.inQueue = false;
         await this.userRepository.save(user);
     }
 

@@ -4,6 +4,7 @@ import {Repository} from 'typeorm';
 import {Game} from '../../../../database/Game';
 import {User} from '../../../../database/User'; // Importiere User, um die Spieler zu setzen
 import {FieldStateEnum} from '../../../../database/enums/FieldStateEnum';
+import {GamedataGateway} from "../../../admin/gateways/gamedata/gamedata.gateway";
 
 interface GameFields {
     [key: string]: FieldStateEnum;
@@ -16,7 +17,26 @@ export class GameService {
         private gameRepository: Repository<Game>,
         @InjectRepository(User)
         private userRepository: Repository<User>,
+
+        private gamedataGateway: GamedataGateway,
     ) {
+    }
+
+    async getGame(gameId: number, userId: number): Promise<Game> {
+        const game = await this.getGameById(gameId);
+        if (!game) {
+            throw new NotFoundException('Spiel nicht gefunden');
+        }
+
+        if (game.hasEnded) {
+            throw new BadRequestException('Spiel ist vorbei');
+        }
+
+        if (game.player1.userId !== userId && game.player2.userId !== userId) {
+            throw new BadRequestException('Du bist kein Mitspieler');
+        }
+
+        return game
     }
 
     async getGameById(gameId: number): Promise<Game> {
@@ -68,6 +88,7 @@ export class GameService {
             return await this.endGame(gameId, null, null); // Unentschieden
         }
 
+        // Change currentPlayer
         if (game.currentPlayer == game.player1.userId) {
             game.currentPlayer = game.player2.userId
         } else if (game.currentPlayer == game.player2.userId) {
@@ -149,19 +170,27 @@ export class GameService {
         }
 
         await this.gameRepository.save(game);
+
+        this.gamedataGateway.notifyGameEnded(game.gameId);
+
         return game;
     }
 
-    async resignGame(gameId: number, playerId: number): Promise<void> {
+    async resignGame(gameId: number, playerId: number): Promise<any> {
         const game = await this.findGameById(gameId);
 
         const opponentId = game.player1.userId === playerId ? game.player2.userId : game.player1.userId;
 
         game.hasEnded = true;
         game.winner = opponentId;
+        game.loser = playerId;
 
         await this.updateEloForPlayers(opponentId, playerId);
+        await this.updatePlayerStats(opponentId, playerId);
+
         await this.gameRepository.save(game);
+
+        return game;
     }
 
     private async findGameById(gameId: number): Promise<Game> {

@@ -38,11 +38,15 @@ export class QueueComponent implements OnDestroy, OnInit {
 
   ngOnInit(): void {
 
+
     this.profileService.getCurrentUser().subscribe({
       next: () => {
         this.queueService.checkIfInGame().subscribe({
           next: (res) => {
+            console.log(res)
             if (res.ok) {
+              this.joinQueue();
+            } else {
               this.router.navigate(['profile']);
             }
           },
@@ -84,7 +88,9 @@ export class QueueComponent implements OnDestroy, OnInit {
   }
 
   ngOnDestroy(): void {
-    this.leaveQueue();
+    if (!this.gameStatus) {
+      this.leaveQueue();
+    }
   }
 
   joinQueue() {
@@ -95,6 +101,7 @@ export class QueueComponent implements OnDestroy, OnInit {
       })
       .catch((error) => {
         console.error('Error detected:', error);
+        this.router.navigate(['/profile']);
       });
   }
 
