@@ -29,9 +29,9 @@
     </div>
   </div>
   @if(this.profileService.displayEdit){
-    <app-edit-password-profilpic class="edit-card"></app-edit-password-profilpic>
+    <app-edit-password-profilpic></app-edit-password-profilpic>
   }
-  <div class="statistics-card">
+  <div class="statistics-card w-100F">
     <h3>Meine Statistiken</h3>
     <div class="statistics">
       <div class="stat win">
@@ -52,13 +52,13 @@
 
     @for (match of userMatches.slice().reverse(); track match.gameId) {
       <div class="matchrow">
-      <div class="match opponent" [ngClass]="getMatchResultClass(match)">
+      <div class="match opponent word-wrap" [ngClass]="getMatchResultClass(match)">
         <p>{{getMatchOpponent(match)}}</p>
       </div>
       <div class="match result" [ngClass]="getMatchResultClass(match)">
         <p>{{ getMatchResultText(match) }}</p>
       </div>
-      <div class="match user" [ngClass]="getMatchResultClass(match)">
+      <div class="match user word-wrap" [ngClass]="getMatchResultClass(match)">
         <p>{{ getMatchSelf(match) }}</p>
       </div>
       </div>
