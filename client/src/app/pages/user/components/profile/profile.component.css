@@ -63,6 +63,7 @@ h3 {
 }
 
 .statistics-card, .matches-card {
+  overflow: hidden;
   text-align: center;
   width: 65%;
   margin-bottom: 20px;
@@ -72,9 +73,10 @@ h3 {
   background-color: #f9f9f9;
 }
 
-.statistics, .matchrow {
+app-edit-password-profilpic{
   display: flex;
-  justify-content: space-evenly;
+  width: 96%;
+  margin-bottom: 20px;
 }
 
 .stat {
@@ -117,4 +119,74 @@ h3 {
   border-radius: 3rem;
   border: 2px solid #127897;
   margin-bottom: 1rem;
+}
+
+@media (min-width: 950px) {
+
+  .statistics, .matchrow {
+    display: flex;
+    justify-content: space-evenly;
+  }
+
+}
+
+@media( max-width: 949.9px) {
+
+  .statistics {
+    align-items: center;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+  }
+
+  .matchrow {
+    align-items: center;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    margin-bottom: 2px;
+    margin-top: 2px;
+    border-color: #127897;
+    border-top-style: solid;
+    border-right-style: none;
+    border-bottom-style: none;
+    border-left-style: none;
+    padding-top: 5px;
+  }
+
+
+}
+
+@media (max-width: 449.9px) {
+
+  .stat {
+    color: white;
+    text-align: center;
+    height: 2.2rem;
+    width: 13rem;
+    border-radius: 3rem;
+    border: 2px solid #127897;
+    margin-bottom: 1rem;
+  }
+
+  .opponent, .user {
+    background-color: white;
+    color: #127897;
+    text-align: center;
+    height: 2.2rem;
+    width: 13rem;
+    border-radius: 3rem;
+    border: 2px solid #127897;
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .result{
+    text-align: center;
+    height: 2.2rem;
+    width: 13rem;
+    border-radius: 3rem;
+    border: 2px solid #127897;
+    margin-bottom: 1rem;
+  }
 }
