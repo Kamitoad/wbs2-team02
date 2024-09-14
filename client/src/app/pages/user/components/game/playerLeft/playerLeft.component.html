@@ -1,10 +1,14 @@
 <div class="player-info">
   <div class="row">
-    <div class="col-6">
-      <img src="https://via.placeholder.com/100" alt="Profile" class="profile-image" />
+    <div class="col-6 mx-auto">
+      @if (currentPlayerId === user?.userId) {
+        <app-profile-pic class="border-warning justify-content-start"></app-profile-pic>
+      } @else {
+        <app-profile-pic class="justify-content-start"></app-profile-pic>
+      }
     </div>
-    <div class="col-6">
-      <p class="gameSymbol">{{ symbol || 'X' }}</p>
+    <div class="col-6 mx-auto">
+      <p class="gameSymbol justify-content-end m-3">{{ symbol || 'X' }}</p>
     </div>
   </div>
   <div class="row">

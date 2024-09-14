@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <h1 class="text-center">Möge das Glück mit dir sein</h1>
+  <h1 class="text-center mt-3">Möge das Glück mit dir sein</h1>
 </div>
 
 <div class="container text-center game-container">
@@ -7,9 +7,6 @@
     <!-- Linke Spielerinfo -->
     <div class="col">
       <div class="player-info left">
-        @if (currentPlayerId === user?.userId) {
-          <span>Du bist dran</span>
-        }
         <app-playerLeft
           [username]="user?.userName"
           [elo]="user?.elo"
@@ -22,7 +19,7 @@
     <!-- Spielbrett -->
     <div class="col-6">
       <!-- <div class="board-container"> -->
-      <div class="board-container">
+      <div class="board-container ">
         <app-board [gameId]="gameId"></app-board>
       </div>
     </div>
@@ -30,16 +27,28 @@
     <!-- Rechte Spielerinfo -->
     <div class="col">
       <div class="player-info right">
-        @if (currentPlayerId !== user?.userId) {
-          <span>Gegner ist dran</span>
-        }
         <app-playerRight
           [username]="opponent?.username"
           [symbol]="opponent?.symbol"
           [elo]="opponent?.elo"
-          [profilePic]="user?.profilePic">
+          [profilePic]="opponent?.profilePic">
         </app-playerRight>
       </div>
     </div>
   </div>
+</div>
+<div class="text-center mt-4">
+  @if (currentPlayerId !== user?.userId) {
+    <div class="row">
+      <div class="col justify-content-center w-50">
+        <h4 class="text-light InfoZug">Du bist dran</h4>
+      </div>
+    </div>
+  } @else {
+    <div class="row">
+      <div class="col justify-content-center w-50">
+        <h4 class="text-light InfoZug">Du bist nicht dran!</h4>
+      </div>
+    </div>
+  }
 </div>

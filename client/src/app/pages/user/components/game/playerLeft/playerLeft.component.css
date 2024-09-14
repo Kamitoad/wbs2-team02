@@ -7,7 +7,8 @@
   margin-top: 10px;
 }
 
-img.profile-image {
+app-profile-pic {
+  display: block;
   border-radius: 50%;
   width: 120px;
   height: 120px;
@@ -22,18 +23,19 @@ p.gameSymbol {
   margin: 5px 0;
 }
 
-.userNameElo {
+div.userNameElo {
   font-weight: bold;
   border: 1px solid white;
   color: white;
   padding: 5px 10px;
   border-radius: 15px;
+  display: inline-block;
   margin-top: 10px;
 }
 
 /* Responsive Design für kleinere Bildschirme */
 @media screen and (max-width: 600px) {
-  img.profile-image {
+  app-profile-pic {
     width: 90px;
     height: 90px;
   }
@@ -48,7 +50,7 @@ p.gameSymbol {
 }
 
 @media screen and (max-width: 400px) {
-  img.profile-image {
+  app-profile-pic {
     width: 70px;
     height: 70px;
   }

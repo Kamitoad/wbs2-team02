@@ -1,10 +1,12 @@
-*{ border: #BD2A2C 1px dashed; }
 .game-container {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Inhalt zentrieren */
-  justify-content: center;
-  height: 100vh;
+  height: 50vh;
+  width: 100%;
+}
+div.row{
+  display: flex;
+  width: 100%;
 }
 
 @media (min-width: 768px) {
@@ -31,8 +33,8 @@
 .board-container {
   display: flex;
   justify-content: center;
+  text-align: center;
   flex-wrap: wrap;
-  max-width: 400px;
 }
 
 .square {

@@ -1,10 +1,14 @@
 import { Component, Input } from "@angular/core";
+import {ProfilePicComponent} from "../../profile-pic/profile-pic.component";
 
 @Component({
-  selector: 'app-playerLeft',
-  templateUrl: './playerLeft.component.html',
-  styleUrls: ['./playerLeft.component.css'],
-  standalone: true
+    selector: 'app-playerLeft',
+    templateUrl: './playerLeft.component.html',
+    styleUrls: ['./playerLeft.component.css'],
+    imports: [
+        ProfilePicComponent
+    ],
+    standalone: true
 })
 
 export class PlayerLeftComponent {
@@ -12,10 +16,12 @@ export class PlayerLeftComponent {
   @Input() elo!: number;
   @Input() profilePic!: string;
   @Input() symbol!: 'X' | 'O';
-
-  @Input() user: any;  // Benutzerdaten aus game.component.ts
+  @Input() user: any;
   @Input() currentPlayerId: number | null = null;
 
+  get isReady(): boolean {
+    return !!this.username && !!this.symbol && !!this.profilePic;
+  }
 
 }
 
