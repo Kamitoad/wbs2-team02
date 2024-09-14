@@ -15,9 +15,11 @@ export class ModalComponent {
 
   startNewGame() {
     this.newGame.emit();
+    // TODO this.router navgiate auf Queue
   }
 
   endGame() {
     this.end.emit();
+    // TODO this.router navgiate auf Profil
   }
 }
