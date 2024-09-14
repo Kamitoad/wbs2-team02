@@ -26,7 +26,15 @@ export class QueueService {
             throw new NotFoundException('Benutzer nicht gefunden');
         }
         if (user.inQueue) {
-            throw new BadRequestException('Nutzer bereits in der Queue');
+            return {
+                opponent: null,
+                currentUser: {
+                    userName: user.userName,
+                    elo: user.elo,
+                    profilePic: user.profilePic,
+                },
+                gameId: null
+            };
         }
 
         if (await this.checkIfInGame(userId)) {
@@ -105,8 +113,8 @@ export class QueueService {
         const ongoingGame = await this.gameRepository.findOne({
             where: [
                 //TODO Boolean number fix
-                { player1: user, hasEnded: false },
-                { player2: user, hasEnded: false }
+                { player1: { userId }, hasEnded: false },
+                { player2: { userId }, hasEnded: false }
             ]
         });
         return !!ongoingGame;
