@@ -116,9 +116,9 @@ export class QueueController {
     ): Promise<OkDto> {
         try {
             const isInGame: boolean = await this.queueService.checkIfInGame(session.currentUser);
-            return isInGame ?
-                new OkDto(isInGame, 'Nutzer ist bereits in einem laufenden Spiel') :
-                new OkDto(isInGame, 'Nutzer ist nicht in einem laufenden Spiel');
+            return !isInGame ?
+                new OkDto(true, 'Nutzer ist nicht in einem laufenden Spiel') :
+                new OkDto(false, 'Nutzer ist bereits in einem laufenden Spiel');
         } catch (error) {
             if (error instanceof NotFoundException) {
                 throw new NotFoundException(error.message);

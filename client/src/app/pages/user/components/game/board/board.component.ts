@@ -13,8 +13,10 @@ import {CommonModule} from "@angular/common";
   standalone: true
 })
 export class BoardComponent implements OnInit {
+  gamedata: any;
   board: ('X' | 'O' | null)[][] = Array(3).fill(null).map(() => Array(3).fill(null)); // Standard Tic-Tac-Toe 3x3 Board
   currentPlayer: 'X' | 'O' = 'X'; // Aktueller Spieler
+  updateCounter: number = 0;
 
   @Input() gameId!: number; // Spiel-ID wird von der Elternkomponente übergeben
   @Input() userId!: number; // Benutzer-ID des aktuellen Spielers
@@ -23,11 +25,15 @@ export class BoardComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Auf Züge warten, die über den WebSocket empfangen werden
-    this.gameService.moveSubject.subscribe(data => {
-      this.updateBoard(data.row, data.col, data.player);
+    this.gameService.initializeBoard(this.gameId);
+    this.gameService.gameData$.subscribe((game: any) => {
+      this.gamedata = game;
+      this.putSymbolsInFields(this.gamedata);
     });
-    console.log(this.board  )
+  }
+
+  ngOnDestroy() {
+    this.gameService.resign(this.gameId, this.userId)
   }
 
   makeMove(rowIndex: number, colIndex: number) {
@@ -46,40 +52,32 @@ export class BoardComponent implements OnInit {
       console.error('User data not found in localStorage.');
       return;
     }
-      const gameData = JSON.parse(gameDataString);
-      const userData = JSON.parse(userDataString);
+    const userData = JSON.parse(userDataString);
+
+
+    this.gameService.emitMove(this.gameId, rowIndex, colIndex, userData.userId);
+    //this.switchPlayer(); // Spieler nach dem Zug wechseln
 
     this.gameService.gameDataSubject.subscribe((data) => {
+      console.log(data)
+      this.putSymbolsInFields(data)
+    });
 
-      const mapValueToBoard = (value: number) => {
-        if (value === 0) return null;
-        return value === 1 ? 'X' : 'O';
-      };
+  }
 
-      for (let row = 0; row < 3; row++) {
-        for (let col = 0; col < 3; col++) {
-          const fieldKey = `field${row}_${col}`;
+  putSymbolsInFields(data: any) {
+    const mapValueToBoard = (value: number) => {
+      if (value === 0 || value === null) return null;
+      return value === 1 ? 'X' : 'O';
+    };
+
+    for (let row = 0; row < 3; row++) {
+      for (let col = 0; col < 3; col++) {
+        const fieldKey = `field${row}_${col}`;
+        if (data[fieldKey] !== undefined) { // Überprüfen, ob das Feld existiert
           this.board[row][col] = mapValueToBoard(data[fieldKey]);
         }
       }
-
-      console.log(data)
-    });
-     this.gameService.emitMove(this.gameId, rowIndex, colIndex, userData.userId);
-     //this.switchPlayer(); // Spieler nach dem Zug wechseln
-  }
-
-
-
-
-  // Aktualisiert das Spielfeld und validiert die Positionen
-  updateBoard(row: number, col: number, player: 'X' | 'O') {
-    if (this.isValidPosition(row, col) && !this.board[row][col]) {
-      console.log(`Updating board: Player ${player} at Row: ${row}, Col: ${col}`);
-      this.board[row][col] = player;
-      console.log('Aktueller Spielfeldzustand:', this.board);
-    } else {
-      console.log('Ungültige Position oder das Feld ist bereits belegt.');
     }
   }
 

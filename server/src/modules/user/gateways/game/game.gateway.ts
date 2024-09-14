@@ -32,6 +32,21 @@ export class GameGateway {
         }
     }
 
+    @SubscribeMessage('resign')
+    async handleResign(
+        @MessageBody() data: { gameId: number; userId: number },
+        @ConnectedSocket() client: Socket,
+    ) {
+        try {
+            const game = await this.gameService.resignGame(data.gameId, data.userId);
+            this.logger.log(`Player ${data.userId} resigned in ${data.gameId}`);
+            this.server.to(`game_${data.gameId}`).emit('gameState', game);
+        } catch (error) {
+            this.logger.error(`Error handling move: ${error.message}`);
+            client.emit('error', {message: error.message});
+        }
+    }
+
     notifyWinner(gameId: number, winner: string) {
         this.logger.log(`Player ${winner} won game ${gameId}`);
         this.server.emit('winner', {gameId, winner});
@@ -44,8 +59,7 @@ export class GameGateway {
     ) {
         client.join(`game_${data.gameId}`);
         const game = await this.gameService.getGameById(data.gameId);
-        console.log(game)
-        client.emit('joinedGame', {game});
+        client.emit('joinedGame', game);
         this.logger.log(`Player ${data.userId} joined game ${data.gameId}`);
     }
 

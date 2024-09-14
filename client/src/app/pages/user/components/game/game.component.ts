@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {GameService} from '../../services/game.service';
 import {PlayerLeftComponent} from './playerLeft/playerLeft.component';
@@ -17,22 +17,16 @@ import {PlayerRightComponent} from "./playerRight/playerRight.component";
   ],
   styleUrls: ['./game.component.css']
 })
-export class GameComponent implements OnInit {
+export class GameComponent implements OnInit, OnDestroy {
   public profileService: ProfileService = inject(ProfileService);
 
 
   user: any = null;
   opponent: any = null;
   gameId!: number;
-//  playerId!: number;
   currentPlayerId: number | null = null;
   currentPlayer: 'X' | 'O' = 'X';
   gameOver: boolean = false;
-  board: ('X' | 'O' | null)[][] = [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null]
-  ];  // 3x3 Spielfeld
 
   constructor(
     private gameService: GameService,
@@ -43,9 +37,8 @@ export class GameComponent implements OnInit {
 
   ngOnInit(): void {
     this.profileService.getCurrentUser().subscribe({
-      next: (profile) => {
-        this.user = profile
-        this.joinGame();
+      next: () => {
+        // TODO EVENTUELL this.joinGame() in das next und andere
       },
       error: () => {
         this.router.navigate(['login']);
@@ -53,7 +46,6 @@ export class GameComponent implements OnInit {
     });
     this.loadGameId();
     this.loadUser();
-    //this.loadGameFromLocalStorage();
     this.joinGame();
     this.setupWebSocketListeners();
   }
@@ -63,6 +55,12 @@ export class GameComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       this.gameId = Number(params.get('gameId'));
     });
+  }
+
+  ngOnDestroy() {
+    this.gameService.resign(this.gameId, this.user.userId);
+
+
   }
 
   // Lade Benutzerinformationen aus LocalStorage
@@ -90,7 +88,7 @@ export class GameComponent implements OnInit {
           player1UserId: data.game.player1.userId,
           player2UserId: data.game.player2.userId
         };
-        localStorage.setItem('gameData', JSON.stringify(gameData));
+        localStorage.setItem('gameData', JSON.stringify(data));
 
         const savedGameData = localStorage.getItem('gameData');
         if (!savedGameData) {
@@ -98,23 +96,15 @@ export class GameComponent implements OnInit {
           return;
         }
         // Player 1 of Game is 'X', Player 2 is 'O'
-        // gameData.player1UserId == this.user.userId ? this.user.symbol = 'X' : this.user.symbol = 'O'
-        this.user.symbol = gameData.player1UserId === this.user.userId ? 'X' : 'O';
+        gameData.player1UserId == this.user.userId ? this.user.symbol = 'X' : this.user.symbol = 'O'
       });
     }
   }
 
   // WebSocket-Listener einrichten
   private setupWebSocketListeners(): void {
-    this.gameService.moveSubject.subscribe(move => {
-      console.log('Move received from WebSocket:', move);
-      //this.updateBoard(move.row, move.col, move.playerLeft);
-      //this.switchPlayer();
-    });
 
     this.gameService.joinedGameSubject.subscribe(gameData => {
-      console.log('Game data received:', gameData);
-
       const opponentString = localStorage.getItem('opponent');
 
       if (!opponentString) {
@@ -135,7 +125,6 @@ export class GameComponent implements OnInit {
         const opponentData = gameData.players.find((playerLeft: any) => playerLeft.userId !== this.user.userId);
         if (opponentData) {
           this.opponent = opponentData;
-          console.log('Opponent in GameComponent:', this.opponent);
         } else {
           console.error('Opponent data not found');
         }
@@ -150,7 +139,7 @@ export class GameComponent implements OnInit {
         player2UserId: this.opponent?.userId ?? 'Gegner unbekannt'
       };
 
-      // localStorage.setItem('gameData', JSON.stringify(savedGameData));
+      localStorage.setItem('gameData', JSON.stringify(gameData));
     });
 
     this.gameService.winnerSubject.subscribe(winnerData => {
@@ -158,13 +147,6 @@ export class GameComponent implements OnInit {
       this.gameOver = true;
     });
   }
-
-  /*
-  // Aktualisiere das Spielfeld
-  updateBoard(row: number, col: number, playerLeft: 'X' | 'O'): void {
-    this.board[row][col] = playerLeft;
-  }
-  */
 
   /*
   // Spieler wechseln
