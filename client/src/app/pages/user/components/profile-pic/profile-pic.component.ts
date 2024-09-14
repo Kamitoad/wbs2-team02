@@ -18,25 +18,27 @@ export class ProfilePicComponent implements OnInit {
   constructor(private editProfilePic: EditProfilePicService) {}
 
   ngOnInit() {
-    // Abhängig davon, ob ein Benutzername übergeben wurde, das Bild des Nutzers oder das eigene Profilbild abrufen
+    // If a Username is given, gets the Pic of the specific user
     if (this.userName) {
+
       this.editProfilePic.getProfilePicOfUser(this.userName).subscribe((response: any) => {
         this.updateProfilePic(response.profilePic);
       });
     } else {
-      // Abonniere das Observable, um auf zukünftige Änderungen des Profilbilds zu reagieren
+      // gets Pic of logged in User
+
       this.editProfilePic.currentProfilePic$.subscribe((profilePic) => {
         this.updateProfilePic(profilePic);
       });
 
-      // Initiales Laden des Profilbilds
       this.editProfilePic.getProfilePic().subscribe((response: any) => {
         this.updateProfilePic(response.profilePic);
       });
     }
   }
 
-  // Methode, um das Profilbild mit einem Cache-Busting-Parameter zu aktualisieren
+  // updates the ProfilePic through giving it a timestamp, so the Browser notices a change
+  // if there is no ProfilePic, give the default Pic
   updateProfilePic(profilePic: string) {
     this.profilePic = profilePic ? `${profilePic}?t=${new Date().getTime()}` : '../../../../../assets/default-profile.png';
   }

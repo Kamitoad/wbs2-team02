@@ -39,14 +39,16 @@ export class EditPasswordProfilepicComponent implements OnInit {
   constructor(private http: HttpClient, private editUser: EditPasswordService, private editProfilePic: EditProfilePicService, private router: Router) {}
 
   ngOnInit() {
-    // Abonniere das Profilbild, um sofortige Aktualisierungen zu ermöglichen
+    // subscribes to the ProfilePic to have it automatically reload
     this.editProfilePic.currentProfilePic$.subscribe(profilePic => {
       this.profilePic = profilePic;
     });
   }
 
+  // Send the new ProfilePic to the server, when it is changes, using FormData
   onFileChange(event: any) {
     const file = event.target.files[0];
+
     if (file) {
       const reader: FileReader = new FileReader();
       reader.onload = (e: any) => {
@@ -59,7 +61,8 @@ export class EditPasswordProfilepicComponent implements OnInit {
 
       this.http.patch<{ newProfilePic: string }>("http://localhost:3000/api/user/profilepic", formData, { withCredentials: true }).subscribe(
         response => {
-          this.editProfilePic.setProfilePic(response.newProfilePic); // Sofortige Aktualisierung des Profilbilds
+          // instant shows the new ProfilePic
+          this.editProfilePic.setProfilePic(response.newProfilePic);
           this.enableImgUpload();
         },
         error => {
@@ -73,7 +76,8 @@ export class EditPasswordProfilepicComponent implements OnInit {
   deleteProfilePic() {
     this.editProfilePic.deleteProfilePic().subscribe(success => {
       if (success && !success.error) {
-        this.editProfilePic.setProfilePic(success.profilePic); // Profilbild nach dem Löschen aktualisieren
+        // instantly refreshes the Pic
+        this.editProfilePic.setProfilePic(success.profilePic);
       }
     });
   }
@@ -84,7 +88,9 @@ export class EditPasswordProfilepicComponent implements OnInit {
     }, 5000);
   }
 
+  // Edit of the password
   onSubmit() {
+    // Checkes if the two new passwords are the same
     if (this.newPassword == this.newPasswordConfirm) {
       let changedPassword: any = {
         oldPassword: this.oldPasword,
@@ -103,6 +109,7 @@ export class EditPasswordProfilepicComponent implements OnInit {
     }
   }
 
+  // Used to show Error or Success messages after apssword change
   showMessage(elementId: string, duration: number) {
     const element = document.getElementById(elementId);
     if (element) {

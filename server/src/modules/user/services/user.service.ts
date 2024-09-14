@@ -21,6 +21,8 @@ export class UserService {
         private authService: AuthService,
     ) {}
 
+    // checks first, if the old password is the same with the one in the database
+    // then patches the new password
     async editPassword(editPasswordDTO: EditPasswordDto, userID: number): Promise<User> {
         const user: User | null = await this.authService.getUserByUserId(userID);
         const isPasswordValid = await bcrypt.compare(editPasswordDTO.oldPassword, user.password);
@@ -32,6 +34,7 @@ export class UserService {
         return user;
     }
 
+    // sets the profilePic to null
     async deleteProfilePic(userID: number): Promise<User> {
         const user: User | null = await this.authService.getUserByUserId(userID);
         user.profilePic = null;
@@ -39,6 +42,7 @@ export class UserService {
         return user;
     }
 
+    // updates the new ProfilePic of the User and saves the Picture in the Server
     async updateProfilePic(userId: number, file: Express.Multer.File): Promise<User> {
         const user: User | null = await this.authService.getUserByUserId(userId);
         if (!user) {
@@ -48,6 +52,7 @@ export class UserService {
             throw new BadRequestException('Keine Datei hochgeladen');
         }
 
+        // checkes for valid Picture datatypes
         const validMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
         if (!validMimeTypes.includes(file.mimetype)) {
             throw new BadRequestException('Nur Bilddateien sind erlaubt!');
@@ -56,14 +61,13 @@ export class UserService {
         const fileName = file.originalname;
         const filePath = join(process.cwd(), 'uploads', 'profilePictures', fileName);
 
-        // Prüfen, ob die Datei bereits existiert
+        // Checks if the picture is already saved and then saves the picture
         try {
             await fsPromises.access(filePath);
         } catch (error) {
-            // Datei existiert nicht, keine weiteren Schritte nötig
         }
 
-        // Aktualisieren des Profilbildes des Benutzers
+        // Refreshes the Profilepic in the databank
         user.profilePic = fileName;
         await this.userRepository.save(user);
 

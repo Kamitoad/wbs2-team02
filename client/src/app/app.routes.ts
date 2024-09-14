@@ -30,9 +30,7 @@ export const routes: Routes = [
   { path: 'profile', component: ProfileComponent},
   { path: 'profil', redirectTo: 'profile', pathMatch: 'full'},
   { path: 'queue', component: QueueComponent },
-
-  { path: 'admin/editUser', component: UserdataComponent },
-
+  
   { path: 'admin/user', component: UserdataComponent },
   { path: 'admin/game', component: GamedataComponent,
     children: [
