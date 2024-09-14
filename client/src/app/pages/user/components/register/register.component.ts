@@ -79,6 +79,12 @@ export class RegisterComponent {
       return;
     }
 
+    if (!this.agb) {
+      this.statusMessage = "Du musst den AGBs und der Datenschutzerklärung zustimmen";
+      this.removeStatusMessage();
+      return;
+    }
+
     this.authService.register({
       userName: this.userName,
       firstName: this.firstName,

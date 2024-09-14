@@ -24,7 +24,7 @@ export class UserdataService {
     if(isPlatformBrowser(this.platformId)) {
       this.socket = require('socket.io-client')('http://localhost:3000/ws-admin-userdata');
 
-      this.socket.on('editUser-registered', (newUser: any) => {
+      this.socket.on('user-registered', (newUser: any) => {
         this.addUser(newUser);
       });
     }

@@ -44,6 +44,10 @@ export class GameService {
     }
   }
 
+  ngOnInit() {
+    this.setupSocketListeners();
+  }
+
   setupSocketListeners() {
 
     // Listen for moves
@@ -72,10 +76,11 @@ export class GameService {
     this.socket.emit('move', {gameId, userId: playerId, move: {x: row, y: col}});
   }
 
+  /*
   resign(gameId: number, userId: number): void {
     this.socket.emit('resign', {gameId, userId});
   }
-
+*/
   // Methode zum Beitreten eines Spiels
   joinGame(gameId: number, userId: number): void {
     this.socket.emit('joinGame', {gameId, userId});

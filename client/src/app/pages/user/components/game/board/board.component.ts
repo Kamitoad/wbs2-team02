@@ -33,7 +33,7 @@ export class BoardComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.gameService.resign(this.gameId, this.userId)
+    //this.gameService.resign(this.gameId, this.userId)
   }
 
   makeMove(rowIndex: number, colIndex: number) {

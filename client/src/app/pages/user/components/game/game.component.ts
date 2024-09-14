@@ -4,6 +4,7 @@ import {GameService} from '../../services/game.service';
 import {PlayerComponent} from './player/player.component';
 import {BoardComponent} from './board/board.component';
 import {ProfileService} from "../../services/profile.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-game',
@@ -17,7 +18,7 @@ import {ProfileService} from "../../services/profile.service";
 })
 export class GameComponent implements OnInit, OnDestroy {
   public profileService: ProfileService = inject(ProfileService);
-
+  private routerSubscription: Subscription | null = null;
 
   user: any = null;
   opponent: any = null;
@@ -34,6 +35,17 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+
+    /*
+    window.addEventListener('beforeunload', this.onUnloadHandler);
+
+    this.routerSubscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        //this.gameService.resign(this.gameId, this.user.userId);
+      }
+    });
+    */
+
     this.profileService.getCurrentUser().subscribe({
       next: () => {
       },
@@ -55,9 +67,13 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.gameService.resign(this.gameId, this.user.userId);
+    window.removeEventListener('beforeunload', this.onUnloadHandler);
 
+    //this.gameService.resign(this.gameId, this.user.userId);
 
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
   }
 
   // Lade Benutzerinformationen aus LocalStorage
@@ -140,6 +156,10 @@ export class GameComponent implements OnInit, OnDestroy {
       this.gameOver = true;  // Spiel als beendet markieren
     });
   }
+
+  onUnloadHandler = (event: BeforeUnloadEvent) => {
+    //this.gameService.resign(this.gameId, this.user.userId);
+  };
 
   /*
   // Spieler wechseln

@@ -159,15 +159,16 @@ export class GameService {
             console.log('Verlierer:', loserId);
 
             //TODO: Update changeElo in Game DB
-            await this.updateEloForPlayers(winnerId, loserId);
+            await this.updateEloForPlayers(winnerId, loserId, game);
             await this.updatePlayerStats(winnerId, loserId);
         } else {
             // Unentschieden: Elo für beide Spieler aktualisieren
             game.isTie = true;
             //TODO: Update changeElo in Game DB
-            await this.updateEloForTie(game.player1.userId, game.player2.userId);
+            await this.updateEloForTie(game.player1.userId, game.player2.userId, game);
             await this.updatePlayerStatsForTie(game.player1.userId, game.player2.userId);
         }
+
 
         await this.gameRepository.save(game);
 
@@ -185,7 +186,7 @@ export class GameService {
         game.winner = opponentId;
         game.loser = playerId;
 
-        await this.updateEloForPlayers(opponentId, playerId);
+        await this.updateEloForPlayers(opponentId, playerId, game);
         await this.updatePlayerStats(opponentId, playerId);
 
         await this.gameRepository.save(game);
@@ -199,24 +200,6 @@ export class GameService {
             throw new NotFoundException('Spiel nicht gefunden');
         }
         return game;
-    }
-
-    async updateEloForPlayers(winnerId: number, loserId: number): Promise<void> {
-        const winner = await this.userRepository.findOne({where: {userId: winnerId}});
-        const loser = await this.userRepository.findOne({where: {userId: loserId}});
-
-        if (winner && loser) {
-            // Berechne die Elo-Änderung
-            const winnerEloChange = calculateEloChange(winner.elo, loser.elo, 1); // Gewinner hat Score 1
-            const loserEloChange = calculateEloChange(loser.elo, winner.elo, 0);  // Verlierer hat Score 0
-
-            // Elo für Gewinner und Verlierer aktualisieren
-            winner.elo += winnerEloChange;
-            loser.elo += loserEloChange;
-
-            await this.userRepository.save(winner);
-            await this.userRepository.save(loser);
-        }
     }
 
     async updatePlayerStats(winnerId: number, loserId: number): Promise<void> {
@@ -235,6 +218,32 @@ export class GameService {
         await this.userRepository.save(loser);
     }
 
+    async updateEloForPlayers(winnerId: number, loserId: number, game: any): Promise<void> {
+        const winner = await this.userRepository.findOne({where: {userId: winnerId}});
+        const loser = await this.userRepository.findOne({where: {userId: loserId}});
+
+        if (winner && loser) {
+            // Berechne die Elo-Änderung
+            const winnerEloChange = calculateEloChange(winner.elo, loser.elo, 1); // Gewinner hat Score 1
+            const loserEloChange = calculateEloChange(loser.elo, winner.elo, 0);  // Verlierer hat Score 0
+
+            // Elo für Gewinner und Verlierer aktualisieren
+            winner.elo += winnerEloChange;
+            loser.elo += loserEloChange;
+
+            if (game.player1.userId == winnerId) {
+                game.changeEloPlayer1 = winnerEloChange;
+                game.changeEloPlayer2 = loserEloChange;
+            } else {
+                game.changeEloPlayer1 = loserEloChange;
+                game.changeEloPlayer2 = winnerEloChange;
+            }
+
+            await this.userRepository.save(winner);
+            await this.userRepository.save(loser);
+        }
+    }
+
     async updatePlayerStatsForTie(player1Id: number, player2Id: number): Promise<void> {
         const player1 = await this.userRepository.findOne({where: {userId: player1Id}});
         const player2 = await this.userRepository.findOne({where: {userId: player2Id}});
@@ -251,7 +260,7 @@ export class GameService {
         await this.userRepository.save(player2);
     }
 
-    async updateEloForTie(player1Id: number, player2Id: number): Promise<void> {
+    async updateEloForTie(player1Id: number, player2Id: number, game: any): Promise<void> {
         const player1 = await this.userRepository.findOne({where: {userId: player1Id}});
         const player2 = await this.userRepository.findOne({where: {userId: player2Id}});
 
@@ -262,6 +271,9 @@ export class GameService {
             // Elo für beide Spieler aktualisieren
             player1.elo += player1EloChange;
             player2.elo += player2EloChange;
+
+            game.changeEloPlayer1 = player1EloChange;
+            game.changeEloPlayer2 = player2EloChange;
 
             await this.userRepository.save(player1);
             await this.userRepository.save(player2);

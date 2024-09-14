@@ -13,6 +13,7 @@ import { GameService } from '../../services/game/game.service';
 import {GameDto} from "../../dtos/game/GameDto";
 import {SessionData} from "express-session";
 import {IsLoggedInGuard} from "../../../../common/guards/is-logged-in/is-logged-in.guard";
+import {ApiOperation} from "@nestjs/swagger";
 
 @UseGuards(IsLoggedInGuard)
 @Controller('game')
@@ -20,6 +21,7 @@ export class GameController {
     constructor(private readonly gameService: GameService) {}
 
     // Route für den Spielzug
+    @ApiOperation({ summary: 'Lädt die Daten eines Spiel, an dem der Benutzer teilgenommen hat / teilnimmt' })
     @Get(':gameId')
     async getGame(
         @Session() session: SessionData,
@@ -40,6 +42,7 @@ export class GameController {
     }
 
     // Route für den Spielzug
+    @ApiOperation({ summary: 'Führt einen Zug auf dem Spielfeld aus' })
     @Post(':gameId/move')
     @Header('Content-Type', 'application/json')
     async makeMove(
@@ -56,6 +59,7 @@ export class GameController {
     }
 
     // Route für das Aufgeben
+    @ApiOperation({ summary: 'Benutzer gibt in einem Spiel auf, Gegner siegt' })
     @Post(':gameId/resign')
     @Header('Content-Type', 'application/json')
     async resignGame(

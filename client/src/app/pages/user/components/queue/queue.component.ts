@@ -52,12 +52,14 @@ export class QueueComponent implements OnDestroy, OnInit {
     });
 
     this.profileService.getCurrentUser().subscribe({
-      next: () => {
+      next: (userData) => {
+        localStorage.setItem("user", JSON.stringify(userData));
         this.queueService.checkIfInGame().subscribe({
           next: (res) => {
             console.log(res)
             if (res.ok) {
               this.joinQueue();
+
             } else {
               this.router.navigate(['profile']);
             }

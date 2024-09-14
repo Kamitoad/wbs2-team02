@@ -39,7 +39,12 @@ export class UserController {
     @UseGuards(IsLoggedInGuard)
     @Patch('password')
     @ApiOperation({ summary: 'Ändert das Passwort des aktuellen Benutzers' })
-    @ApiResponse({ status: 200, description: 'Das Passwort wurde erfolgreich geändert.', type: ReadUserDto })
+    @ApiResponse({
+        status: 200,
+        description: 'Das Passwort wurde erfolgreich geändert.',
+        type: ReadUserDto
+
+    })
     @ApiResponse({ status: 400, description: 'Das alte Passwort ist nicht korrekt.' })
     @ApiResponse({ status: 500, description: 'Interner Serverfehler' })
     async editPassword(
@@ -189,13 +194,14 @@ export class UserController {
         }
     }
 
+    @ApiOperation({ summary: 'Lädt die Benutzer-Daten des eingeloggten Benutzers' })
     @Get('current')
-    getCurrentUser(
+    async getCurrentUser(
         @Session() session: SessionData,
     ) {
         try {
             const userId = session.currentUser;
-            return this.userService.getCurrentUser(userId);
+            return await this.userService.getCurrentUser(userId);
         } catch (error) {
             if (error instanceof NotFoundException) {
                 throw new NotFoundException(error.message);
@@ -207,14 +213,19 @@ export class UserController {
         }
     }
 
+    @ApiOperation({ summary: 'Lädt die gespielten Matches des Benutzers' })
     @Get('matches')
-    getUserMatches(
+    async getUserMatches(
         @Session() session: SessionData,
     ) {
-        const userId = session.currentUser;
-        if (!userId) {
-            throw new BadRequestException('User is not authenticated.');
+        try {
+            return await this.userService.getUserMatches(session.currentUser);
+        } catch (error) {
+            if (error instanceof NotFoundException) {
+                throw new NotFoundException(error.message);
+            } else if (error instanceof InternalServerErrorException) {
+                throw new InternalServerErrorException("Fehler beim Betreten der Queue");
+            }
         }
-        return this.userService.getUserMatches(userId);
     }
 }
