@@ -35,7 +35,7 @@
       <div class="player-info right">
         <app-playerRight
           [userName]="opponent.userName"
-          [symbol]="opponent.symbol"
+          [symbol]="opponentSymbol"
           [elo]="opponent.elo"
           [profilePic]="opponent.profilePic"
         >
@@ -44,7 +44,6 @@
     </div>
   </div>
 </div>
-<span>currentPlayerid: {{currentPlayerId}}</span>
 <div class="text-center mt-4">
   @if (currentPlayerId == user.userId) {
     <div class="row">

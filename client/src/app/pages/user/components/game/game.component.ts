@@ -31,6 +31,7 @@ export class GameComponent implements OnInit, OnDestroy {
   currentPlayerId: number | null = null;
   currentPlayer: 'X' | 'O' = 'X';
   gameOver: boolean = false;
+  opponentSymbol : any;
 
   // MODAL
   resultMessage: string = '';
@@ -125,8 +126,8 @@ export class GameComponent implements OnInit, OnDestroy {
         const gameData = {
           gameId: this.gameId,
           currentPlayerId: this.currentPlayerId,
-          player1UserId: data.game.player1.userId,
-          player2UserId: data.game.player2.userId
+          player1UserId: data.player1.userId,
+          player2UserId: data.player2.userId
         };
         localStorage.setItem('gameData', JSON.stringify(data));
 
@@ -136,7 +137,15 @@ export class GameComponent implements OnInit, OnDestroy {
           return;
         }
         // Player 1 of Game is 'X', Player 2 is 'O'
-        gameData.player1UserId == this.user.userId ? this.user.symbol = 'X' : this.user.symbol = 'O'
+
+        gameData.player1UserId == this.user.userId ? this.user.symbol = 'X' : this.user.symbol = 'O';
+
+        if(this.user.symbol == 'O'){
+          this.opponentSymbol = 'X';
+        } else {
+          this.opponentSymbol = 'O';
+        }
+
       });
     }
   }
@@ -172,7 +181,6 @@ export class GameComponent implements OnInit, OnDestroy {
 
       this.resultMessage = winnerData != this.user.userId ? 'WIN' : 'LOSS';
       this.showGameOverModal(); // Modal-Fenster anzeigen, wenn das Spiel vorbei ist
-      localStorage.setItem('opponent', "");
     });
     }, 500);  // Warte 500ms, bevor das Subject abonniert wird
 
