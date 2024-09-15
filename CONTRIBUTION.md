@@ -1,5 +1,7 @@
 # Contribution
 
+> https://github.com/Kamitoad/wbs2-team02
+
 ## How to Start
 
 - Install the necessary npm packages of client and server (by right-clicking the client and server package.json
