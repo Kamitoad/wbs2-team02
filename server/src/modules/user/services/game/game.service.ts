@@ -47,6 +47,7 @@ export class GameService {
     }
 
     async makeMove(gameId: number, playerId: number, move: { x: number, y: number }): Promise<any> {
+        console.log("make a Move")
         const game = await this.getGameById(gameId);
 
         if (!game) {
@@ -80,6 +81,7 @@ export class GameService {
         // Überprüfung auf Gewinner oder Unentschieden
         const winner = await this.checkWinner(game);
 
+        console.log("before Winner check")
         if (winner === 'Player1') {
             console.log('Player1 is Winner', gameId);
             return await this.endGame(gameId, game.player1.userId, game.player2.userId); // Spieler 1 hat gewonnen
@@ -148,6 +150,7 @@ export class GameService {
 
 
     async endGame(gameId: number, winnerId: number | null, loserId: number | null): Promise<any> {
+        console.log("endGame");
         const game = await this.gameRepository.findOne({where: {gameId}, relations: ['player1', 'player2']});
         if (!game) {
             throw new NotFoundException('Spiel nicht gefunden');

@@ -158,6 +158,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
     // Weitere WebSocket-Listener
     this.gameService.winnerSubject.subscribe(winnerData => {
+      console.log("winner winnersubjekt subscribe")
       console.log(`Winner: ${winnerData.winner}`);
       this.gameOver = true;
       // MODAL
