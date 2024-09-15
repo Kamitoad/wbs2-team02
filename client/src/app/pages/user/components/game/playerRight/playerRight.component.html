@@ -1,19 +1,19 @@
 <div class="player-info">
   <div class="row">
     <div class="col-6 mx-auto">
-      <p class="gameSymbol">{{ symbol }}</p>
+      <p class="gameSymbol">{{ symbol || 'o' }}</p>
     </div>
     <div class="col-6 mx-auto">
-      @if (currentPlayerId === opponent?.userId) {
-      <app-profile-pic class="justify-content-end border-warning" ></app-profile-pic>
+      @if (currentPlayerId === userId) {
+        <app-profile-pic [userName]="userName"></app-profile-pic>
       } @else {
-        <app-profile-pic class="justify-content-end"></app-profile-pic>
+        <app-profile-pic [userName]="userName" [ngClass]="{'highlight-current-player': currentPlayerId === userId}"></app-profile-pic>
       }
     </div>
   </div>
   <div class="row">
     <div class="col-12 userNameElo p-1 m-1">
-      <span class="m-1 px-2">{{ username || 'DEMOUSER' }}</span>
+      <span class="m-1 px-2">{{ userName || 'DEMOUSER' }}</span>
       <span class="m-1">{{ elo || 1000 }}</span>
     </div>
   </div>

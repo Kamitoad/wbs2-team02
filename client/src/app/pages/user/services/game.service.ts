@@ -4,14 +4,12 @@ import {isPlatformBrowser} from "@angular/common";
 import {io, Socket} from "socket.io-client";
 import {HttpClient} from "@angular/common/http";
 
-
 export interface Player {
   id: number;
   username: string;
   symbol: 'X' | 'O';
   isTurn: boolean;
 }
-
 
 @Injectable({
   providedIn: 'root'
@@ -24,9 +22,6 @@ export class GameService {
   winnerSubject = new Subject<any>();
   joinedGameSubject = new Subject<any>();
   joinedGame$ = this.joinedGameSubject.asObservable();
-
-  // moveSubject = new Subject<{ row: number, col: number, playerLeft: 'X' | 'O' }>();
-  // winnerSubject = new Subject<{ gameId: number; winner: string }>();
   gameDataSubject = new Subject<any>(); // Fügt einen Subject für Game-Daten hinzu
   gameData$ = this.joinedGameSubject.asObservable();
 
@@ -49,7 +44,6 @@ export class GameService {
   }
 
   setupSocketListeners() {
-
     // Listen for moves
     this.socket.on('joinedGame', (data: any) => {
       console.log('Joined game:', data);
@@ -61,6 +55,7 @@ export class GameService {
     this.socket.on('winner', (data: any) => {
       console.log('winner:', data);
       this.winnerSubject.next(data);
+      this.openEndGameModal();
     });
 
     this.socket.on('gameState', (gameData: any) => {
@@ -83,6 +78,7 @@ export class GameService {
     this.socket.emit('resign', {gameId, userId});
   }
 */
+
   // Methode zum Beitreten eines Spiels
   joinGame(gameId: number, userId: number): void {
     this.socket.emit('joinGame', {gameId, userId});
@@ -102,5 +98,8 @@ export class GameService {
       this.gameDataSubject.next(game);
     });
   }
-}
 
+  openEndGameModal() {
+    console.log('Das Spiel ist vorbei. Öffne das Angular-Modal.');
+  }
+}

@@ -47,6 +47,7 @@ export class GameGateway {
         }
     }
 
+
     notifyWinner(gameId: number, winner: string) {
         this.logger.log(`Player ${winner} won game ${gameId}`);
         this.server.emit('winner', {gameId, winner});
@@ -63,4 +64,13 @@ export class GameGateway {
         this.logger.log(`Player ${data.userId} joined game ${data.gameId}`);
     }
 
+    /*
+        @SubscribeMessage('endGame')
+        async endGame(gameId: number, winnerId: number | null, loserId: number | null) {
+            const game = await this.gameService.endGame(gameId, winnerId, loserId)
+            if (game.hasEnded) {
+                this.server.to(gameId.toString()).emit('endGame', {gameId});
+            }
+        }
+     */
 }

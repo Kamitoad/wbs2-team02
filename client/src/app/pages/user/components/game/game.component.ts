@@ -32,6 +32,10 @@ export class GameComponent implements OnInit, OnDestroy {
   currentPlayer: 'X' | 'O' = 'X';
   gameOver: boolean = false;
 
+  // MODAL
+  resultMessage: string = '';
+  isGameFinished: boolean = false;
+
   constructor(
     private gameService: GameService,
     private route: ActivatedRoute,
@@ -54,7 +58,8 @@ export class GameComponent implements OnInit, OnDestroy {
       next: () => {
         // TODO EVENTUELL this.joinGame() in das next und andere
         this.gameService.getGame(this.gameId).subscribe({
-          next: () => {},
+          next: () => {
+          },
           error: (err) => {
             console.log(err.error.message)
             this.router.navigate(['profile']);
@@ -132,7 +137,6 @@ export class GameComponent implements OnInit, OnDestroy {
 
   // WebSocket-Listener einrichten
   private setupWebSocketListeners(): void {
-
     this.gameService.joinedGameSubject.subscribe(gameData => {
       const opponentString = localStorage.getItem('opponent');
 
@@ -141,64 +145,39 @@ export class GameComponent implements OnInit, OnDestroy {
         return;
       }
 
-      //TODO: Read opponent-data correctly in HTML
       const opponent = JSON.parse(opponentString);
 
       if (!opponent) {
-        console.error('Opponent not found in localStorage.');
+        console.error('Opponent data is null or undefined.');
         return;
       }
 
       this.opponent = opponent;
-      /*
-      // Gegnerdaten prüfen
-      if (gameData.player1) {
-        const opponentData = gameData.players.find((playerLeft: any) => playerLeft.userId !== this.user.userId);
-        if (opponentData) {
-          this.opponent = opponentData;
-        } else {
-          console.error('Opponent data not found');
-        }
-      }
-      */
-
-      // Spiel-Daten in LocalStorage speichern
-      const savedGameData = {
-        gameId: this.gameId,
-        currentPlayerId: this.gameService.joinedGame$,
-        player1UserId: this.user.userId,
-        player2UserId: this.opponent?.userId ?? 'Gegner unbekannt'
-      };
-
-      localStorage.setItem('gameData', JSON.stringify(gameData));
+      console.log('AUSLESEN OPPONENT', this.opponent);
     });
 
+    // Weitere WebSocket-Listener
     this.gameService.winnerSubject.subscribe(winnerData => {
       console.log(`Winner: ${winnerData.winner}`);
       this.gameOver = true;
-      this.modal.isGameFinished = true;
-      this.modal.resultMessage = winnerData.winner === this.user.userId ? 'WIN' : 'LOSS';
+      // MODAL
+      this.isGameFinished = true;
+      this.resultMessage = winnerData.winner === this.user.userId ? 'WIN' : 'LOSS';
       this.showGameOverModal(); // Modal-Fenster anzeigen, wenn das Spiel vorbei ist
     });
 
     // Listener für das Starten eines neuen Spiels
-    /*
     this.modal.newGame.subscribe(() => {
       this.router.navigate(['/queue']);
     });
 
-// Listener für das Beenden des Spiels
+    // Listener für das Beenden des Spiels
     this.modal.end.subscribe(() => {
       this.router.navigate(['/profile']);
     });
-    */
   }
 
-  onUnloadHandler = (event: BeforeUnloadEvent) => {
-    //this.gameService.resign(this.gameId, this.user.userId);
-  };
-
-  // Methode zum aufrufen des Modal
+  // OPEN MODAL METHODE
   showGameOverModal(): void {
     if (this.modal) {
       console.log('Modal wird geöffnet');
@@ -211,6 +190,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
 // Spieler wechseln
   // Todo -> Prüfen ob currentplayer richtig übergeben wird
+  /*
   switchPlayer(): void {
     // Logge die aktuellen Spielerinformationen zur Überprüfung
     console.log("Aktueller Spieler vor dem Wechsel:", this.currentPlayerId);
@@ -238,7 +218,7 @@ export class GameComponent implements OnInit, OnDestroy {
     // Konsolenausgabe nach dem Wechsel
     console.log('Neuer aktueller Spieler nach dem Wechsel:', this.currentPlayerId);
   }
-
+*/
 
   /*
   // Neues Spiel starten
@@ -253,3 +233,15 @@ export class GameComponent implements OnInit, OnDestroy {
   }
   */
 }
+
+export interface User {
+  userId: number;
+  userName: string;
+  email: string;
+  profilePic?: string;
+  elo: number;
+  totalWins: number;
+  totalTies: number;
+  totalLosses: number;
+}
+
