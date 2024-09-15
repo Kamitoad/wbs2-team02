@@ -136,14 +136,16 @@ export class UserController {
 
     @UseGuards(IsLoggedInGuard)
     @Patch('profilepic')
+    // safes profilepic in server storage, only accepts pictures with 5Mb or less
+
     @UseInterceptors(FileInterceptor('file', {
         storage: diskStorage({
             destination: './uploads/profilePictures',
             filename: (req, file, cb) => {
-                cb(null, file.originalname); // Behalte den ursprünglichen Dateinamen bei
+                cb(null, file.originalname);
             },
         }),
-        limits: { fileSize: 1024 * 1024 * 5 }, // Limit der Datei auf 5 MB
+        limits: { fileSize: 1024 * 1024 * 5 },
     }))
     @ApiOperation({ summary: 'Lädt ein neues Profilbild für den aktuellen Benutzer hoch' })
     @ApiConsumes('multipart/form-data')
