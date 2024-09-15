@@ -24,17 +24,18 @@ export const routes: Routes = [
   */
 
 
-  {path: 'login', component: LoginComponent},
-  {path: '', component: LoginComponent},
+  { path: 'login', component: LoginComponent},
+  { path: '', component: LoginComponent},
 
-  {path: 'register', component: RegisterComponent},
-  {path: 'profile', component: ProfileComponent},
-  {path: 'profil', redirectTo: 'profile', pathMatch: 'full'},
-  {path: 'queue', component: QueueComponent},
-  {path: 'admin/editUser', component: UserdataComponent},
-  {path: 'game', component: GameComponent},
-  {path: 'game/:gameId', component: GameComponent},
-  {path: 'admin/user', component: UserdataComponent},
+  { path: 'register', component: RegisterComponent },
+  { path: 'profile', component: ProfileComponent },
+  { path: 'profil', redirectTo: 'profile', pathMatch: 'full' },
+  { path: 'queue', component: QueueComponent },
+
+  { path: 'game', component: GameComponent },
+  { path: 'game/:gameId', component: GameComponent },
+
+  { path: 'admin/user', component: UserdataComponent },
   {
     path: 'admin/game', component: GamedataComponent,
     children: [
@@ -46,7 +47,7 @@ export const routes: Routes = [
       },
     ]
   },
+  { path: 'admin', redirectTo: 'admin/user', pathMatch: 'full' },
 
-  {path: 'admin', redirectTo: 'admin/user', pathMatch: 'full'},
-  {path: '**', redirectTo: 'login', pathMatch: 'full'},
+  { path: '**', redirectTo: 'login', pathMatch: 'full' },
 ];
