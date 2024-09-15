@@ -28,10 +28,10 @@ export class GamedataGateway {
   }
 
   async notifyWinner(gameId: number, winnerId: number) {
-    this.server.emit('winner', {gameId, winnerId});
+     this.server.emit('winner', gameId, winnerId);
   }
 
   async notifyLoser(gameId: number, loserId: number) {
-    this.server.emit('loser', {gameId, loserId});
+    this.server.emit('loser', gameId, loserId);
   }
 }

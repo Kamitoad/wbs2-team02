@@ -80,7 +80,7 @@ export class BoardComponent implements OnInit {
       console.log(data)
       localStorage.setItem('gameData', JSON.stringify(data));
 
-      this.putSymbolsInFields(data)
+      this.putSymbolsInFields(data);
     });
   }
 
