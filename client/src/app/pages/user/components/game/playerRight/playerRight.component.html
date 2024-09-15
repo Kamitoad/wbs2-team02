@@ -1,0 +1,28 @@
+<div class="player-info">
+  <div class="row">
+
+
+    <div class="row">
+      <div class="col-12 mx-auto">
+        @if (currentPlayerId === userId) {
+          <app-profile-pic [userName]="userName"></app-profile-pic>
+        } @else {
+          <app-profile-pic [userName]="userName" [ngClass]="{'highlight-current-player': currentPlayerId === userId}"></app-profile-pic>
+        }
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12 mx-auto">
+        <p class="gameSymbol justify-content-end m-3">{{ symbol }}</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="row">
+    <div class="col-12 userNameElo p-1 m-1">
+      <span class="m-1 px-2">{{ userName || 'DEMOUSER' }}</span>
+      <span class="m-1">{{ elo || 1000 }}</span>
+    </div>
+  </div>
+</div>

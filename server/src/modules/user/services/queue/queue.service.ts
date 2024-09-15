@@ -19,6 +19,7 @@ export class QueueService {
     ) {}
 
     async join(userId: number): Promise<any> {
+
         const user = await this.userRepository.findOne({ where: { userId } });
 
         // Error Handling
@@ -26,16 +27,18 @@ export class QueueService {
             throw new NotFoundException('Benutzer nicht gefunden');
         }
         if (user.inQueue) {
-            throw new BadRequestException('Nutzer bereits in der Queue');
+            return {
+                opponent: null,
+                currentUser: {
+                    userName: user.userName,
+                    elo: user.elo,
+                    profilePic: user.profilePic,
+                },
+                gameId: null
+            };
         }
 
-        const ongoingGame = await this.gameRepository.findOne({
-            where: [
-                { player1: user, hasEnded: 0 },
-                { player2: user, hasEnded: 0 }
-            ]
-        });
-        if (ongoingGame) {
+        if (await this.checkIfInGame(userId)) {
             throw new BadRequestException('Nutzer ist bereits in einem laufenden Spiel');
         }
 
@@ -58,8 +61,16 @@ export class QueueService {
 
             // Create new Game between the two players
             const newGame = this.gameRepository.create();
-            newGame.player1 = user;
-            newGame.player2 = opponent;
+            newGame.player1 = user;  // Vollständiges User-Objekt zuweisen
+            newGame.player2 = opponent;  // Vollständiges User-Objekt zuweisen
+
+            // Set the first player to move
+            const randomNum = Math.random()
+            if (randomNum < 0.5) {
+                newGame.currentPlayer = user.userId
+            } else {
+                newGame.currentPlayer = opponent.userId
+            }
 
             await this.gameRepository.save(newGame);
 
@@ -92,7 +103,24 @@ export class QueueService {
         };
     }
 
-    async findMatches(userId: number): Promise<User | null> {
+    async checkIfInGame(userId: number): Promise<any> {
+        const user = await this.userRepository.findOne({ where: { userId } });
+
+        // Error Handling
+        if (!user) {
+            throw new NotFoundException('Benutzer nicht gefunden');
+        }
+
+        const ongoingGame = await this.gameRepository.findOne({
+            where: [
+                { player1: { userId }, hasEnded: false },
+                { player2: { userId }, hasEnded: false }
+            ]
+        });
+        return !!ongoingGame;
+    }
+
+        async findMatches(userId: number): Promise<User | null> {
         const usersInQueue = await this.userRepository.find({
             where: {inQueue: true},
             order: {queueStartTime: 'ASC'}

@@ -1,0 +1,61 @@
+<div class="container-fluid">
+  <h1 class="text-center mt-3 mb-3">Möge das Glück mit dir sein</h1>
+</div>
+
+<app-modal
+  [isGameFinished]="isGameFinished"
+  [resultMessage]="resultMessage">
+</app-modal>
+
+
+<div class="container text-center game-container">
+  <div class="row">
+    <!-- Linke Spielerinfo -->
+    <div class="col">
+      <div class="player-info left">
+        <app-playerLeft
+          [username]="user?.userName"
+          [elo]="user?.elo"
+          [profilePic]="user?.profilePic"
+          [symbol]="user?.symbol">
+        </app-playerLeft>
+      </div>
+    </div>
+
+    <!-- Spielbrett -->
+    <div class="col-6">
+      <!-- <div class="board-container"> -->
+      <div class="board-container ">
+        <app-board [gameId]="gameId" [userId]="user.userId"></app-board>
+      </div>
+    </div>
+
+    <!-- Rechte Spielerinfo -->
+    <div class="col">
+      <div class="player-info right">
+        <app-playerRight
+          [userName]="opponent.userName"
+          [symbol]="opponentSymbol"
+          [elo]="opponent.elo"
+          [profilePic]="opponent.profilePic"
+        >
+        </app-playerRight>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="text-center mt-4">
+  @if (currentPlayerId == user.userId) {
+    <div class="row">
+      <div class="col">
+        <h4 class="text-light InfoZug">Du bist dran</h4>
+      </div>
+    </div>
+  } @else {
+    <div class="row">
+      <div class="col">
+        <h4 class="text-light InfoZug">Du bist nicht dran!</h4>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,17 @@
+@if (isGameFinished) {
+  <div class="modal" id="GameFinishedModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title blueText">Spielergebnis</h4>
+        </div>
+        <div class="modal-body">
+          <p class="blueText">{{ resultMessage }}</p>
+
+          <button class="btn  blue-button" (click)="endGame()" type="button">Zurück zum Profil</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+}

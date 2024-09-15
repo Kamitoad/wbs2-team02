@@ -1,0 +1,70 @@
+.highlight-current-player {
+  border: 3px solid orange;  /* Orangefarbener Rand */
+  border-radius: 50%;        /* Rundes Profilbild */
+}
+
+.player-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-top: 10px;
+}
+
+app-profile-pic {
+  display: block;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 10px;
+  object-fit: cover;
+}
+
+p.gameSymbol {
+  display: block;
+  font-size: 5rem;
+  color: white;
+  margin: 5px 0;
+}
+
+div.userNameElo {
+  font-weight: bold;
+  border: 1px solid white;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 15px;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+/* Responsive Design für kleinere Bildschirme */
+@media screen and (max-width: 600px) {
+  img.profile-image {
+    width: 90px;
+    height: 90px;
+  }
+
+  p.gameSymbol {
+    font-size: 3.5rem;
+  }
+
+  .userNameElo {
+    font-size: 0.8rem;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  img.profile-image {
+    width: 70px;
+    height: 70px;
+  }
+
+  p.gameSymbol {
+    font-size: 2rem;
+  }
+
+  .userNameElo {
+    font-size: 0.7rem;
+  }
+}

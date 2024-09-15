@@ -8,7 +8,7 @@ import {isPlatformBrowser} from "@angular/common";
 })
 export class QueueService {
 
-  private opponentSubject = new BehaviorSubject<any | null>(null);
+  public opponentSubject = new BehaviorSubject<any | null>(null);
   opponent$ = this.opponentSubject.asObservable();
 
   private errorSubject = new BehaviorSubject<string | null>(null);
@@ -32,17 +32,15 @@ export class QueueService {
       this.socket = require('socket.io-client')('http://localhost:3000/ws-user-queue');
 
       this.socket.on('opponent-data', (opponent: any) => {
-        console.log('Opponent Data:', opponent);  // Prüfen, ob opponent.profilePic vorhanden ist
         this.readOpponent(opponent);
       });
 
 
       this.socket.on('queue-error', (error: any) => {
         console.error('Queue error:', error);
-        this.errorSubject.next(error.message);  // Setze den Fehler im Fehler-Subject
+        this.errorSubject.next(error.message);
       });
 
-      // Setze den Fehler auf null, wenn die Verbindung erfolgreich ist
       this.socket.on('join-queue-success', () => {
         this.errorSubject.next(null);
       });
@@ -63,6 +61,10 @@ export class QueueService {
         'Content-Type': 'application/json'
       }
     });
+  }
+
+  checkIfInGame(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/api/queue/checkIfInGame`);
   }
 
   initiateSocketConnection() {
@@ -95,7 +97,7 @@ export class QueueService {
 
   private readOpponent(opponent: any) {
     this.opponentSubject.next(opponent);
-    this.gameStatusSubject.next('Spiel wird gestartet');  // Status aktualisieren
+    this.gameStatusSubject.next('Spiel wird gestartet');
   }
 
   private getUserIdFromLocalStorage(): number {

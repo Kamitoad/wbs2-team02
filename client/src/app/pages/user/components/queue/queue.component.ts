@@ -1,9 +1,11 @@
-import {Component} from '@angular/core';
-import {Router, RouterLink} from "@angular/router";
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {NavigationStart, Router, RouterLink} from "@angular/router";
 import {QueueService} from "../../services/queue.service";
 import {AsyncPipe, NgIf} from "@angular/common";
 import {TimeCodePipe} from "../../../../shared/pipes/time-code.pipe";
 import {ProfilePicComponent} from "../profile-pic/profile-pic.component";
+import {ProfileService} from "../../services/profile.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-queue',
@@ -18,7 +20,9 @@ import {ProfilePicComponent} from "../profile-pic/profile-pic.component";
   templateUrl: './queue.component.html',
   styleUrl: './queue.component.css'
 })
-export class QueueComponent {
+export class QueueComponent implements OnDestroy, OnInit {
+  private routerSubscription: Subscription | null = null;
+
   user: any | null = null;
   opponent: any | null = null;
   waitingTime: number = 0;
@@ -28,16 +32,54 @@ export class QueueComponent {
 
   constructor(
     public queueService: QueueService,
-    private router: Router) {
-    const savedUser = localStorage.getItem('user');
-    this.user = savedUser ? JSON.parse(savedUser) : null;
+    private router: Router,
+    private profileService: ProfileService,
+  ) {
   }
 
   ngOnInit(): void {
+
+    this.opponent = null;
+    localStorage.setItem('opponent', "");
+
+
+    window.addEventListener('beforeunload', this.onUnloadHandler);
+
+    this.routerSubscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        if (!this.gameStatus) {
+          this.leaveQueue();
+        }
+      }
+    });
+
+    this.profileService.getCurrentUser().subscribe({
+      next: (userData) => {
+        localStorage.setItem("user", JSON.stringify(userData));
+        const savedUser = localStorage.getItem('user');
+        this.user = savedUser ? JSON.parse(savedUser) : null;
+        this.queueService.checkIfInGame().subscribe({
+          next: (res) => {
+            if (res.ok) {
+              this.joinQueue();
+            } else {
+              this.router.navigate(['profile']);
+            }
+          },
+          error: () => {
+          }
+        });
+      },
+      error: () => {
+        this.router.navigate(['login']);
+      }
+    });
+
     this.queueService.opponent$.subscribe((opponent: any) => {
       this.opponent = opponent;
       if (opponent?.gameId) {
         this.gameId = opponent.gameId;
+        localStorage.setItem('opponent', JSON.stringify(opponent));
       }
     });
 
@@ -49,7 +91,7 @@ export class QueueComponent {
           this.startCountdown -= 1;
           if (this.startCountdown <= 0) {
             clearInterval(countdownInterval);
-            this.router.navigate([`/game/${this.gameId}`]); // Weiterleitung zur Spiel-Route
+            this.router.navigate([`/game/${this.gameId}`]);
           }
         }, 1000);
       }
@@ -60,8 +102,48 @@ export class QueueComponent {
     }, 1000)
   }
 
-  leaveQueue() {
-    this.router.navigate(['/queuebutton']);
-    this.queueService.leaveQueue().subscribe();
+  ngOnDestroy(): void {
+    window.removeEventListener('beforeunload', this.onUnloadHandler);
+
+    if (!this.gameStatus) {
+      this.leaveQueue();
+    }
+
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
   }
+
+  joinQueue() {
+    this.queueService.initiateSocketConnection();
+    this.queueService.emitJoinQueue()
+      .then(() => {
+      })
+      .catch((error) => {
+        console.error('Error detected:', error);
+        this.router.navigate(['/profile']);
+      });
+  }
+
+  leaveQueue(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.queueService.leaveQueue().subscribe({
+        next: () => {
+          this.router.navigate(['/profile']);
+          resolve();
+        },
+        error: (err) => {
+          console.error('Fehler beim Verlassen der Queue:', err);
+          this.router.navigate(['/profile']);
+          reject(err);
+        }
+      });
+    });
+  }
+
+  onUnloadHandler = (event: BeforeUnloadEvent) => {
+    if (!this.gameStatus) {
+      this.leaveQueue();
+    }
+  };
 }

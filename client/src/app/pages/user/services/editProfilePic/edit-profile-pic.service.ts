@@ -9,8 +9,8 @@ export class EditProfilePicService {
   private apiUrl = '/api/user';
   private user: any;
 
-  private profilePicSource = new BehaviorSubject<string>(""); // Standardwert: leeres Profilbild
-  currentProfilePic$ = this.profilePicSource.asObservable();  // Observable für Komponenten
+  private profilePicSource = new BehaviorSubject<string>("");
+  currentProfilePic$ = this.profilePicSource.asObservable();
 
   http: HttpClient = inject(HttpClient);
 
@@ -20,12 +20,13 @@ export class EditProfilePicService {
     return !imgUpload;
   }
 
+  // Gets the ProfilePic of the logged-in user
   getProfilePic() {
     return this.http.get<any>(`${this.apiUrl}/profilepic`).pipe(
       tap(registeredUser => {
         this.user = registeredUser;
         if (registeredUser && registeredUser.profilePic) {
-          this.profilePicSource.next(registeredUser.profilePic); // Profilbild aktualisieren
+          this.profilePicSource.next(registeredUser.profilePic);
         }
         return registeredUser;
       }),
@@ -39,12 +40,13 @@ export class EditProfilePicService {
     );
   }
 
+  // sets the ProfilePic to the standard one
   deleteProfilePic() {
     return this.http.delete<any>(`${this.apiUrl}/profilepic`).pipe(
       tap(registeredUser => {
         this.user = registeredUser;
         if (registeredUser && registeredUser.profilePic === "") {
-          this.profilePicSource.next(""); // Profilbild nach dem Löschen zurücksetzen
+          this.profilePicSource.next("");
         }
         return registeredUser;
       }),
@@ -57,19 +59,18 @@ export class EditProfilePicService {
       })
     );
   }
-  // Profilbild vom Server abrufen und lokalen Wert setzen
+
+  // Gets ProfilePic of a specific username
   getProfilePicOfUser(userName: string) {
     return this.http.get<any>(`${this.apiUrl}/profilepic/user/` + userName).pipe(
       tap(registeredUser => {
         this.user = registeredUser;
         if (registeredUser && registeredUser.profilePic) {
-          // Wenn erfolgreich, Profilbild aktualisieren
           this.profilePicSource.next(registeredUser.profilePic);
         }
         return registeredUser;
       }),
       catchError((error: HttpErrorResponse) => {
-        // Fehlerbehandlung
         return of({
           error: true,
           status: error.status,
@@ -78,7 +79,8 @@ export class EditProfilePicService {
       })
     );
   }
+
   setProfilePic(newProfilePic: string) {
-    this.profilePicSource.next(newProfilePic); // Profilbild manuell setzen und teilen
+    this.profilePicSource.next(newProfilePic);
   }
 }

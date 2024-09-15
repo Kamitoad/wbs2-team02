@@ -26,4 +26,16 @@ export class GamedataGateway {
   async handleLeaveQueue(userId: number): Promise<void> {
     this.server.emit('queue-user-removed', userId);
   }
+
+  async notifyWinner(gameId: number, winnerId: number) {
+    this.server.emit('winner', { gameId, winnerId });
+  }
+
+  async notifyLoser(gameId: number, loserId: number) {
+    this.server.emit('loser', gameId, loserId);
+  }
+
+  notifyTie(gameId: number) {
+    this.server.emit('tie', { gameId });
+  }
 }

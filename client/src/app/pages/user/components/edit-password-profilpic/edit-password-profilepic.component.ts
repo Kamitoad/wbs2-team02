@@ -1,12 +1,12 @@
-import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
-import { FormsModule } from "@angular/forms";
-import { AuthService } from "../../../../shared/services/auth/auth.service";
-import { Router } from "@angular/router";
-import { HttpClient } from "@angular/common/http";
-import { EditPasswordService } from "../../services/editUser/edit-password.service";
-import { EditProfilePicService } from "../../services/editProfilePic/edit-profile-pic.service";
-import { NgIf, NgOptimizedImage } from "@angular/common";
-import { ProfilePicComponent } from "../profile-pic/profile-pic.component";
+import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
+import {FormsModule} from "@angular/forms";
+import {Router} from "@angular/router";
+import {HttpClient} from "@angular/common/http";
+import {EditPasswordService} from "../../services/editUser/edit-password.service";
+import {EditProfilePicService} from "../../services/editProfilePic/edit-profile-pic.service";
+import {NgIf, NgOptimizedImage} from "@angular/common";
+import {ProfilePicComponent} from "../profile-pic/profile-pic.component";
+import {ProfileService} from "../../services/profile.service";
 
 @Component({
   selector: 'app-edit-password-profilpic',
@@ -22,6 +22,7 @@ import { ProfilePicComponent } from "../profile-pic/profile-pic.component";
 })
 export class EditPasswordProfilepicComponent implements OnInit {
   httpclient: HttpClient = inject(HttpClient);
+  public profileService: ProfileService = inject(ProfileService);
 
   @ViewChild('#messageError') messageError: ElementRef<HTMLSpanElement> | undefined;
   @ViewChild('#messageSuccess') messageSuccess: ElementRef<HTMLSpanElement> | undefined;
@@ -35,30 +36,40 @@ export class EditPasswordProfilepicComponent implements OnInit {
   private newPfp: any;
   protected errorMessage: string | undefined;
 
-  constructor(private http: HttpClient, private editUser: EditPasswordService, private editProfilePic: EditProfilePicService, private router: Router) {}
+  constructor(private http: HttpClient, private editUser: EditPasswordService, private editProfilePic: EditProfilePicService, private router: Router) {
+  }
 
   ngOnInit() {
-    // Abonniere das Profilbild, um sofortige Aktualisierungen zu ermöglichen
+    // subscribes to the ProfilePic to have it automatically reload
     this.editProfilePic.currentProfilePic$.subscribe(profilePic => {
       this.profilePic = profilePic;
     });
   }
 
+  // Send the new ProfilePic to the server, when it is changes, using FormData
   onFileChange(event: any) {
     const file = event.target.files[0];
+
     if (file) {
+
+      // displays Picture even before it is uploaded to Server
       const reader: FileReader = new FileReader();
       reader.onload = (e: any) => {
         this.newPfp = e.target.result;
       };
-
       reader.readAsDataURL(file);
+
+      // formdata used to send file to server
       const formData: FormData = new FormData();
       formData.append("file", file);
 
-      this.http.patch<{ newProfilePic: string }>("http://localhost:3000/api/user/profilepic", formData, { withCredentials: true }).subscribe(
+      // sends formdata profilepic to the server
+      this.http.patch<{
+        newProfilePic: string
+      }>("http://localhost:3000/api/user/profilepic", formData, {withCredentials: true}).subscribe(
         response => {
-          this.editProfilePic.setProfilePic(response.newProfilePic); // Sofortige Aktualisierung des Profilbilds
+          // instant shows the new ProfilePic
+          this.editProfilePic.setProfilePic(response.newProfilePic);
           this.enableImgUpload();
         },
         error => {
@@ -72,7 +83,8 @@ export class EditPasswordProfilepicComponent implements OnInit {
   deleteProfilePic() {
     this.editProfilePic.deleteProfilePic().subscribe(success => {
       if (success && !success.error) {
-        this.editProfilePic.setProfilePic(success.profilePic); // Profilbild nach dem Löschen aktualisieren
+        // instantly refreshes the Pic
+        this.editProfilePic.setProfilePic(success.profilePic);
       }
     });
   }
@@ -83,7 +95,9 @@ export class EditPasswordProfilepicComponent implements OnInit {
     }, 5000);
   }
 
+  // Edit of the password
   onSubmit() {
+    // Checkes if the two new passwords are the same
     if (this.newPassword == this.newPasswordConfirm) {
       let changedPassword: any = {
         oldPassword: this.oldPasword,
@@ -102,6 +116,7 @@ export class EditPasswordProfilepicComponent implements OnInit {
     }
   }
 
+  // Used to show Error or Success messages after apssword change
   showMessage(elementId: string, duration: number) {
     const element = document.getElementById(elementId);
     if (element) {
@@ -120,5 +135,9 @@ export class EditPasswordProfilepicComponent implements OnInit {
 
   enableImgUpload() {
     this.imgUpload = this.editProfilePic.enableImgUpload(this.imgUpload);
+  }
+
+  closeEdit() {
+    this.profileService.displayEdit = false;
   }
 }
