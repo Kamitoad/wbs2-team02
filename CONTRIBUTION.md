@@ -32,6 +32,7 @@ and then "Run 'npm install'" or via terminal with following commands):
     ```
     localhost:4200
     ```
+- It is not advised though, all pages should be tested on a local server <br> <br>
 
 - As Nest.js delivers the static page to the client, it is necessary that Angular builds / exports the page constantly
 when changes are being made. This guarantees that the server will always have the recent exported pages from the 
@@ -56,9 +57,14 @@ in the "client" folder to run this command):
     cd server
     ```
   
-- Run the nest.js Server by running following command:
+- To simply run the nest.js Server, do it with following command:
     ```
     npm run start
+    ```
+
+- To properly debug the nest.js Server, run following command:
+    ```
+    npm run start:debug
     ```
 
 - To test both client and server functionalities the nest.js server runs with the current state of the website under:
@@ -73,8 +79,13 @@ in the "client" folder to run this command):
   
 ## Database
 
-- At the initial start of the server (and if the Game or User entities are empty), a new database / new data is created.
+- At the initial start of the server (or if the Game or User entities are empty), a new database / new data is created.
 Data and credentials of these users and games can be seen in:
     ```
     server\src\database\seed-service\seed.service.ts
+    ```
+
+- The database itself is saved in:
+    ```
+    server\db.sqlite
     ```
