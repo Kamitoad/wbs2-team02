@@ -168,10 +168,12 @@ export class GameService {
             await this.updateEloForPlayers(winnerId, loserId, game);
             await this.updatePlayerStats(winnerId, loserId);
 
-
+            this.gamedataGateway.notifyWinner(game.gameId, game.winner);
+            this.gamedataGateway.notifyLoser(game.gameId, game.loser);
         } else {
             // Unentschieden: Elo für beide Spieler aktualisieren
             game.isTie = true;
+            this.gamedataGateway.notifyTie(game.gameId);
             //TODO: Update changeElo in Game DB
             await this.updateEloForTie(game.player1.userId, game.player2.userId, game);
             await this.updatePlayerStatsForTie(game.player1.userId, game.player2.userId);
@@ -182,8 +184,7 @@ export class GameService {
         await this.gameRepository.save(game);
 
         this.gamedataGateway.notifyGameEnded(game.gameId);
-        this.gamedataGateway.notifyWinner(game.gameId, game.winner);
-        this.gamedataGateway.notifyLoser(game.gameId, game.loser);
+
         return game;
     }
 

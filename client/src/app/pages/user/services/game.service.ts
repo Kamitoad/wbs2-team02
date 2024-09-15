@@ -61,11 +61,13 @@ export class GameService {
     this.gameSocket.on('winner', (data: { gameId: number, winnerId: number }) => {
       const { gameId, winnerId } = data;
 
-
-
       this.winnerSubject.next(winnerId);
       this.openEndGameModal();
     });
+
+    this.gameSocket.on('tie', (data: { gameId: number }) => {
+      this.winnerSubject.next(null);
+    })
 
 
     // Listen for loser updates

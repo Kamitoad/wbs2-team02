@@ -31,7 +31,7 @@ export class GameComponent implements OnInit, OnDestroy {
   currentPlayerId: number | null = null;
   currentPlayer: 'X' | 'O' = 'X';
   gameOver: boolean = false;
-  opponentSymbol : any;
+  opponentSymbol: any;
 
   // MODAL
   resultMessage: string = '';
@@ -116,11 +116,9 @@ export class GameComponent implements OnInit, OnDestroy {
       this.gameService.joinGame(this.gameId, this.user.userId);
 
       this.gameService.gameDataSubject.subscribe((data) => {
-        console.log("data.game");
-        console.log(data);
+
         this.currentPlayerId = data.currentPlayer;
-        console.log("currentPlayerId", this.currentPlayerId);
-        console.log(this.currentPlayerId);
+
 
         // Spiel-Daten im LocalStorage speichern
         const gameData = {
@@ -140,7 +138,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
         gameData.player1UserId == this.user.userId ? this.user.symbol = 'X' : this.user.symbol = 'O';
 
-        if(this.user.symbol == 'O'){
+        if (this.user.symbol == 'O') {
           this.opponentSymbol = 'X';
         } else {
           this.opponentSymbol = 'O';
@@ -168,22 +166,31 @@ export class GameComponent implements OnInit, OnDestroy {
       }
 
       this.opponent = opponent;
-      console.log('AUSLESEN OPPONENT', this.opponent);
     });
 
     setTimeout(() => {
-    // Weitere WebSocket-Listener
-    this.gameService.winnerSubject.subscribe(winnerData => {
-;
-      this.gameOver = true;
-      // MODAL
-      this.isGameFinished = true;
 
-      this.resultMessage = winnerData != this.user.userId ? 'WIN' : 'LOSS';
-      this.showGameOverModal(); // Modal-Fenster anzeigen, wenn das Spiel vorbei ist
-    });
-    }, 500);  // Warte 500ms, bevor das Subject abonniert wird
+      // Weitere WebSocket-Listener
+      this.gameService.winnerSubject.subscribe(winnerData => {
+        ;
+        this.gameOver = true;
+        // MODAL
+        this.isGameFinished = true;
 
+        console.log("winnerData")
+        console.log(winnerData)
+
+        if (winnerData == null) {
+          this.resultMessage = 'Es ist ein Unentschieden';
+        } else if (winnerData != this.user.userId) {
+          this.resultMessage = 'Du hast gewonnen';
+        } else {
+          this.resultMessage = 'Du hast verloren';
+        }
+
+        this.showGameOverModal();
+      });
+    }, 500);
 
 
     // Listener für das Starten eines neuen Spiels
