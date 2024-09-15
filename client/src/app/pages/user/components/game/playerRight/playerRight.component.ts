@@ -19,4 +19,8 @@ export class PlayerRightComponent {
   @Input() currentPlayerId: number | null = null;
   @Input() user: any;
   @Input() opponent: any;
+
+  ngOnInit() {
+    console.log('PlayerRight Component - Opponent:', this.username, this.elo, this.profilePic, this.symbol);
+  }
 }
