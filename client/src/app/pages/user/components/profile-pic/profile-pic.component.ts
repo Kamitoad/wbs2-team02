@@ -22,8 +22,9 @@ export class ProfilePicComponent implements OnInit {
     if (this.userName) {
 
       this.editProfilePic.getProfilePicOfUser(this.userName).subscribe((response: any) => {
-        this.updateProfilePic(response.profilePic);
+        this.updateProfilePic(response.newProfilePic);
       });
+
     } else {
       // gets Pic of logged in User
 
@@ -32,7 +33,7 @@ export class ProfilePicComponent implements OnInit {
       });
 
       this.editProfilePic.getProfilePic().subscribe((response: any) => {
-        this.updateProfilePic(response.profilePic);
+        this.updateProfilePic(response.newProfilePic);
       });
     }
   }
