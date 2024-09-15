@@ -45,9 +45,7 @@ export class BoardComponent implements OnInit {
       this.putSymbolsInFields(gameData);
     });
 
-    this.gameService.winnerSubject.subscribe((winnerData: any) => {
-      console.log(`Winner: ${winnerData.winner}`);
-    });
+
   }
 
   makeMove(rowIndex: number, colIndex: number): void {
@@ -70,13 +68,12 @@ export class BoardComponent implements OnInit {
     // this.switchPlayer(); // Spieler nach dem Zug wechseln
 
     // Spieler wechseln nach dem Zug
-    console.log("Player wird geswitched");
     this.playerSwitched.emit();
 
     this.gameService.gameDataSubject.subscribe((data) => {
       localStorage.setItem('gameData', JSON.stringify(data));
 
-      this.putSymbolsInFields(data)
+      this.putSymbolsInFields(data);
     });
   }
 

@@ -19,6 +19,7 @@ export class QueueService {
     ) {}
 
     async join(userId: number): Promise<any> {
+
         const user = await this.userRepository.findOne({ where: { userId } });
 
         // Error Handling

@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import {Router} from "@angular/router";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-modal',
@@ -7,31 +7,34 @@ import {Router} from "@angular/router";
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.css']
 })
+
 export class ModalComponent {
   @Input() isGameFinished: boolean = false;
-  @Input() resultMessage: 'WIN' | 'LOSS' | 'DRAW' | string = '';  // statt 'result'
+  @Input() resultMessage: 'WIN' | 'LOSS' | 'DRAW' | string = '';  // Statt 'result'
 
   @Output() newGame = new EventEmitter<void>();
   @Output() end = new EventEmitter<void>();
 
+  constructor(private router: Router) {}
 
-  constructor(private router: Router) {
-  }
   startNewGame() {
- //   this.newGame.emit();
-    this.router.navigate(['/queue']); // Navigate to the queue component
+    localStorage.setItem('opponent', "");
+
+    this.router.navigate(['/queue']); // Navigiere zur Queue-Komponente
+
   }
 
   endGame() {
-    // this.end.emit();
-    this.router.navigate(['/profile']); // Navigate to the profile page
+    this.router.navigate(['/profile']); // Navigiere zur Profilseite
   }
 
-
-  isVisible: boolean = false;
-
+  // Funktion zum Öffnen des Modals (setzt die Sichtbarkeit)
   open(): void {
+    this.isGameFinished = true;
+  }
 
-    this.isVisible = true;
+  // Funktion zum Schließen des Modals
+  close(): void {
+    this.isGameFinished = false;
   }
 }

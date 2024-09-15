@@ -20,12 +20,12 @@ export class GamedataService {
   constructor(
     private http: HttpClient,
     //@ts-ignore
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
   ) {
     this.baseUrl = isPlatformBrowser(this.platformId) ? '' : 'http://localhost:3000';
 
     //To make sure Angular can be build properly with sockets to test with Nest.js
-    if(isPlatformBrowser(this.platformId)) {
+    if (isPlatformBrowser(this.platformId)) {
       this.gameSocket = require('socket.io-client')('http://localhost:3000/ws-admin-gamedata');
       this.queueSocket = require('socket.io-client')('http://localhost:3000/ws-user-queue');
 
@@ -76,6 +76,7 @@ export class GamedataService {
   }
 
   private removeGame(gameId: string) {
+
     const currentGames = this.currentGamesSubject.getValue();
     const updatedGames = currentGames.filter(game => game.gameId !== gameId);
     this.currentGamesSubject.next(updatedGames);

@@ -48,7 +48,9 @@
                       class="fw-semibold h4">{{ (queueService.opponent$ | async)?.userName || 'Gegner wird gesucht' }}</span>
                   </div>
                   <div>
-                    <app-profile-pic *ngIf="(queueService.opponent$ | async)?.userName" [userName]="(queueService.opponent$ | async)?.userName"></app-profile-pic>
+                    @if((queueService.opponent$ | async)?.userName){
+                      <app-profile-pic [userName]="(queueService.opponent$ | async)?.userName"></app-profile-pic>
+                    }
                   </div>
                 </div>
               </div>
@@ -79,6 +81,7 @@
                 <div class="hstack justify-content-center">
                   <div>
                     <app-profile-pic [userName]="user.userName"></app-profile-pic>
+
                   </div>
                   <div class="text-center border-2 border border-tie rounded-pill py-2 px-4 ms-3 my-1 w-75 word-wrap">
                   <span class="h5"><span class="fw-semibold">{{ user.userName }} </span>
@@ -105,7 +108,9 @@
                       class="fw-semibold h5">{{ (queueService.opponent$ | async)?.userName || 'Gegner wird gesucht' }}</span>
                   </div>
                   <div>
-                    <app-profile-pic *ngIf="(queueService.opponent$ | async)?.userName" [userName]="(queueService.opponent$ | async)?.userName"></app-profile-pic>
+                    @if((queueService.opponent$ | async)?.userName){
+                      <app-profile-pic [userName]="(queueService.opponent$ | async)?.userName"></app-profile-pic>
+                    }
                   </div>
                 </div>
               </div>

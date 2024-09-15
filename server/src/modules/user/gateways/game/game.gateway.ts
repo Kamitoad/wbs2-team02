@@ -15,7 +15,7 @@ export class GameGateway {
     private readonly logger = new Logger(GameGateway.name);
 
     constructor(private readonly gameService: GameService) {
-    }  // Füge den GameService über den Konstruktor hinzu
+    }
 
     @SubscribeMessage('move')
     async handleMove(
@@ -47,11 +47,6 @@ export class GameGateway {
         }
     }
 
-    notifyWinner(gameId: number, winner: string) {
-        this.logger.log(`Player ${winner} won game ${gameId}`);
-        this.server.emit('winner', {gameId, winner});
-    }
-
     @SubscribeMessage('joinGame')
     async handleJoinGame(
         @MessageBody() data: { gameId: number; userId: number },
@@ -62,5 +57,4 @@ export class GameGateway {
         client.emit('joinedGame', game);
         this.logger.log(`Player ${data.userId} joined game ${data.gameId}`);
     }
-
 }

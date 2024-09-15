@@ -21,18 +21,21 @@ export class QueueGateway {
       @MessageBody() payload: { userId: number },
   ): Promise<void> {
     console.log(`User ${payload.userId} joined the queue.`);
-
     // Save User using this Socket in Socket-Map
     this.connectedUsers.set(payload.userId, client);
 
     try {
       // Search for opponent
       const { opponent, currentUser, gameId } = await this.queueService.join(payload.userId);
+      console.log("opponent")
+      console.log(opponent);
 
-      client.emit('join-queue-success');
+
 
       // If opponent found, make a game, else stop
-      if (opponent) {
+      if (opponent != null) {
+        client.emit('join-queue-success');
+
         const opponentSocket = this.connectedUsers.get(opponent.userId);
 
         // Send data of opponent to current user

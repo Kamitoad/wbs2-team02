@@ -39,6 +39,10 @@ export class QueueComponent implements OnDestroy, OnInit {
 
   ngOnInit(): void {
 
+    this.opponent = null;
+    localStorage.setItem('opponent', "");
+
+
     window.addEventListener('beforeunload', this.onUnloadHandler);
 
     this.routerSubscription = this.router.events.subscribe(event => {

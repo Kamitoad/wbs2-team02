@@ -160,9 +160,13 @@ export class GameService {
 
             await this.updateEloForPlayers(winnerId, loserId, game);
             await this.updatePlayerStats(winnerId, loserId);
+
+            this.gamedataGateway.notifyWinner(game.gameId, game.winner);
+            this.gamedataGateway.notifyLoser(game.gameId, game.loser);
         } else {
             // Unentschieden: Elo für beide Spieler aktualisieren
             game.isTie = true;
+            this.gamedataGateway.notifyTie(game.gameId);
             await this.updateEloForTie(game.player1.userId, game.player2.userId, game);
             await this.updatePlayerStatsForTie(game.player1.userId, game.player2.userId);
         }
@@ -285,8 +289,3 @@ function calculateEloChange(playerElo: number, opponentElo: number, score: numbe
     const k = 20; // Anpassungsfaktor
     return k * (score - (1 / (1 + Math.pow(10, (opponentElo - playerElo) / 400))));
 }
-
-
-
-
-

@@ -8,7 +8,7 @@ import {isPlatformBrowser} from "@angular/common";
 })
 export class QueueService {
 
-  private opponentSubject = new BehaviorSubject<any | null>(null);
+  public opponentSubject = new BehaviorSubject<any | null>(null);
   opponent$ = this.opponentSubject.asObservable();
 
   private errorSubject = new BehaviorSubject<string | null>(null);

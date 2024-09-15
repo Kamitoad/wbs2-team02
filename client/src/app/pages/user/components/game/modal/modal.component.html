@@ -3,25 +3,15 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Spielergebnis</h4>
+          <h4 class="modal-title blueText">Spielergebnis</h4>
         </div>
         <div class="modal-body">
-          <p>{{ resultMessage }}</p>
-          <button (click)="startNewGame()">Neues Spiel suchen</button>
-          <button (click)="endGame()">Zurück zum Profil</button>
+          <p class="blueText">{{ resultMessage }}</p>
+
+          <button class="btn  blue-button" (click)="endGame()" type="button">Zurück zum Profil</button>
+
         </div>
       </div>
     </div>
   </div>
 }
-
-<!--
-@if (isVisible) {
-  <div class="modal-content">
-    <h2>Spielergebnis</h2>
-    <p>{{ resultMessage }}</p>
-    <button (click)="startNewGame()">Neues Spiel suchen</button>
-    <button (click)="endGame()">Zurück zum Profil</button>
-  </div>
-}
--->

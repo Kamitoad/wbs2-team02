@@ -2,6 +2,12 @@
   <h1 class="text-center mt-3 mb-3">Möge das Glück mit dir sein</h1>
 </div>
 
+<app-modal
+  [isGameFinished]="isGameFinished"
+  [resultMessage]="resultMessage">
+</app-modal>
+
+
 <div class="container text-center game-container">
   <div class="row">
     <!-- Linke Spielerinfo -->
@@ -20,7 +26,7 @@
     <div class="col-6">
       <!-- <div class="board-container"> -->
       <div class="board-container ">
-        <app-board [gameId]="gameId" [userId]="user.userId" (playerSwitched)="switchPlayer()"></app-board>
+        <app-board [gameId]="gameId" [userId]="user.userId"></app-board>
       </div>
     </div>
 
@@ -28,18 +34,18 @@
     <div class="col">
       <div class="player-info right">
         <app-playerRight
-          [username]="opponent?.userName"
-          [symbol]="opponent?.symbol"
-          [elo]="opponent?.elo"
-          [profilePic]="opponent?.profilePic"
-          [currentPlayerId]="opponent?.currentPlayerId">
+          [userName]="opponent.userName"
+          [symbol]="opponentSymbol"
+          [elo]="opponent.elo"
+          [profilePic]="opponent.profilePic"
+        >
         </app-playerRight>
       </div>
     </div>
   </div>
 </div>
 <div class="text-center mt-4">
-  @if (currentPlayerId === user?.userId) {
+  @if (currentPlayerId == user.userId) {
     <div class="row">
       <div class="col">
         <h4 class="text-light InfoZug">Du bist dran</h4>
@@ -53,5 +59,3 @@
     </div>
   }
 </div>
-
-<app-modal></app-modal>
