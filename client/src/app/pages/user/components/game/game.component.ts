@@ -57,7 +57,6 @@ export class GameComponent implements OnInit, OnDestroy {
     this.loadGameId();
     this.profileService.getCurrentUser().subscribe({
       next: () => {
-        // TODO EVENTUELL this.joinGame() in das next und andere
         this.gameService.getGame(this.gameId).subscribe({
           next: () => {
           },
@@ -116,7 +115,6 @@ export class GameComponent implements OnInit, OnDestroy {
       this.gameService.gameDataSubject.subscribe((data) => {
 
         this.currentPlayerId = data.currentPlayer;
-
 
         // Spiel-Daten im LocalStorage speichern
         const gameData = {

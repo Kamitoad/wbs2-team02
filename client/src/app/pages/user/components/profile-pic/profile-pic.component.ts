@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgIf } from "@angular/common";
-import { EditProfilePicService } from "../../services/editProfilePic/edit-profile-pic.service";
+import { EditProfilePicService } from "../../services/edit-profile-pic.service";
 
 @Component({
   selector: 'app-profile-pic',

@@ -150,7 +150,6 @@ export class GameController {
             await this.gameService.resignGame(gameId, resignDto.playerId);
             const game = await this.gameService.getGameById(gameId);
 
-            // Todo -> muss in gameService
             // WebSocket-Event senden, nachdem der Spieler zurückgetreten ist
             this.gameGateway.server.to(`game_${gameId}`).emit('playerResigned', { playerId: resignDto.playerId })
 
