@@ -1,15 +1,22 @@
-<div class="modal">
-  @if (isGameFinished) {
-    <div class="modal-content">
-      <h2>Spielergebnis</h2>
-      <p>{{ resultMessage }}</p>
-      <button (click)="startNewGame()">Neues Spiel suchen</button>
-      <button (click)="endGame()">Zurück zum Profil</button>
+@if (isGameFinished) {
+  <div class="modal" id="GameFinishedModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Spielergebnis</h4>
+        </div>
+        <div class="modal-body">
+          <p>{{ resultMessage }}</p>
+          <button (click)="startNewGame()">Neues Spiel suchen</button>
+          <button (click)="endGame()">Zurück zum Profil</button>
+        </div>
+      </div>
     </div>
-  }
-</div>
+  </div>
+}
 
-@if(isVisible) {
+<!--
+@if (isVisible) {
   <div class="modal-content">
     <h2>Spielergebnis</h2>
     <p>{{ resultMessage }}</p>
@@ -17,3 +24,4 @@
     <button (click)="endGame()">Zurück zum Profil</button>
   </div>
 }
+-->

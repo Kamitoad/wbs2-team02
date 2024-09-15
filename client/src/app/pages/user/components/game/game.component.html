@@ -32,7 +32,7 @@
           [symbol]="opponent?.symbol"
           [elo]="opponent?.elo"
           [profilePic]="opponent?.profilePic"
-          [currentPlayerId]="currentPlayerId">
+          [currentPlayerId]="opponent?.currentPlayerId">
         </app-playerRight>
       </div>
     </div>
@@ -53,3 +53,5 @@
     </div>
   }
 </div>
+
+<app-modal></app-modal>

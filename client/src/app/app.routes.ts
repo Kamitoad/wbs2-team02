@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import {Routes} from '@angular/router';
 import {LoginComponent} from "./pages/user/components/login/login.component";
 import {RegisterComponent} from "./pages/user/components/register/register.component";
 import {ProfileComponent} from "./pages/user/components/profile/profile.component";
@@ -7,7 +7,7 @@ import {CurrentGamesComponent} from "./pages/admin/components/gamedata/current-g
 import {GamedataComponent} from "./pages/admin/components/gamedata/gamedata.component";
 import {QueueOverviewComponent} from "./pages/admin/components/gamedata/queue-overview/queue-overview.component";
 import {QueueComponent} from "./pages/user/components/queue/queue.component";
-import { GameComponent } from './pages/user/components/game/game.component';
+import {GameComponent} from './pages/user/components/game/game.component';
 
 export const routes: Routes = [
 
@@ -24,18 +24,19 @@ export const routes: Routes = [
   */
 
 
-  { path: 'login', component: LoginComponent},
-  { path: '', component: LoginComponent},
+  {path: 'login', component: LoginComponent},
+  {path: '', component: LoginComponent},
 
-  { path: 'register', component: RegisterComponent},
-  { path: 'profile', component: ProfileComponent},
-  { path: 'profil', redirectTo: 'profile', pathMatch: 'full'},
-  { path: 'queue', component: QueueComponent },
-  { path: 'admin/editUser', component: UserdataComponent },
-  { path: 'game', component: GameComponent },
-  { path: 'game/:gameId', component: GameComponent },
-  { path: 'admin/user', component: UserdataComponent },
-  { path: 'admin/game', component: GamedataComponent,
+  {path: 'register', component: RegisterComponent},
+  {path: 'profile', component: ProfileComponent},
+  {path: 'profil', redirectTo: 'profile', pathMatch: 'full'},
+  {path: 'queue', component: QueueComponent},
+  {path: 'admin/editUser', component: UserdataComponent},
+  {path: 'game', component: GameComponent},
+  {path: 'game/:gameId', component: GameComponent},
+  {path: 'admin/user', component: UserdataComponent},
+  {
+    path: 'admin/game', component: GamedataComponent,
     children: [
       {
         path: 'currentgames', component: CurrentGamesComponent,
@@ -46,6 +47,6 @@ export const routes: Routes = [
     ]
   },
 
-  { path: 'admin', redirectTo: 'admin/user', pathMatch: 'full' },
-  { path: '**', redirectTo: 'login', pathMatch: 'full'},
+  {path: 'admin', redirectTo: 'admin/user', pathMatch: 'full'},
+  {path: '**', redirectTo: 'login', pathMatch: 'full'},
 ];

@@ -1,11 +1,11 @@
 <div class="player-info">
   <div class="row">
     <div class="col-6 mx-auto">
-      <p class="gameSymbol">{{ symbol || 'O' }}</p>
+      <p class="gameSymbol">{{ symbol }}</p>
     </div>
     <div class="col-6 mx-auto">
-      @if (currentPlayerId !== user?.userId) {
-      <app-profile-pic class="justify-content-end border-warning"></app-profile-pic>
+      @if (currentPlayerId === opponent?.userId) {
+      <app-profile-pic class="justify-content-end border-warning" ></app-profile-pic>
       } @else {
         <app-profile-pic class="justify-content-end"></app-profile-pic>
       }

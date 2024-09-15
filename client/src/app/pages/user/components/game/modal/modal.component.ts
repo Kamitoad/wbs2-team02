@@ -18,12 +18,12 @@ export class ModalComponent {
   constructor(private router: Router) {
   }
   startNewGame() {
-    this.newGame.emit();
+ //   this.newGame.emit();
     this.router.navigate(['/queue']); // Navigate to the queue component
   }
 
   endGame() {
-    this.end.emit();
+    // this.end.emit();
     this.router.navigate(['/profile']); // Navigate to the profile page
   }
 
@@ -31,6 +31,7 @@ export class ModalComponent {
   isVisible: boolean = false;
 
   open(): void {
+
     this.isVisible = true;
   }
 }

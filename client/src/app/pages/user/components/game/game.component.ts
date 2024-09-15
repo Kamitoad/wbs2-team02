@@ -78,12 +78,17 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    //window.removeEventListener('beforeunload', this.onUnloadHandler);
-
-    //this.gameService.resign(this.gameId, this.user.userId);
+    // window.removeEventListener('beforeunload', this.onUnloadHandler);
+    // this.gameService.resign(this.gameId, this.user.userId);
 
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
+    }
+  }
+
+  ngAfterViewInit() {
+    if (!this.modal) {
+      console.error('Modal-Instanz wurde nicht gefunden');
     }
   }
 
@@ -177,6 +182,7 @@ export class GameComponent implements OnInit, OnDestroy {
     });
 
     // Listener für das Starten eines neuen Spiels
+    /*
     this.modal.newGame.subscribe(() => {
       this.router.navigate(['/queue']);
     });
@@ -185,7 +191,7 @@ export class GameComponent implements OnInit, OnDestroy {
     this.modal.end.subscribe(() => {
       this.router.navigate(['/profile']);
     });
-
+    */
   }
 
   onUnloadHandler = (event: BeforeUnloadEvent) => {
