@@ -44,7 +44,7 @@ export class SeedService {
             user2.firstName = 'Chasan';
             user2.lastName = 'Moustafa';
             user2.role = RoleEnum.User;
-            user2.elo = 1100;
+            user2.elo = 1200;
             user2.profilePic = "kamiPb.jpg";
             user2.inQueue = false;
             user2.totalWins = 30;
