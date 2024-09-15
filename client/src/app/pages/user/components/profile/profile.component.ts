@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 import {NgClass} from "@angular/common";
 import {UserdataCardComponent} from "../../../admin/components/userdata/userdata-card/userdata-card.component";
 import {AuthService} from "../../../../shared/services/auth/auth.service";
-import {QueueButtonComponent} from "../queue-button/queue-button.component";
-import {EditPasswordProfilepicComponent} from "../edit-password-profilpic/edit-password-profilepic.component";
+import {QueueButtonComponent} from "./queue-button/queue-button.component";
+import {EditPasswordProfilepicComponent} from "./edit-password-profilpic/edit-password-profilepic.component";
 import {ProfilePicComponent} from "../profile-pic/profile-pic.component";
 
 @Component({

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {Router, RouterLink} from "@angular/router";
-import {QueueService} from "../../services/queue.service";
+import {QueueService} from "../../../services/queue.service";
 
 @Component({
   selector: 'app-queue-button',

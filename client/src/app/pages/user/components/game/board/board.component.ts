@@ -1,6 +1,6 @@
 import {Component, Input, OnInit, EventEmitter, Output} from "@angular/core";
 import {GameService} from "../../../services/game.service";
-import {SquareComponent} from "../square/square.component";
+import {SquareComponent} from "./square/square.component";
 import {CommonModule} from "@angular/common";
 import {GameComponent} from "../game.component";
 
@@ -98,7 +98,6 @@ export class BoardComponent implements OnInit {
     return row >= 0 && row < this.board.length && col >= 0 && col < this.board[row].length;
   }
 
-  //TODO: Switch between status in HTML: "Your Turn" and "Opponents Turn"
   /*
   switchPlayer() {
     const gameData = JSON.parse(localStorage.getItem('gameData')!);
