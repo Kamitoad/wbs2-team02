@@ -27,7 +27,7 @@ export class AuthService {
         newUser.firstName = createUserDto.firstName;
         newUser.lastName = createUserDto.lastName;
         newUser.role = RoleEnum.User;
-        newUser.elo = 1000
+        newUser.elo = 1000;
         newUser.profilePic = null;
         newUser.inQueue = false;
         newUser.totalWins = 0;

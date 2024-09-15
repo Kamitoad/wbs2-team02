@@ -64,10 +64,6 @@ export class GameService {
     });
 
     this.socket.on('gameState', (gameData: any) => {
-      console.log(`Game state updated:`, gameData);
-      if (gameData.players) {
-        console.log('Players:', gameData.players);  // Prüfe, ob die Spielerinformationen korrekt sind
-      }
       // Verarbeite die neuen Spielfelddaten
       this.moveSubject.next(gameData);
       this.gameDataSubject.next(gameData); // Game-Daten für andere Komponenten bereitstellen

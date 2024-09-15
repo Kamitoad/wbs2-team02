@@ -21,7 +21,6 @@ export class QueueButtonComponent {
 
 
   tryJoinQueue() {
-    console.log("Test")
     this.queueService.checkIfInGame().subscribe({
       next: (res) => {
         if (res.ok) {

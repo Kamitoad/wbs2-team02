@@ -190,35 +190,4 @@ export class QueueController {
             }
         }
     }
-
-    // May be not needed, time could be calculated on clients side
-    /*
-    @ApiOkResponse({
-        type: ReadQueueDurationDto,
-        description: 'Wartezeit vom User wird angezeigt'
-    })
-    @ApiNotFoundResponse({
-        type: ErrorDto,
-        description: 'Benutzer nicht gefunden'
-    })
-    @ApiInternalServerErrorResponse({
-        type: ErrorDto,
-        description: 'Fehler beim Laden der Wartezeit'
-    })
-    @Get()
-    @UseGuards(IsLoggedInGuard)
-    async getQueueTime(
-        @Session() session: SessionData,
-    ): Promise<ReadQueueDurationDto> {
-        try {
-            const queueDuration = await this.queueService.getUserQueueDuration(session.currentUser)
-            return new ReadQueueDurationDto(queueDuration);
-        } catch (error) {
-            if (error instanceof NotFoundException) {
-                throw new NotFoundException(error.message);
-            } else if (error instanceof InternalServerErrorException) {
-                throw new InternalServerErrorException("Fehler beim auslesen der Queuedauer");
-            }
-        }
-    }*/
 }

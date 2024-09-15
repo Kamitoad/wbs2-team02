@@ -139,7 +139,7 @@ export class GameController {
     /*
     // Route für das Aufgeben
     @ApiOperation({ summary: 'Benutzer gibt in einem Spiel auf, Gegner gewinnt' })
-    @Post(':gameId/resign')
+    @Patch(':gameId/resign')
     @Header('Content-Type', 'application/json')
     async resignGame(
         @Param('gameId') gameId: number,

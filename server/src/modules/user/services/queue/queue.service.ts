@@ -63,7 +63,7 @@ export class QueueService {
             newGame.player1 = user;  // Vollständiges User-Objekt zuweisen
             newGame.player2 = opponent;  // Vollständiges User-Objekt zuweisen
 
-            // Set the first playerLeft to move
+            // Set the first player to move
             const randomNum = Math.random()
             if (randomNum < 0.5) {
                 newGame.currentPlayer = user.userId
@@ -112,7 +112,6 @@ export class QueueService {
 
         const ongoingGame = await this.gameRepository.findOne({
             where: [
-                //TODO Boolean number fix
                 { player1: { userId }, hasEnded: false },
                 { player2: { userId }, hasEnded: false }
             ]

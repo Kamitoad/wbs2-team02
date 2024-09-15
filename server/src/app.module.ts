@@ -1,4 +1,4 @@
-import {Module} from '@nestjs/common';
+import {Module, OnModuleInit} from '@nestjs/common';
 import {AppController} from './app.controller';
 import {AppService} from './app.service';
 import {TypeOrmModule} from '@nestjs/typeorm';
@@ -22,6 +22,7 @@ import {UserService} from "./modules/user/services/user.service";
 import {GameController} from './modules/user/controllers/game/game.controller';
 import {GameService} from './modules/user/services/game/game.service';
 import {GameGateway} from './modules/user/gateways/game/game.gateway';
+import {SeedService} from "./database/seed-service/seed.service";
 
 
 @Module({
@@ -58,6 +59,13 @@ import {GameGateway} from './modules/user/gateways/game/game.gateway';
         QueueGateway,
     GameService,
     GameGateway,
+        SeedService,
     ],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit {
+    constructor(private readonly seedService: SeedService) {}
+
+    async onModuleInit() {
+        await this.seedService.seed();
+    }
+}

@@ -56,10 +56,8 @@ export class QueueComponent implements OnDestroy, OnInit {
         this.user = savedUser ? JSON.parse(savedUser) : null;
         this.queueService.checkIfInGame().subscribe({
           next: (res) => {
-            console.log(res)
             if (res.ok) {
               this.joinQueue();
-
             } else {
               this.router.navigate(['profile']);
             }

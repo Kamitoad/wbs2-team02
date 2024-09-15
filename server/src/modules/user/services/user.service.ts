@@ -23,7 +23,7 @@ export class UserService {
 
     // checks first, if the old password is the same with the one in the database
     // then patches the new password
-    async editPassword(editPasswordDTO: EditPasswordDto, userID: number): Promise<User> {
+    async editPassword(editPasswordDTO: EditPasswordDto, userID: number): Promise<void> {
         const user: User | null = await this.authService.getUserByUserId(userID);
         const isPasswordValid = await bcrypt.compare(editPasswordDTO.oldPassword, user.password);
         if (!isPasswordValid) {
@@ -31,7 +31,6 @@ export class UserService {
         }
         user.password = await bcrypt.hash(editPasswordDTO.newPassword, 10);
         await this.userRepository.save(user);
-        return user;
     }
 
     // sets the profilePic to null

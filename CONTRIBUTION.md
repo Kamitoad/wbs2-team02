@@ -68,3 +68,11 @@ in the "client" folder to run this command):
     ```
     localhost:3000/api
     ```
+  
+## Database
+
+- At the initial start of the server (and if the Game or User entities are empty), a new database / new data is created.
+Data and credentials of these users and games can be seen in:
+    ```
+    server\src\database\seed-service\seed.service.ts
+    ```

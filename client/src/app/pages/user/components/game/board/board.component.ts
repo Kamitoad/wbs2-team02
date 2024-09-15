@@ -54,8 +54,6 @@ export class BoardComponent implements OnInit {
     const gameDataString = localStorage.getItem('gameData');
     const userDataString = localStorage.getItem('user');
 
-    console.log("Klick geschehen bei: ", rowIndex, ", ", colIndex);
-
     // Überprüfen, ob gameData im localStorage existiert
     if (!gameDataString) {
       console.error('Game data not found in localStorage.');
@@ -68,7 +66,6 @@ export class BoardComponent implements OnInit {
     }
     const userData = JSON.parse(userDataString);
 
-
     this.gameService.emitMove(this.gameId, rowIndex, colIndex, userData.userId);
     // this.switchPlayer(); // Spieler nach dem Zug wechseln
 
@@ -77,7 +74,6 @@ export class BoardComponent implements OnInit {
     this.playerSwitched.emit();
 
     this.gameService.gameDataSubject.subscribe((data) => {
-      console.log(data)
       localStorage.setItem('gameData', JSON.stringify(data));
 
       this.putSymbolsInFields(data)

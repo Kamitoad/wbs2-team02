@@ -54,9 +54,10 @@ export class GameComponent implements OnInit, OnDestroy {
       next: () => {
         // TODO EVENTUELL this.joinGame() in das next und andere
         this.gameService.getGame(this.gameId).subscribe({
-          next: () => {},
+          next: (data) => {
+            this.user.symbol = data.player1
+          },
           error: (err) => {
-            console.log(err.error.message)
             this.router.navigate(['profile']);
           }
         })
@@ -126,6 +127,7 @@ export class GameComponent implements OnInit, OnDestroy {
         }
         // Player 1 of Game is 'X', Player 2 is 'O'
         gameData.player1UserId == this.user.userId ? this.user.symbol = 'X' : this.user.symbol = 'O'
+        console.log(this.user)
       });
     }
   }

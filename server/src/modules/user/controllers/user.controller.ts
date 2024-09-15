@@ -36,6 +36,7 @@ import {ProfilePicResponseDto} from "../dtos/editUser/ProfilePicResponseDto";
 import { Response } from 'express';
 import {ErrorDto} from "../../../common/dtos/auth/ErrorDto";
 import {FinishedMatchDto} from "../dtos/game/FinishedMatchDto";
+import {OkDto} from "../../../common/dtos/OkDto";
 
 @ApiTags('User - Data')
 @ApiBearerAuth()
@@ -47,12 +48,14 @@ export class UserController {
         private authService: AuthService
     ) {}
 
-    @UseGuards(IsLoggedInGuard)
-    @Patch('password')
     @ApiOperation({ summary: 'Ändert das Passwort des aktuellen Benutzers' })
     @ApiOkResponse({
-        type: ReadUserDto,
+        type: OkDto,
         description: 'Das Passwort wurde erfolgreich geändert',
+        example: {
+            "ok": true,
+            "message": "Das Passwort wurde erfolgreich geändert"
+        }
     })
     @ApiBadRequestResponse({
         type: ErrorDto,
@@ -72,14 +75,14 @@ export class UserController {
             "message": "Fehler bei der Änderung des Passwortes"
         }
     })
+    @Patch('password')
     async editPassword(
         @Session() session: SessionData,
         @Body() body: EditPasswordDto,
-    ): Promise<ReadUserDto> {
+    ): Promise<OkDto> {
         try {
-            const user: number = session.currentUser;
-            const editPassword = await this.userService.editPassword(body, user);
-            return new ReadUserDto(editPassword);
+            await this.userService.editPassword(body, session.currentUser);
+            return new OkDto(true, 'Das Passwort wurde erfolgreich geändert');
         } catch (error) {
             if (error instanceof BadRequestException) {
                 throw new BadRequestException(error.message);
@@ -275,7 +278,6 @@ export class UserController {
     }
 
 
-    @UseGuards(IsLoggedInGuard)
     @Get('profilepic/:profilepic')
     @ApiOperation({ summary: 'Lädt ein Profilbild herunter' })
     @ApiParam({
@@ -345,7 +347,7 @@ export class UserController {
     @Get('current')
     async getCurrentUser(
         @Session() session: SessionData,
-    ) {
+    ): Promise<ReadUserDto> {
         try {
             return new ReadUserDto(await this.userService.getCurrentUser(session.currentUser));
         } catch (error) {
