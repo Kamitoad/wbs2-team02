@@ -7,6 +7,7 @@ import { Router } from "@angular/router";
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.css']
 })
+
 export class ModalComponent {
   @Input() isGameFinished: boolean = false;
   @Input() resultMessage: 'WIN' | 'LOSS' | 'DRAW' | string = '';  // Statt 'result'
