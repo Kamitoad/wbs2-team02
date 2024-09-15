@@ -29,7 +29,6 @@ export class GameComponent implements OnInit, OnDestroy {
   opponent: any = null;
   gameId!: number;
   currentPlayerId: number | null = null;
-  currentPlayer: 'X' | 'O' = 'X';
   gameOver: boolean = false;
 
   // MODAL
@@ -56,7 +55,6 @@ export class GameComponent implements OnInit, OnDestroy {
     this.loadGameId();
     this.profileService.getCurrentUser().subscribe({
       next: () => {
-        // TODO EVENTUELL this.joinGame() in das next und andere
         this.gameService.getGame(this.gameId).subscribe({
           next: () => {
           },
@@ -91,12 +89,6 @@ export class GameComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngAfterViewInit() {
-    if (!this.modal) {
-      console.error('Modal-Instanz wurde nicht gefunden');
-    }
-  }
-
   // Lade Benutzerinformationen aus LocalStorage
   private loadUser(): void {
     const savedUser = localStorage.getItem('user');
@@ -122,19 +114,10 @@ export class GameComponent implements OnInit, OnDestroy {
           player1UserId: data.game.player1.userId,
           player2UserId: data.game.player2.userId
         };
-        localStorage.setItem('gameData', JSON.stringify(data));
-
-        const savedGameData = localStorage.getItem('gameData');
-        if (!savedGameData) {
-          console.error('Spielinformationen nicht gefunden');
-          return;
-        }
-        // Player 1 of Game is 'X', Player 2 is 'O'
-        gameData.player1UserId == this.user.userId ? this.user.symbol = 'X' : this.user.symbol = 'O'
-      });
+        localStorage.setItem('gameData', JSON.stringify(gameData));
+      })
     }
   }
-
   // WebSocket-Listener einrichten
   private setupWebSocketListeners(): void {
     this.gameService.joinedGameSubject.subscribe(gameData => {
@@ -155,6 +138,8 @@ export class GameComponent implements OnInit, OnDestroy {
       this.opponent = opponent;
       console.log('AUSLESEN OPPONENT', this.opponent);
     });
+    this.user.playerSymbol = 'X';
+    this.opponent.playerSymbol = 'O';
 
     // Weitere WebSocket-Listener
     this.gameService.winnerSubject.subscribe(winnerData => {
@@ -178,8 +163,11 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   // OPEN MODAL METHODE
-  showGameOverModal(): void {
-    if (this.modal) {
+  showGameOverModal()
+    :
+    void {
+    if (this.modal
+    ) {
       console.log('Modal wird geöffnet');
       this.modal.open(); // Modal-Fenster öffnen
     } else {
@@ -219,6 +207,7 @@ export class GameComponent implements OnInit, OnDestroy {
     console.log('Neuer aktueller Spieler nach dem Wechsel:', this.currentPlayerId);
   }
 */
+
 
   /*
   // Neues Spiel starten

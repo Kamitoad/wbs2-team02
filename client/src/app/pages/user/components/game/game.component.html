@@ -7,17 +7,14 @@
   [resultMessage]="resultMessage">
 </app-modal>
 
-
 <div class="container text-center game-container">
   <div class="row">
     <!-- Linke Spielerinfo -->
     <div class="col">
       <div class="player-info left">
         <app-playerLeft
-          [username]="user?.userName"
-          [elo]="user?.elo"
-          [profilePic]="user?.profilePic"
-          [symbol]="user?.symbol">
+          [user]="user"
+        >
         </app-playerLeft>
       </div>
     </div>
@@ -34,28 +31,25 @@
     <div class="col">
       <div class="player-info right">
         <app-playerRight
-          [userName]="opponent.userName"
-          [symbol]="opponent.symbol"
-          [elo]="opponent.elo"
-          [profilePic]="opponent.profilePic"
-        >
+          [opponent]="opponent">
         </app-playerRight>
       </div>
     </div>
   </div>
 </div>
 <div class="text-center mt-4">
-  @if (currentPlayerId === user?.userId) {
+  @if (currentPlayerId === user?.userId || currentPlayerId !== opponent?.userId) {
     <div class="row">
       <div class="col">
-        <h4 class="text-light InfoZug">Du bist dran</h4>
+        <h4 class="text-light InfoZug">Du bist dran ({{user.playerSymbol}})</h4>
       </div>
     </div>
-  } @else {
+  } @else if (currentPlayerId !== user?.userId || currentPlayerId === opponent?.userId) {
     <div class="row">
       <div class="col">
-        <h4 class="text-light InfoZug">Du bist nicht dran!</h4>
+        <h4 class="text-light InfoZug">Du bist nicht dran! ({{opponent.playerSymbol}})</h4>
       </div>
     </div>
   }
 </div>
+
