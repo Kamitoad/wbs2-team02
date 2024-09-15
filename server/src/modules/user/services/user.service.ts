@@ -46,7 +46,7 @@ export class UserService {
     async updateProfilePic(userId: number, file: Express.Multer.File): Promise<User> {
         const user: User | null = await this.authService.getUserByUserId(userId);
         if (!user) {
-            throw new BadRequestException("Benutzer nicht gefunden");
+            throw new NotFoundException("Benutzer nicht gefunden");
         }
         if (!file) {
             throw new BadRequestException('Keine Datei hochgeladen');
@@ -80,7 +80,7 @@ export class UserService {
             select:['userName','userId','elo','email','firstName','lastName','role','profilePic','totalWins','totalTies','totalLosses']
             });
         if (!user) {
-            throw new NotFoundException(`User with ID ${userId} not found.`);
+            throw new NotFoundException(`Benutzer mit der ID ${userId} nicht gefunden`);
         }
         return user;
     }
@@ -89,7 +89,7 @@ export class UserService {
     async getUserMatches(userId: number): Promise<any[]> {
         const user = await this.userRepository.findOne({ where: { userId } });
         if (!user) {
-            throw new NotFoundException(`User with ID ${userId} not found.`);
+            throw new NotFoundException(`Benutzer mit der ID ${userId} nicht gefunden`);
         }
 
         return await this.gameRepository.find({

@@ -37,19 +37,34 @@ export class AuthController {
     @ApiOperation({ summary: 'Registriert den Benutzer mit den angegebenen Daten' })
     @ApiCreatedResponse({
         type: ReadUserDto,
-        description: 'User erfolgreich registriert'
+        description: 'User erfolgreich registriert',
     })
     @ApiBadRequestResponse({
         type: ErrorDto,
-        description: 'Validierung fehlgeschlagen'
+        description: 'Validierung fehlgeschlagen',
+        example: {
+            "statusCode": 400,
+            "error": "Bad Request",
+            "message": "Validierung fehlgeschlagen"
+        }
     })
     @ApiConflictResponse({
         type: ErrorDto,
-        description: 'User existiert bereits mit dieser Email oder Usernamen'
+        description: 'User existiert bereits mit dieser Email oder Usernamen',
+        example: {
+            "statusCode": 409,
+            "error": "Conflict",
+            "message": "User existiert bereits mit dieser Email oder Usernamen"
+        }
     })
     @ApiInternalServerErrorResponse({
         type: ErrorDto,
-        description: 'Fehler bei der Registrierung'
+        description: 'Fehler bei der Registrierung',
+        example: {
+            "statusCode": 500,
+            "error": "Internal Server Error",
+            "message": "Fehler bei der Registrierung"
+        }
     })
     @Post('register')
     async register(
@@ -79,11 +94,21 @@ export class AuthController {
     })
     @ApiBadRequestResponse({
         type: ErrorDto,
-        description: 'Email oder Passwort inkorrekt'
+        description: 'Email oder Passwort inkorrekt',
+        example: {
+            "statusCode": 400,
+            "error": "Bad Request",
+            "message": "Email oder Passwort inkorrekt"
+        }
     })
     @ApiInternalServerErrorResponse({
         type: ErrorDto,
-        description: 'Fehler bei der Anmeldung'
+        description: 'Fehler bei der Anmeldung',
+        example: {
+            "statusCode": 500,
+            "error": "Internal Server Error",
+            "message": "Fehler bei der Anmeldung"
+        }
     })
     @Post('login')
     @HttpCode(200)
@@ -114,7 +139,21 @@ export class AuthController {
     })
     @ApiForbiddenResponse({
         type: ErrorDto,
-        description: 'Benutzer ist nicht eingeloggt oder Sitzung ist abgelaufen',
+        description: 'Error: Forbidden',
+        example: {
+            "message": "Forbidden resource",
+            "error": "Forbidden",
+            "statusCode": 403
+        }
+    })
+    @ApiInternalServerErrorResponse({
+        type: ErrorDto,
+        description: 'Fehler beim Ausloggen des Benutzers',
+        example: {
+            "message": "Fehler beim Ausloggen des Benutzers",
+            "error": "Internal Server Error",
+            "statusCode": 500
+        }
     })
     @Post('logout')
     @HttpCode(200)
@@ -130,7 +169,7 @@ export class AuthController {
             } else if (error instanceof BadRequestException) {
                 throw new BadRequestException(error.message);
             } else if (error instanceof InternalServerErrorException) {
-                throw new InternalServerErrorException("Fehler beim Betreten der Queue");
+                throw new InternalServerErrorException("Fehler beim Ausloggen des Benutzers");
             }
         }
     }

@@ -2,7 +2,7 @@ import {ApiProperty} from "@nestjs/swagger";
 import {FieldStateEnum} from "../../../../database/enums/FieldStateEnum";
 import {Game} from "../../../../database/Game";
 
-export class GameDto {
+export class FinishedMatchDto {
 
     @ApiProperty({example: 1})
     gameId: number;
@@ -11,10 +11,10 @@ export class GameDto {
     hasEnded: boolean;
 
     @ApiProperty({example: 1})
-    player1UserId: number;
+    player1: { userName: string };
 
     @ApiProperty({example: 2})
-    player2UserId: number;
+    player2: { userName: string };
 
     @ApiProperty({example: 2})
     field0_0: FieldStateEnum;
@@ -64,8 +64,8 @@ export class GameDto {
     constructor(game: Game) {
         this.gameId = game.gameId;
         this.hasEnded = game.hasEnded;
-        this.player1UserId = game.player1.userId;
-        this.player2UserId = game.player2.userId;
+        this.player1 = { userName: game.player1.userName };
+        this.player2 = { userName: game.player2.userName };
         this.field0_0 = game.field0_0;
         this.field0_1 = game.field0_1;
         this.field0_2 = game.field0_2;

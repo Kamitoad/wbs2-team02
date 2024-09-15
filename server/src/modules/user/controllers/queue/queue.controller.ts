@@ -24,6 +24,7 @@ import {User} from "../../../../database/User";
 @ApiTags('User - Queue')
 @Controller('queue')
 export class QueueController {
+
     constructor(
         public readonly queueService: QueueService
     ) {
@@ -49,17 +50,32 @@ export class QueueController {
             "gameId": 1
         }
     })
-    @ApiNotFoundResponse({
-        type: ErrorDto,
-        description: 'Benutzer nicht gefunden'
-    })
     @ApiBadRequestResponse({
         type: ErrorDto,
-        description: 'Nutzer bereits in der Queue'
+        description: 'Nutzer bereits in der Queue',
+        example: {
+            "statusCode": 400,
+            "error": "Bad Request",
+            "message": "Nutzer bereits in der Queue"
+        }
+    })
+    @ApiNotFoundResponse({
+        type: ErrorDto,
+        description: 'Benutzer nicht gefunden',
+        example: {
+            "statusCode": 404,
+            "error": "Not Found",
+            "message": "Benutzer nicht gefunden"
+        }
     })
     @ApiInternalServerErrorResponse({
         type: ErrorDto,
-        description: 'Fehler beim Betreten der Queue'
+        description: 'Fehler beim Betreten der Queue',
+        example: {
+            "statusCode": 500,
+            "error": "Internal Server Error",
+            "message": "Fehler beim Betreten der Queue"
+        }
     })
     @Patch('join')
     @UseGuards(IsLoggedInGuard)
@@ -81,35 +97,29 @@ export class QueueController {
 
     @ApiOperation({ summary: 'Überprüft, ob sich der Benutzer in einem Game befindet' })
     @ApiOkResponse({
-        description: 'Nutzer erfolgreich der Queue beigetreten und Match gefunden ' +
-            '(Wenn kein Match gefunden: opponent: null, gameId: null)',
-        type: User,
+        description: 'Gibt ein "ok: true" zurück, wenn der Nutzer der Queue beitreten darf, sonst "ok: false"',
         example: {
-            "opponent": {
-                "userName": "MaxUserman",
-                "userId": 1,
-                "elo": 1000,
-                "profilePic": null
-            },
-            "currentUser": {
-                "userName": "Kamitoad",
-                "elo": 1000,
-                "profilePic": null
-            },
-            "gameId": 1
-        }
+            "ok": false,
+            "message": "Nutzer ist bereits in einem laufenden Spiel"
+        },
     })
     @ApiNotFoundResponse({
         type: ErrorDto,
-        description: 'Benutzer nicht gefunden'
-    })
-    @ApiBadRequestResponse({
-        type: ErrorDto,
-        description: 'Nutzer bereits in der Queue'
+        description: 'Benutzer nicht gefunden',
+        example: {
+            "statusCode": 404,
+            "error": "Not Found",
+            "message": "Benutzer nicht gefunden"
+        }
     })
     @ApiInternalServerErrorResponse({
         type: ErrorDto,
-        description: 'Fehler beim Betreten der Queue'
+        description: 'Fehler beim Betreten der Queue',
+        example: {
+            "statusCode": 500,
+            "error": "Internal Server Error",
+            "message": "Fehler beim Betreten der Queue"
+        }
     })
     @Get('checkIfInGame')
     @UseGuards(IsLoggedInGuard)
@@ -135,25 +145,41 @@ export class QueueController {
         type: OkDto,
         description: 'User hat erfolgreich die Queue verlassen'
     })
-    @ApiNotFoundResponse({
-        type: ErrorDto,
-        description: 'Benutzer nicht gefunden'
-    })
     @ApiBadRequestResponse({
         type: ErrorDto,
-        description: 'Nutzer bereits in der Queue'
+        description: 'Nutzer bereits in der Queue',
+        example: {
+            "statusCode": 400,
+            "error": "Bad Request",
+            "message": "Nutzer bereits in der Queue"
+        }
+    })
+    @ApiNotFoundResponse({
+        type: ErrorDto,
+        description: 'Benutzer nicht gefunden',
+        example: {
+            "statusCode": 404,
+            "error": "Not Found",
+            "message": "Benutzer nicht gefunden"
+        }
     })
     @ApiInternalServerErrorResponse({
         type: ErrorDto,
-        description: 'Fehler beim Verlassen der Queue'
+        description: 'Fehler beim Verlassen der Queue',
+        example: {
+            "statusCode": 500,
+            "error": "Internal Server Error",
+            "message": "Fehler beim Verlassen der Queue"
+        }
     })
     @Patch('leave')
     @UseGuards(IsLoggedInGuard)
     async leave(
         @Session() session: SessionData,
-    ): Promise<void> {
+    ): Promise<OkDto> {
         try {
-            await this.queueService.removeFromQueue(session.currentUser)
+            await this.queueService.removeFromQueue(session.currentUser);
+            return new OkDto(true, 'User erfolgreich aus der Queue entfernt')
         } catch (error) {
             if (error instanceof NotFoundException) {
                 throw new NotFoundException(error.message);

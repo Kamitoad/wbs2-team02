@@ -62,7 +62,7 @@ export class GameService {
 
         // Überprüfung, ob der aktuelle Spieler am Zug ist
         if (game.currentPlayer !== playerId) {
-            throw new BadRequestException('Du bist nicht an der Reihe.');
+            throw new BadRequestException('Du bist nicht an der Reihe');
         }
 
         const fieldKey = `field${move.x}_${move.y}` as keyof GameFields;
@@ -158,13 +158,11 @@ export class GameService {
             console.log('Gewinner:', winnerId);
             console.log('Verlierer:', loserId);
 
-            //TODO: Update changeElo in Game DB
             await this.updateEloForPlayers(winnerId, loserId, game);
             await this.updatePlayerStats(winnerId, loserId);
         } else {
             // Unentschieden: Elo für beide Spieler aktualisieren
             game.isTie = true;
-            //TODO: Update changeElo in Game DB
             await this.updateEloForTie(game.player1.userId, game.player2.userId, game);
             await this.updatePlayerStatsForTie(game.player1.userId, game.player2.userId);
         }

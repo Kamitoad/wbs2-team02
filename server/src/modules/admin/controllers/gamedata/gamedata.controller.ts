@@ -39,7 +39,7 @@ export class GamedataController {
                 "player2ProfilePic": null
             },
             {
-                "gameId": 19,
+                "gameId": 2,
                 "player1UserName": "FabFim",
                 "player1Elo": 950,
                 "player1ProfilePic": null,
@@ -51,7 +51,12 @@ export class GamedataController {
     })
     @ApiInternalServerErrorResponse({
         type: ErrorDto,
-        description: 'Fehler beim Laden der laufenden Spiele'
+        description: 'Fehler beim Laden laufender Spiele',
+        example: {
+            "statusCode": 500,
+            "error": "Internal Server Error",
+            "message": "Fehler beim Laden laufender Spiele"
+        }
     })
     @Get('allCurrentGames')
     async getAllCurrentGames(): Promise<ReadCurrentGamesDto[]> {
@@ -86,7 +91,12 @@ export class GamedataController {
     })
     @ApiInternalServerErrorResponse({
         type: ErrorDto,
-        description: 'Fehler beim Laden derzeitiger Nutzer in der Queue'
+        description: 'Fehler beim Laden derzetiger Nutzer in der Queue',
+        example: {
+            "statusCode": 500,
+            "error": "Internal Server Error",
+            "message": "Fehler beim Laden derzeitiger Nutzer in der Queue"
+        }
     })
     @Get('queue')
     async getAllUsersInQueue(): Promise<ReadQueueForAdminDto[]> {

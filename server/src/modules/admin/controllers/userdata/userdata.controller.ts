@@ -52,7 +52,12 @@ export class UserdataController {
     })
     @ApiInternalServerErrorResponse({
         type: ErrorDto,
-        description: 'Fehler beim Laden der User'
+        description: 'Fehler beim Laden der User',
+        example: {
+            "statusCode": 500,
+            "error": "Internal Server Error",
+            "message": "Fehler beim Laden der User"
+        }
     })
     @Get('allUsers')
     async getAllUsers(): Promise<ReadUserForAdminDto[]> {

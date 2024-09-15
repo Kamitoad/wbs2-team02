@@ -12,7 +12,16 @@ import {
     UseGuards,
     UseInterceptors
 } from '@nestjs/common';
-import {ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiResponse, ApiTags} from '@nestjs/swagger';
+import {
+    ApiBadRequestResponse,
+    ApiBearerAuth,
+    ApiBody,
+    ApiConsumes, ApiInternalServerErrorResponse, ApiNotFoundResponse,
+    ApiOkResponse,
+    ApiOperation,
+    ApiParam,
+    ApiTags
+} from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import {  join } from 'path';
@@ -25,8 +34,10 @@ import { AuthService } from '../../../common/services/auth/auth.service';
 import { UploadProfilePicDto} from "../dtos/editUser/UploadProfilePicDto";
 import {ProfilePicResponseDto} from "../dtos/editUser/ProfilePicResponseDto";
 import { Response } from 'express';
+import {ErrorDto} from "../../../common/dtos/auth/ErrorDto";
+import {FinishedMatchDto} from "../dtos/game/FinishedMatchDto";
 
-@ApiTags('user')
+@ApiTags('User - Data')
 @ApiBearerAuth()
 @UseGuards(IsLoggedInGuard)
 @Controller('user')
@@ -39,14 +50,28 @@ export class UserController {
     @UseGuards(IsLoggedInGuard)
     @Patch('password')
     @ApiOperation({ summary: 'Ändert das Passwort des aktuellen Benutzers' })
-    @ApiResponse({
-        status: 200,
-        description: 'Das Passwort wurde erfolgreich geändert.',
-        type: ReadUserDto
-
+    @ApiOkResponse({
+        type: ReadUserDto,
+        description: 'Das Passwort wurde erfolgreich geändert',
     })
-    @ApiResponse({ status: 400, description: 'Das alte Passwort ist nicht korrekt.' })
-    @ApiResponse({ status: 500, description: 'Interner Serverfehler' })
+    @ApiBadRequestResponse({
+        type: ErrorDto,
+        description: 'Das alte Passwort ist nicht korrekt',
+        example: {
+            "statusCode": 400,
+            "error": "Bad Request",
+            "message": "Das alte Passwort ist nicht korrekt"
+        }
+    })
+    @ApiInternalServerErrorResponse({
+        type: ErrorDto,
+        description: 'Fehler bei der Änderung des Passwortes',
+        example: {
+            "statusCode": 500,
+            "error": "Internal Server Error",
+            "message": "Fehler bei der Änderung des Passwortes"
+        }
+    })
     async editPassword(
         @Session() session: SessionData,
         @Body() body: EditPasswordDto,
@@ -61,7 +86,7 @@ export class UserController {
             } else if (error instanceof ConflictException) {
                 throw new ConflictException(error.message);
             } else {
-                throw new InternalServerErrorException("Fehler bei der Änderung");
+                throw new InternalServerErrorException("Fehler bei der Änderung des Passwortes");
             }
         }
     }
@@ -69,8 +94,19 @@ export class UserController {
     @UseGuards(IsLoggedInGuard)
     @Delete('profilepic')
     @ApiOperation({ summary: 'Löscht das Profilbild des aktuellen Benutzers' })
-    @ApiResponse({ status: 200, description: 'Das Profilbild wurde erfolgreich gelöscht.', type: ProfilePicResponseDto })
-    @ApiResponse({ status: 500, description: 'Interner Serverfehler' })
+    @ApiOkResponse({
+        type: ProfilePicResponseDto,
+        description: 'Das Profilbild wurde erfolgreich gelöscht',
+    })
+    @ApiInternalServerErrorResponse({
+        type: ErrorDto,
+        description: 'Fehler beim Löschen des Profilbildes',
+        example: {
+            "statusCode": 500,
+            "error": "Internal Server Error",
+            "message": "Fehler beim der Löschen des Profilbildes"
+        }
+    })
     async deleteProfilePic(
         @Session() session: SessionData,
     ): Promise<ProfilePicResponseDto> {
@@ -79,21 +115,40 @@ export class UserController {
             const userData = await this.userService.deleteProfilePic(user);
             return { newProfilePic: userData.profilePic };
         } catch (error) {
-            if (error instanceof BadRequestException) {
-                throw new BadRequestException(error.message);
-            } else if (error instanceof ConflictException) {
+            if (error instanceof ConflictException) {
                 throw new ConflictException(error.message);
             } else {
-                throw new InternalServerErrorException("Fehler bei der Änderung");
+                throw new InternalServerErrorException("Fehler beim Löschen des Profilbildes");
             }
         }
     }
 
+
     @UseGuards(IsLoggedInGuard)
     @Get('profilepic')
     @ApiOperation({ summary: 'Ruft das Profilbild des aktuellen Benutzers ab' })
-    @ApiResponse({ status: 200, description: 'Das Profilbild wurde erfolgreich abgerufen.', type: ProfilePicResponseDto })
-    @ApiResponse({ status: 500, description: 'Interner Serverfehler' })
+    @ApiOkResponse({
+        type: ProfilePicResponseDto,
+        description: 'Das Profilbild wurde erfolgreich abgerufen.'
+    })
+    @ApiNotFoundResponse({
+        type: ErrorDto,
+        description: 'User nicht gefunden',
+        example: {
+            "statusCode": 404,
+            "error": "Not Found",
+            "message": "User nicht gefunden"
+        }
+    })
+    @ApiInternalServerErrorResponse({
+        type: ErrorDto,
+        description: 'Fehler beim Abrufen des Profilbildes',
+        example: {
+            "statusCode": 500,
+            "error": "Internal Server Error",
+            "message": "Fehler beim Abrufen des Profilbildes"
+        }
+    })
     async getProfilePic(
         @Session() session: SessionData,
     ): Promise<ProfilePicResponseDto> {
@@ -102,21 +157,41 @@ export class UserController {
             const userData = await this.authService.getUserByUserId(user);
             return { newProfilePic: userData.profilePic };
         } catch (error) {
-            if (error instanceof BadRequestException) {
-                throw new BadRequestException(error.message);
-            } else if (error instanceof ConflictException) {
+            if (error instanceof NotFoundException) {
+                throw new NotFoundException(error.message);
+            } else  if (error instanceof ConflictException) {
                 throw new ConflictException(error.message);
             } else {
-                throw new InternalServerErrorException("Fehler bei der Änderung");
+                throw new InternalServerErrorException("Fehler beim Abrufen des Profilbildes");
             }
         }
     }
 
     @UseGuards(IsLoggedInGuard)
     @Get('profilepic/user/:userName')
-    @ApiOperation({ summary: 'Ruft das Profilbild des aktuellen Benutzers ab' })
-    @ApiResponse({ status: 200, description: 'Das Profilbild wurde erfolgreich abgerufen.', type: ProfilePicResponseDto })
-    @ApiResponse({ status: 500, description: 'Interner Serverfehler' })
+    @ApiOperation({ summary: 'Ruft das Profilbild des angegebenen Benutzers ab' })
+    @ApiOkResponse({
+        type: ProfilePicResponseDto,
+        description: 'Das Profilbild wurde erfolgreich abgerufen.'
+    })
+    @ApiNotFoundResponse({
+        type: ErrorDto,
+        description: 'User nicht gefunden',
+        example: {
+            "statusCode": 404,
+            "error": "Not Found",
+            "message": "User nicht gefunden"
+        }
+    })
+    @ApiInternalServerErrorResponse({
+        type: ErrorDto,
+        description: 'Fehler beim Abrufen des Profilbildes',
+        example: {
+            "statusCode": 500,
+            "error": "Internal Server Error",
+            "message": "Fehler beim Abrufen des Profilbildes"
+        }
+    })
     async getProfilePicOfUser(
         @Param('userName') userName: string,
     ): Promise<ProfilePicResponseDto> {
@@ -124,20 +199,19 @@ export class UserController {
             const userData = await this.authService.getUserByUserName(userName);
             return { newProfilePic: userData.profilePic };
         } catch (error) {
-            if (error instanceof BadRequestException) {
-                throw new BadRequestException(error.message);
+            if (error instanceof NotFoundException) {
+                throw new NotFoundException(error.message);
             } else if (error instanceof ConflictException) {
                 throw new ConflictException(error.message);
             } else {
-                throw new InternalServerErrorException("Fehler bei der Änderung");
+                throw new InternalServerErrorException("Fehler beim Abrufen des Profilbildes");
             }
         }
     }
 
     @UseGuards(IsLoggedInGuard)
     @Patch('profilepic')
-    // safes profilepic in server storage, only accepts pictures with 5Mb or less
-
+    // saves profilepic in server storage, only accepts pictures with 5Mb or less
     @UseInterceptors(FileInterceptor('file', {
         storage: diskStorage({
             destination: './uploads/profilePictures',
@@ -150,24 +224,53 @@ export class UserController {
     @ApiOperation({ summary: 'Lädt ein neues Profilbild für den aktuellen Benutzer hoch' })
     @ApiConsumes('multipart/form-data')
     @ApiBody({ type: UploadProfilePicDto })
-    @ApiResponse({ status: 200, description: 'Das Profilbild wurde erfolgreich hochgeladen.', type: ProfilePicResponseDto })
-    @ApiResponse({ status: 400, description: 'Ungültige Datei. Nur Bilddateien sind erlaubt.' })
-    @ApiResponse({ status: 500, description: 'Interner Serverfehler' })
+    @ApiOkResponse({
+        type: ProfilePicResponseDto,
+        description: 'Das Profilbild wurde erfolgreich hochgeladen'
+    })
+    @ApiBadRequestResponse({
+        type: ErrorDto,
+        description: 'Keine Datei oder keine Bilddatei hochgeladen',
+        example: {
+            "statusCode": 400,
+            "error": "Bad Request",
+            "message": "Keine Datei hochgeladen"
+        }
+    })
+    @ApiNotFoundResponse({
+        type: ErrorDto,
+        description: 'Benutzer nicht gefunden',
+        example: {
+            "statusCode": 404,
+            "error": "Not Found",
+            "message": "Benutzer nicht gefunden"
+        }
+    })
+    @ApiInternalServerErrorResponse({
+        type: ErrorDto,
+        description: 'Fehler beim Hochladen des Profilbildes',
+        example: {
+            "statusCode": 500,
+            "error": "Internal Server Error",
+            "message": "Fehler beim Hochladen des Profilbildes"
+        }
+    })
     async uploadProfilePic(
         @Session() session: SessionData,
         @UploadedFile() file: Express.Multer.File,
     ): Promise<ProfilePicResponseDto> {
         try {
-
-
             const userId: number = session.currentUser;
             const updatedUser = await this.userService.updateProfilePic(userId, file);
             return { newProfilePic: updatedUser.profilePic };
         } catch (error) {
             if (error instanceof BadRequestException) {
-                throw error;
+                throw new BadRequestException(error.message);
+            } else if (error instanceof NotFoundException) {
+                throw new NotFoundException(error.message);
+            } else {
+                throw new InternalServerErrorException("Fehler beim Hochladen des Profilbildes");
             }
-            throw new InternalServerErrorException("Fehler beim Hochladen des Profilbildes");
         }
     }
 
@@ -180,8 +283,28 @@ export class UserController {
         description: 'Der Name der Profilbilddatei',
         example: 'profile-pic.png',
     })
-    @ApiResponse({ status: 200, description: 'Das Profilbild wurde erfolgreich geladen.' })
-    @ApiResponse({ status: 400, description: 'Ungültige Anforderung oder Datei nicht gefunden.' })
+    @ApiOkResponse({
+        type: ProfilePicResponseDto,
+        description: 'Das Profilbild wurde erfolgreich geladen'
+    })
+    @ApiBadRequestResponse({
+        type: ErrorDto,
+        description: 'Ungültige Anforderung oder Datei nicht gefunden',
+        example: {
+            "statusCode": 400,
+            "error": "Bad Request",
+            "message": "Ungültige Anforderung oder Datei nicht gefunden"
+        }
+    })
+    @ApiInternalServerErrorResponse({
+        type: ErrorDto,
+        description: 'Fehler beim Runterladen des Profilbildes',
+        example: {
+            "statusCode": 500,
+            "error": "Internal Server Error",
+            "message": "Fehler beim Runterladen des Profilbildes"
+        }
+    })
     async getImage(@Param('profilepic') profilepic: string, @Res() res: Response) {
         try {
             const imgPath: string = join(
@@ -197,36 +320,78 @@ export class UserController {
     }
 
     @ApiOperation({ summary: 'Lädt die Benutzer-Daten des eingeloggten Benutzers' })
+    @ApiOkResponse({
+        type: ProfilePicResponseDto,
+        description: 'Nutzerdaten wurden erfolgreich geladen'
+    })
+    @ApiNotFoundResponse({
+        type: ErrorDto,
+        description: 'Benutzer mit der ID {userId} nicht gefunden',
+        example: {
+            "statusCode": 404,
+            "error": "Not Found",
+            "message": "Benutzer mit der ID 1 nicht gefunden"
+        }
+    })
+    @ApiInternalServerErrorResponse({
+        type: ErrorDto,
+        description: 'Fehler beim Laden des derzeitigen Benutzers',
+        example: {
+            "statusCode": 500,
+            "error": "Bad Request",
+            "message": "Fehler beim Laden des derzeitigen Benutzers"
+        }
+    })
     @Get('current')
     async getCurrentUser(
         @Session() session: SessionData,
     ) {
         try {
-            const userId = session.currentUser;
-            return await this.userService.getCurrentUser(userId);
+            return new ReadUserDto(await this.userService.getCurrentUser(session.currentUser));
         } catch (error) {
             if (error instanceof NotFoundException) {
                 throw new NotFoundException(error.message);
-            } else if (error instanceof BadRequestException) {
-                throw new BadRequestException(error.message);
             } else if (error instanceof InternalServerErrorException) {
-                throw new InternalServerErrorException("Fehler beim Betreten der Queue");
+                throw new InternalServerErrorException("Fehler beim Laden des derzeitigen Benutzers");
             }
         }
     }
 
     @ApiOperation({ summary: 'Lädt die gespielten Matches des Benutzers' })
+    @ApiOkResponse({
+        type: ProfilePicResponseDto,
+        description: 'Das Profilbild wurde erfolgreich geladen'
+    })
+    @ApiNotFoundResponse({
+        type: ErrorDto,
+        description: 'Benutzer mit der ID {userId} nicht gefunden',
+        example: {
+            "statusCode": 404,
+            "error": "Not Found",
+            "message": "Benutzer mit der ID 1 nicht gefunden"
+        }
+    })
+    @ApiInternalServerErrorResponse({
+        type: ErrorDto,
+        description: 'Fehler beim Laden der gespielten Matches des derzeitigen Benutzers',
+        example: {
+            "statusCode": 500,
+            "error": "Bad Request",
+            "message": "Fehler beim Laden der gespielten Matches des derzeitigen Benutzers"
+        }
+    })
     @Get('matches')
     async getUserMatches(
         @Session() session: SessionData,
-    ) {
+    ): Promise<FinishedMatchDto[]> {
         try {
-            return await this.userService.getUserMatches(session.currentUser);
+            const games = await this.userService.getUserMatches(session.currentUser);
+            return games.map(game => new FinishedMatchDto(game));
         } catch (error) {
             if (error instanceof NotFoundException) {
                 throw new NotFoundException(error.message);
             } else if (error instanceof InternalServerErrorException) {
-                throw new InternalServerErrorException("Fehler beim Betreten der Queue");
+                throw new InternalServerErrorException("Fehler beim Laden der gespielten Matches des derzeitigen Benutzers");
             }
         }
     }
