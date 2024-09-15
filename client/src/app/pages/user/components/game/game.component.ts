@@ -1,10 +1,11 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {GameService} from '../../services/game.service';
 import {PlayerLeftComponent} from './playerLeft/playerLeft.component';
 import {BoardComponent} from './board/board.component';
 import {ProfileService} from "../../services/profile.service";
 import {PlayerRightComponent} from "./playerRight/playerRight.component";
+import {ModalComponent} from './modal/modal.component';
 
 @Component({
   selector: 'app-game',
@@ -13,13 +14,14 @@ import {PlayerRightComponent} from "./playerRight/playerRight.component";
   imports: [
     PlayerLeftComponent,
     BoardComponent,
-    PlayerRightComponent
+    PlayerRightComponent,
+    ModalComponent
   ],
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit, OnDestroy {
   public profileService: ProfileService = inject(ProfileService);
-
+  @ViewChild(ModalComponent) modal!: ModalComponent; // Import Modal Component
 
   user: any = null;
   opponent: any = null;
@@ -36,6 +38,8 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.setupWebSocketListeners();
+    this.gameService.initializeBoard(this.gameId); // Initialisiere das Spielfeld// WebSocket-Listener einrichten
     this.profileService.getCurrentUser().subscribe({
       next: () => {
         // TODO EVENTUELL this.joinGame() in das next und andere
@@ -147,21 +151,62 @@ export class GameComponent implements OnInit, OnDestroy {
     this.gameService.winnerSubject.subscribe(winnerData => {
       console.log(`Winner: ${winnerData.winner}`);
       this.gameOver = true;
+      this.modal.isGameFinished = true;
+      this.modal.resultMessage = winnerData.winner === this.user.userId ? 'WIN' : 'LOSS';
+      this.showGameOverModal(); // Modal-Fenster anzeigen, wenn das Spiel vorbei ist
     });
+
+    // Listener für das Starten eines neuen Spiels
+    this.modal.newGame.subscribe(() => {
+      this.router.navigate(['/queue']);
+    });
+
+// Listener für das Beenden des Spiels
+    this.modal.end.subscribe(() => {
+      this.router.navigate(['/profile']);
+    });
+
   }
+
+// Methode zum aufrufen des Modal
+  showGameOverModal(): void {
+    if (this.modal) {
+      console.log('Modal wird geöffnet');
+      this.modal.open(); // Modal-Fenster öffnen
+    } else {
+      console.error('Modal-Instanz nicht gefunden');
+    }
+  }
+
 
 // Spieler wechseln
   // Todo -> Prüfen ob currentplayer richtig übergeben wird
   switchPlayer(): void {
+    // Logge die aktuellen Spielerinformationen zur Überprüfung
+    console.log("Aktueller Spieler vor dem Wechsel:", this.currentPlayerId);
+    console.log('Benutzer-ID:', this.user?.userId);
+    console.log('Gegner-ID:', this.opponent?.userId);
+
+    // Überprüfe, ob user und opponent korrekt gesetzt sind
+    if (!this.user || !this.opponent) {
+      console.error('Spielerinformationen fehlen!');
+      return;
+    }
+
     // Spielerwechsel basierend auf dem aktuellen Spieler
     this.currentPlayerId = this.currentPlayerId === this.user.userId ? this.opponent.userId : this.user.userId;
+
+    // Setze den aktuellen Spieler basierend auf der neuen currentPlayerId
+    this.currentPlayer = this.currentPlayerId === this.user.userId ? 'X' : 'O'; // Beispielhafte Logik für 'X' und 'O'
+    console.log('Neuer aktueller Spieler:', this.currentPlayer);
 
     // Aktualisiere localStorage
     const gameData = JSON.parse(localStorage.getItem('gameData')!);
     gameData.currentPlayerId = this.currentPlayerId;
     localStorage.setItem('gameData', JSON.stringify(gameData));
 
-    console.log('Neuer aktueller Spieler:', this.currentPlayerId);
+    // Konsolenausgabe nach dem Wechsel
+    console.log('Neuer aktueller Spieler nach dem Wechsel:', this.currentPlayerId);
   }
 
 

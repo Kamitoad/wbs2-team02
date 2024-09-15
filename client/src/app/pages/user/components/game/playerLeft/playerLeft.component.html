@@ -8,7 +8,9 @@
       }
     </div>
     <div class="col-6 mx-auto">
-      <p class="gameSymbol justify-content-end m-3">{{ symbol || 'X' }}</p>
+      @if (currentPlayerId === user?.userId) {
+      <p class="gameSymbol justify-content-end m-3">{{ symbol }}</p>
+      }
     </div>
   </div>
   <div class="row">

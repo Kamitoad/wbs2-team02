@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-modal',
@@ -13,13 +14,23 @@ export class ModalComponent {
   @Output() newGame = new EventEmitter<void>();
   @Output() end = new EventEmitter<void>();
 
+
+  constructor(private router: Router) {
+  }
   startNewGame() {
     this.newGame.emit();
-    // TODO this.router navgiate auf Queue
+    this.router.navigate(['/queue']); // Navigate to the queue component
   }
 
   endGame() {
     this.end.emit();
-    // TODO this.router navgiate auf Profil
+    this.router.navigate(['/profile']); // Navigate to the profile page
+  }
+
+
+  isVisible: boolean = false;
+
+  open(): void {
+    this.isVisible = true;
   }
 }

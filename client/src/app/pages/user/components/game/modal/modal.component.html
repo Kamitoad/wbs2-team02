@@ -1,10 +1,19 @@
 <div class="modal">
-  @if(isGameFinished){
+  @if (isGameFinished) {
+    <div class="modal-content">
+      <h2>Spielergebnis</h2>
+      <p>{{ resultMessage }}</p>
+      <button (click)="startNewGame()">Neues Spiel suchen</button>
+      <button (click)="endGame()">Zurück zum Profil</button>
+    </div>
+  }
+</div>
+
+@if(isVisible) {
   <div class="modal-content">
     <h2>Spielergebnis</h2>
     <p>{{ resultMessage }}</p>
     <button (click)="startNewGame()">Neues Spiel suchen</button>
     <button (click)="endGame()">Zurück zum Profil</button>
   </div>
-  }
-</div>
+}

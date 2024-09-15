@@ -13,11 +13,12 @@ import { GameService } from '../../services/game/game.service';
 import {GameDto} from "../../dtos/game/GameDto";
 import {SessionData} from "express-session";
 import {IsLoggedInGuard} from "../../../../common/guards/is-logged-in/is-logged-in.guard";
+import {GameGateway} from "../../gateways/game/game.gateway";
 
 @UseGuards(IsLoggedInGuard)
 @Controller('game')
 export class GameController {
-    constructor(private readonly gameService: GameService) {}
+    constructor(private readonly gameService: GameService,  private readonly gameGateway: GameGateway) {}
 
     // Route für den Spielzug
     @Get(':gameId')
@@ -65,6 +66,10 @@ export class GameController {
         try {
             await this.gameService.resignGame(gameId, resignDto.playerId);
             const game = await this.gameService.getGameById(gameId);
+
+            // WebSocket-Event senden, nachdem der Spieler zurückgetreten ist
+            this.gameGateway.server.to(`game_${gameId}`).emit('playerResigned', { playerId: resignDto.playerId })
+
             return { success: true, game };
         } catch (error) {
             if (error instanceof NotFoundException || error instanceof BadRequestException) {
