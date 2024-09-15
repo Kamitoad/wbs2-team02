@@ -109,11 +109,17 @@ export class GameComponent implements OnInit, OnDestroy {
 
   // Beitritt zum Spiel
   private joinGame(): void {
+
+
     if (this.gameId && this.user) {
       this.gameService.joinGame(this.gameId, this.user.userId);
 
-      this.gameService.joinedGameSubject.subscribe((data) => {
-        this.currentPlayerId = data.game.currentPlayer;
+      this.gameService.gameDataSubject.subscribe((data) => {
+        console.log("data.game");
+        console.log(data);
+        this.currentPlayerId = data.currentPlayer;
+        console.log("currentPlayerId", this.currentPlayerId);
+        console.log(this.currentPlayerId);
 
         // Spiel-Daten im LocalStorage speichern
         const gameData = {

@@ -44,8 +44,9 @@
     </div>
   </div>
 </div>
+<span>currentPlayerid: {{currentPlayerId}}</span>
 <div class="text-center mt-4">
-  @if (currentPlayerId === user?.userId) {
+  @if (currentPlayerId == user.userId) {
     <div class="row">
       <div class="col">
         <h4 class="text-light InfoZug">Du bist dran</h4>

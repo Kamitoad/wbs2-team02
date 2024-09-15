@@ -49,8 +49,12 @@ export class GameService {
   setupSocketListeners() {
     // Listen for moves
     this.socket.on('joinedGame', (data: any) => {
+      console.log("joinedGame")
+      console.log(data);
       this.gameDataSubject.next(data); // Game-Daten für andere Komponenten bereitstellen
       this.joinedGameSubject.next(data);
+      console.log("joinedGameSubjekt")
+      console.log(this.joinedGameSubject);
     });
 
     // Listen for winner updates
