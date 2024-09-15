@@ -12,7 +12,6 @@ export class SquareComponent {
   @Output() squareClick = new EventEmitter<void>();
 
   onClick() {
-    console.log(`Square clicked: Current value = ${this.value}`);
     if (!this.value) {
       this.squareClick.emit();
     }

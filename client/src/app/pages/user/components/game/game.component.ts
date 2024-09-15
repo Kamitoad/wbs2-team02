@@ -177,8 +177,7 @@ export class GameComponent implements OnInit, OnDestroy {
         // MODAL
         this.isGameFinished = true;
 
-        console.log("winnerData")
-        console.log(winnerData)
+
 
         if (winnerData == null) {
           this.resultMessage = 'Es ist ein Unentschieden';
@@ -207,58 +206,13 @@ export class GameComponent implements OnInit, OnDestroy {
   // OPEN MODAL METHODE
   showGameOverModal(): void {
     if (this.modal) {
-      console.log('Modal wird geöffnet');
       this.modal.open(); // Modal-Fenster öffnen
     } else {
-      console.error('Modal-Instanz nicht gefunden');
     }
   }
 
 
-// Spieler wechseln
-  // Todo -> Prüfen ob currentplayer richtig übergeben wird
-  /*
-  switchPlayer(): void {
-    // Logge die aktuellen Spielerinformationen zur Überprüfung
-    console.log("Aktueller Spieler vor dem Wechsel:", this.currentPlayerId);
-    console.log('Benutzer-ID:', this.user?.userId);
-    console.log('Gegner-ID:', this.opponent?.userId);
 
-    // Überprüfe, ob user und opponent korrekt gesetzt sind
-    if (!this.user || !this.opponent) {
-      console.error('Spielerinformationen fehlen!');
-      return;
-    }
-
-    // Spielerwechsel basierend auf dem aktuellen Spieler
-    this.currentPlayerId = this.currentPlayerId === this.user.userId ? this.opponent.userId : this.user.userId;
-
-    // Setze den aktuellen Spieler basierend auf der neuen currentPlayerId
-    this.currentPlayer = this.currentPlayerId === this.user.userId ? 'X' : 'O'; // Beispielhafte Logik für 'X' und 'O'
-    console.log('Neuer aktueller Spieler:', this.currentPlayer);
-
-    // Aktualisiere localStorage
-    const gameData = JSON.parse(localStorage.getItem('gameData')!);
-    gameData.currentPlayerId = this.currentPlayerId;
-    localStorage.setItem('gameData', JSON.stringify(gameData));
-
-    // Konsolenausgabe nach dem Wechsel
-    console.log('Neuer aktueller Spieler nach dem Wechsel:', this.currentPlayerId);
-  }
-*/
-
-  /*
-  // Neues Spiel starten
-  startNewGame(): void {
-    this.gameOver = false;
-    this.board = [
-      [null, null, null],
-      [null, null, null],
-      [null, null, null]
-    ];
-    this.currentPlayer = 'X';
-  }
-  */
 }
 
 export interface User {

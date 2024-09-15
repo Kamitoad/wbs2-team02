@@ -45,16 +45,12 @@ export class BoardComponent implements OnInit {
       this.putSymbolsInFields(gameData);
     });
 
-    this.gameService.winnerSubject.subscribe((winnerData: any) => {
-      console.log(`Winner: ${winnerData.winner}`);
-    });
+
   }
 
   makeMove(rowIndex: number, colIndex: number): void {
     const gameDataString = localStorage.getItem('gameData');
     const userDataString = localStorage.getItem('user');
-
-    console.log("Klick geschehen bei: ", rowIndex, ", ", colIndex);
 
     // Überprüfen, ob gameData im localStorage existiert
     if (!gameDataString) {
@@ -73,11 +69,9 @@ export class BoardComponent implements OnInit {
     // this.switchPlayer(); // Spieler nach dem Zug wechseln
 
     // Spieler wechseln nach dem Zug
-    console.log("Player wird geswitched");
     this.playerSwitched.emit();
 
     this.gameService.gameDataSubject.subscribe((data) => {
-      console.log(data)
       localStorage.setItem('gameData', JSON.stringify(data));
 
       this.putSymbolsInFields(data);
