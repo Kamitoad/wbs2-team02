@@ -26,14 +26,8 @@ export class ModalComponent {
   endGame() {
     this.router.navigate(['/profile']); // Navigiere zur Profilseite
   }
-
-  // Funktion zum Öffnen des Modals (setzt die Sichtbarkeit)
   open(): void {
     this.isGameFinished = true;
-  }
-
-  // Funktion zum Schließen des Modals
-  close(): void {
-    this.isGameFinished = false;
+    // TODO EVENTUELL METHODE ZIM ÖFFNEN
   }
 }
