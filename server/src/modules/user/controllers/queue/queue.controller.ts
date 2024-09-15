@@ -14,7 +14,7 @@ import {
     ApiBadRequestResponse,
     ApiInternalServerErrorResponse,
     ApiNotFoundResponse,
-    ApiOkResponse, ApiTags
+    ApiOkResponse, ApiOperation, ApiTags
 } from "@nestjs/swagger";
 import {ErrorDto} from "../../../../common/dtos/auth/ErrorDto";
 import {OkDto} from "../../../../common/dtos/OkDto";
@@ -29,6 +29,7 @@ export class QueueController {
     ) {
     }
 
+    @ApiOperation({ summary: 'Ändert den Status des Benutzers, dass dieser in der Queue ist' })
     @ApiOkResponse({
         description: 'Nutzer erfolgreich der Queue beigetreten und Match gefunden ' +
             '(Wenn kein Match gefunden: opponent: null, gameId: null)',
@@ -78,6 +79,7 @@ export class QueueController {
         }
     }
 
+    @ApiOperation({ summary: 'Überprüft, ob sich der Benutzer in einem Game befindet' })
     @ApiOkResponse({
         description: 'Nutzer erfolgreich der Queue beigetreten und Match gefunden ' +
             '(Wenn kein Match gefunden: opponent: null, gameId: null)',
@@ -116,9 +118,9 @@ export class QueueController {
     ): Promise<OkDto> {
         try {
             const isInGame: boolean = await this.queueService.checkIfInGame(session.currentUser);
-            return isInGame ?
-                new OkDto(isInGame, 'Nutzer ist bereits in einem laufenden Spiel') :
-                new OkDto(isInGame, 'Nutzer ist nicht in einem laufenden Spiel');
+            return !isInGame ?
+                new OkDto(true, 'Nutzer ist nicht in einem laufenden Spiel') :
+                new OkDto(false, 'Nutzer ist bereits in einem laufenden Spiel');
         } catch (error) {
             if (error instanceof NotFoundException) {
                 throw new NotFoundException(error.message);
@@ -128,6 +130,7 @@ export class QueueController {
         }
     }
 
+    @ApiOperation({ summary: 'Ändert den Status des Benutzers, dass dieser nicht mehr in der Queue ist' })
     @ApiOkResponse({
         type: OkDto,
         description: 'User hat erfolgreich die Queue verlassen'

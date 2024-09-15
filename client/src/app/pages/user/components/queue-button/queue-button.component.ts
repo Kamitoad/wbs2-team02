@@ -1,30 +1,46 @@
 import { Component } from '@angular/core';
-import {Router} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
 import {QueueService} from "../../services/queue.service";
 
 @Component({
   selector: 'app-queue-button',
   standalone: true,
-  imports: [],
+  imports: [
+    RouterLink
+  ],
   templateUrl: './queue-button.component.html',
   styleUrl: './queue-button.component.css'
 })
 export class QueueButtonComponent {
-
   statusMessage: string = "";
 
-  constructor(private queueService: QueueService, private router: Router) {}
+  constructor(
+    private router: Router,
+    public queueService: QueueService,
+  ) {}
 
-  joinQueue() {
-    this.queueService.initiateSocketConnection();
 
-    this.queueService.emitJoinQueue()
-      .then(() => {
-        this.router.navigate(['/queue']);
-      })
-      .catch((error) => {
-        this.statusMessage = error.message;
-        console.error('Error detected:', error);
-      });
+  tryJoinQueue() {
+    console.log("Test")
+    this.queueService.checkIfInGame().subscribe({
+      next: (res) => {
+        if (res.ok) {
+          this.router.navigate(['queue']);
+        } else {
+          this.statusMessage = res.message;
+          this.removeErrorMessage();
+        }
+      },
+      error: (err) => {
+        this.statusMessage = err.error.message || 'Unbekannter Fehler';
+        this.removeErrorMessage();
+      }
+    });
+  }
+
+  removeErrorMessage(): void {
+    setTimeout(() => {
+      this.statusMessage = "";
+    }, 5000);
   }
 }

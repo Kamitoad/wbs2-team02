@@ -77,7 +77,7 @@ export class GamedataService {
 
   private removeGame(gameId: string) {
     const currentGames = this.currentGamesSubject.getValue();
-    const updatedGames = currentGames.filter(game => game.id !== gameId);
+    const updatedGames = currentGames.filter(game => game.gameId !== gameId);
     this.currentGamesSubject.next(updatedGames);
   }
 

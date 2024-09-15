@@ -1,0 +1,20 @@
+<div class="player-info">
+  <div class="row">
+    <div class="col-6 mx-auto">
+      @if (currentPlayerId === user?.userId) {
+        <app-profile-pic class="border-warning justify-content-start"></app-profile-pic>
+      } @else {
+        <app-profile-pic class="justify-content-start"></app-profile-pic>
+      }
+    </div>
+    <div class="col-6 mx-auto">
+      <p class="gameSymbol justify-content-end m-3">{{ symbol }}</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 userNameElo">
+      <span class="m-1 px-2">{{ username || 'DEMOUSER' }}</span>
+      <span class="m-1">{{ elo || 1000 }}</span>
+    </div>
+  </div>
+</div>

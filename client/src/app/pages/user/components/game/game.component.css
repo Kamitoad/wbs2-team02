@@ -1,0 +1,59 @@
+.game-container {
+  display: flex;
+  flex-direction: column;
+  height: 50vh;
+  width: 100%;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+div.row{
+  display: flex;
+  width: 100%;
+}
+h4{
+}
+.InfoZug{
+}
+
+@media (min-width: 768px) {
+  .game-container {
+    flex-direction: row; /* Reihenlayout für größere Bildschirme */
+    justify-content: center; /* Bleibt zentriert */
+    align-items: center;
+  }
+}
+
+.player-info {
+  text-align: center;
+  margin: 0 10px; /* Abstand zu den Seiten */
+}
+
+.player-info.left {
+  text-align: right; /* Textausrichtung links für linken Spieler */
+}
+
+.player-info.right {
+  text-align: left; /* Textausrichtung rechts für rechten Spieler */
+}
+
+.board-container {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  flex-wrap: wrap;
+}
+
+.square {
+  width: 100px; /* Größere Button-Größe */
+  height: 100px;
+  margin: 10px; /* Abstand zwischen den Buttons */
+  font-size: 2rem;
+}
+
+@media (max-width: 768px) {
+  .square {
+    width: 80px; /* Kleinere Buttons für kleinere Bildschirme */
+    height: 80px;
+    margin: 5px;
+  }
+}

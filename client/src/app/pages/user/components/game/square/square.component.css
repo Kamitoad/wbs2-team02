@@ -1,0 +1,16 @@
+.square {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3rem;
+  color: white;
+  background-color: transparent;
+  cursor: pointer;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: none; /* Entferne alle allgemeinen Border */
+  box-shadow: none; /* Verhindere jeglichen Box-Shadow */
+}

@@ -26,7 +26,15 @@ export class QueueService {
             throw new NotFoundException('Benutzer nicht gefunden');
         }
         if (user.inQueue) {
-            throw new BadRequestException('Nutzer bereits in der Queue');
+            return {
+                opponent: null,
+                currentUser: {
+                    userName: user.userName,
+                    elo: user.elo,
+                    profilePic: user.profilePic,
+                },
+                gameId: null
+            };
         }
 
         if (await this.checkIfInGame(userId)) {
@@ -52,8 +60,16 @@ export class QueueService {
 
             // Create new Game between the two players
             const newGame = this.gameRepository.create();
-            newGame.player1 = user;
-            newGame.player2 = opponent;
+            newGame.player1 = user;  // Vollständiges User-Objekt zuweisen
+            newGame.player2 = opponent;  // Vollständiges User-Objekt zuweisen
+
+            // Set the first playerLeft to move
+            const randomNum = Math.random()
+            if (randomNum < 0.5) {
+                newGame.currentPlayer = user.userId
+            } else {
+                newGame.currentPlayer = opponent.userId
+            }
 
             await this.gameRepository.save(newGame);
 
@@ -96,8 +112,9 @@ export class QueueService {
 
         const ongoingGame = await this.gameRepository.findOne({
             where: [
-                { player1: user, hasEnded: 0 },
-                { player2: user, hasEnded: 0 }
+                //TODO Boolean number fix
+                { player1: { userId }, hasEnded: false },
+                { player2: { userId }, hasEnded: false }
             ]
         });
         return !!ongoingGame;

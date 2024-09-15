@@ -3,7 +3,7 @@ import {
     InternalServerErrorException, UseGuards,
 } from '@nestjs/common';
 import {
-    ApiInternalServerErrorResponse, ApiOkResponse, ApiTags
+    ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiTags
 } from "@nestjs/swagger";
 import {ErrorDto} from "../../../../common/dtos/auth/ErrorDto";
 import {GamedataService} from "../../services/gamedata/gamedata.service";
@@ -24,9 +24,30 @@ export class GamedataController {
         public readonly queueService: QueueService
     ) {}
 
+    @ApiOperation({ summary: 'Lädt die Daten aller laufenden Spiele' })
     @ApiOkResponse({
         type: ReadCurrentGamesDto,
-        description: 'Laufende Spiele wurden geladen'
+        description: 'Laufende Spiele wurden geladen',
+        example: [
+            {
+                "gameId": 1,
+                "player1UserName": "MaxUserman",
+                "player1Elo": 1000,
+                "player1ProfilePic": null,
+                "player2UserName": "Kamitoad",
+                "player2Elo": 1000,
+                "player2ProfilePic": null
+            },
+            {
+                "gameId": 19,
+                "player1UserName": "FabFim",
+                "player1Elo": 950,
+                "player1ProfilePic": null,
+                "player2UserName": "DimPal",
+                "player2Elo": 1025,
+                "player2ProfilePic": null
+            },
+        ],
     })
     @ApiInternalServerErrorResponse({
         type: ErrorDto,
@@ -42,9 +63,26 @@ export class GamedataController {
         }
     }
 
+    @ApiOperation({ summary: 'Lädt die Daten aller Nutzer die sich in der Queue befinden' })
     @ApiOkResponse({
         type: ReadQueueForAdminDto,
-        description: 'Derzeitige Nutzer in der Queue wurden geladen'
+        description: 'Derzeitige Nutzer in der Queue wurden geladen',
+        example: [
+            {
+                "userId": 1,
+                "userName": "MaxUserman",
+                "elo": 1000,
+                "profilePic": null,
+                "queueStartTime": "2024-01-01T12:30:00.000Z"
+            },
+            {
+                "userId": 2,
+                "userName": "Kamitoad",
+                "elo": 1000,
+                "profilePic": null,
+                "queueStartTime": "2024-01-01T12:30:30.000Z"
+            },
+        ],
     })
     @ApiInternalServerErrorResponse({
         type: ErrorDto,
@@ -54,9 +92,8 @@ export class GamedataController {
     async getAllUsersInQueue(): Promise<ReadQueueForAdminDto[]> {
         try {
             const users = await this.gamedataService.getAllUsersInQueue();
-            return users.map(user => {
-                // queueDuration represents the seconds between now
-                return new ReadQueueForAdminDto(user) });
+            console.log(users.map(user => { return new ReadQueueForAdminDto(user) }))
+            return users.map(user => { return new ReadQueueForAdminDto(user) });
         } catch (error) {
             throw new InternalServerErrorException("Fehler beim Laden der User");
         }
