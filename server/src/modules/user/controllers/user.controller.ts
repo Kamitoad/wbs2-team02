@@ -359,8 +359,60 @@ export class UserController {
 
     @ApiOperation({ summary: 'Lädt die gespielten Matches des Benutzers' })
     @ApiOkResponse({
-        type: ProfilePicResponseDto,
-        description: 'Das Profilbild wurde erfolgreich geladen'
+        type: FinishedMatchDto,
+        description: 'Gespielte Matches wurden erfolgreich geladen',
+        example: [
+            {
+                "gameId": 1,
+                "hasEnded": true,
+                "player1": {
+                    "userName": "Kamitoad"
+                },
+                "player2": {
+                    "userName": "MaxUserman"
+                },
+                "field0_0": 2,
+                "field0_1": 2,
+                "field0_2": 2,
+                "field1_0": 0,
+                "field1_1": 0,
+                "field1_2": 0,
+                "field2_0": 0,
+                "field2_1": 1,
+                "field2_2": 1,
+                "winner": 2,
+                "loser": 1,
+                "isTie": false,
+                "changeEloPlayer1": -9,
+                "changeEloPlayer2": 9,
+                "currentPlayer": 1
+            },
+            {
+                "gameId": 2,
+                "hasEnded": true,
+                "player1": {
+                    "userName": "Kamitoad"
+                },
+                "player2": {
+                    "userName": "DimPal"
+                },
+                "field0_0": 1,
+                "field0_1": 0,
+                "field0_2": 0,
+                "field1_0": 2,
+                "field1_1": 2,
+                "field1_2": 2,
+                "field2_0": 2,
+                "field2_1": 1,
+                "field2_2": 1,
+                "winner": 1,
+                "loser": 2,
+                "isTie": false,
+                "changeEloPlayer1": -11,
+                "changeEloPlayer2": 11,
+                "currentPlayer": 1
+            },
+        ]
     })
     @ApiNotFoundResponse({
         type: ErrorDto,
