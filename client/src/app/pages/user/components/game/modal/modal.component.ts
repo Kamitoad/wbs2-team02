@@ -17,7 +17,10 @@ export class ModalComponent {
   constructor(private router: Router) {}
 
   startNewGame() {
+    localStorage.setItem('opponent', "");
+
     this.router.navigate(['/queue']); // Navigiere zur Queue-Komponente
+
   }
 
   endGame() {

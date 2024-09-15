@@ -156,16 +156,21 @@ export class GameComponent implements OnInit, OnDestroy {
       console.log('AUSLESEN OPPONENT', this.opponent);
     });
 
+    setTimeout(() => {
     // Weitere WebSocket-Listener
     this.gameService.winnerSubject.subscribe(winnerData => {
-      console.log("winner winnersubjekt subscribe")
-      console.log(`Winner: ${winnerData.winner}`);
+;
       this.gameOver = true;
       // MODAL
       this.isGameFinished = true;
-      this.resultMessage = winnerData.winner === this.user.userId ? 'WIN' : 'LOSS';
+
+      this.resultMessage = winnerData != this.user.userId ? 'WIN' : 'LOSS';
       this.showGameOverModal(); // Modal-Fenster anzeigen, wenn das Spiel vorbei ist
+      localStorage.setItem('opponent', "");
     });
+    }, 500);  // Warte 500ms, bevor das Subject abonniert wird
+
+
 
     // Listener für das Starten eines neuen Spiels
     this.modal.newGame.subscribe(() => {

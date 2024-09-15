@@ -17,3 +17,12 @@
   border-radius: 8px;
   text-align: center;
 }
+
+.blueText{
+  color: #00a8cc;
+}
+
+.blue-button {
+  color: #f8f8ff;
+  background-color: #127897;
+}
