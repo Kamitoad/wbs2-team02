@@ -1,12 +1,12 @@
-import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
-import { FormsModule } from "@angular/forms";
-import { Router } from "@angular/router";
-import { HttpClient } from "@angular/common/http";
-import { EditPasswordService } from "../../services/editUser/edit-password.service";
-import { EditProfilePicService } from "../../services/editProfilePic/edit-profile-pic.service";
-import { NgIf, NgOptimizedImage } from "@angular/common";
-import { ProfilePicComponent } from "../profile-pic/profile-pic.component";
-import { ProfileService } from "../../services/profile.service";
+import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
+import {FormsModule} from "@angular/forms";
+import {Router} from "@angular/router";
+import {HttpClient} from "@angular/common/http";
+import {EditPasswordService} from "../../services/editUser/edit-password.service";
+import {EditProfilePicService} from "../../services/editProfilePic/edit-profile-pic.service";
+import {NgIf, NgOptimizedImage} from "@angular/common";
+import {ProfilePicComponent} from "../profile-pic/profile-pic.component";
+import {ProfileService} from "../../services/profile.service";
 
 @Component({
   selector: 'app-edit-password-profilpic',
@@ -36,7 +36,8 @@ export class EditPasswordProfilepicComponent implements OnInit {
   private newPfp: any;
   protected errorMessage: string | undefined;
 
-  constructor(private http: HttpClient, private editUser: EditPasswordService, private editProfilePic: EditProfilePicService, private router: Router) {}
+  constructor(private http: HttpClient, private editUser: EditPasswordService, private editProfilePic: EditProfilePicService, private router: Router) {
+  }
 
   ngOnInit() {
     // subscribes to the ProfilePic to have it automatically reload
@@ -50,16 +51,22 @@ export class EditPasswordProfilepicComponent implements OnInit {
     const file = event.target.files[0];
 
     if (file) {
+
+      // displays Picture even before it is uploaded to Server
       const reader: FileReader = new FileReader();
       reader.onload = (e: any) => {
         this.newPfp = e.target.result;
       };
-
       reader.readAsDataURL(file);
+
+      // formdata used to send file to server
       const formData: FormData = new FormData();
       formData.append("file", file);
 
-      this.http.patch<{ newProfilePic: string }>("http://localhost:3000/api/user/profilepic", formData, { withCredentials: true }).subscribe(
+      // sends formdata profilepic to the server
+      this.http.patch<{
+        newProfilePic: string
+      }>("http://localhost:3000/api/user/profilepic", formData, {withCredentials: true}).subscribe(
         response => {
           // instant shows the new ProfilePic
           this.editProfilePic.setProfilePic(response.newProfilePic);
@@ -130,7 +137,7 @@ export class EditPasswordProfilepicComponent implements OnInit {
     this.imgUpload = this.editProfilePic.enableImgUpload(this.imgUpload);
   }
 
-  closeEdit(){
+  closeEdit() {
     this.profileService.displayEdit = false;
   }
 }
