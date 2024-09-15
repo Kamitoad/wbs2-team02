@@ -81,10 +81,13 @@ export class GameService {
         const winner = await this.checkWinner(game);
 
         if (winner === 'Player1') {
+            console.log('Player1 is Winner', gameId);
             return await this.endGame(gameId, game.player1.userId, game.player2.userId); // Spieler 1 hat gewonnen
         } else if (winner === 'Player2') {
+            console.log('Player2 is Winner', gameId);
             return await this.endGame(gameId, game.player2.userId, game.player1.userId); // Spieler 2 hat gewonnen
         } else if (winner === 'Tie') {
+            console.log('GAME IS TIE');
             return await this.endGame(gameId, null, null); // Unentschieden
         }
 
@@ -161,6 +164,8 @@ export class GameService {
             //TODO: Update changeElo in Game DB
             await this.updateEloForPlayers(winnerId, loserId, game);
             await this.updatePlayerStats(winnerId, loserId);
+
+
         } else {
             // Unentschieden: Elo für beide Spieler aktualisieren
             game.isTie = true;
@@ -168,12 +173,14 @@ export class GameService {
             await this.updateEloForTie(game.player1.userId, game.player2.userId, game);
             await this.updatePlayerStatsForTie(game.player1.userId, game.player2.userId);
         }
-
+        console.log('Gewinner AFTER:', winnerId);
+        console.log('Verlierer AFTER:', loserId);
 
         await this.gameRepository.save(game);
 
         this.gamedataGateway.notifyGameEnded(game.gameId);
-
+        this.gamedataGateway.notifyWinner(game.gameId, game.winner);
+        this.gamedataGateway.notifyLoser(game.gameId, game.loser);
         return game;
     }
 
@@ -287,8 +294,3 @@ function calculateEloChange(playerElo: number, opponentElo: number, score: numbe
     const k = 20; // Anpassungsfaktor
     return k * (score - (1 / (1 + Math.pow(10, (opponentElo - playerElo) / 400))));
 }
-
-
-
-
-

@@ -52,9 +52,18 @@ export class GameService {
     });
 
     // Listen for winner updates
-    this.socket.on('winner', (data: any) => {
-      console.log('winner:', data);
-      this.winnerSubject.next(data);
+    this.socket.on('winner', (gameId: number, winnerId: number) => {
+      console.log('winner:', winnerId);
+      console.log('gameId:', gameId);
+      this.winnerSubject.next(winnerId);
+      this.openEndGameModal();
+    });
+
+    // Listen for loser updates
+    this.socket.on('loser', (gameId: number, loserId: number) => {
+      console.log('loserId:', loserId);
+      console.log('gameId:', gameId);
+      this.winnerSubject.next(loserId);
       this.openEndGameModal();
     });
 
