@@ -102,10 +102,10 @@ app-edit-password-profilpic{
 }
 
 .opponent, .user {
+  padding: 0 1rem;
   background-color: white;
   color: #127897;
   text-align: center;
-  height: 2.2rem;
   width: 17rem;
   border-radius: 3rem;
   border: 2px solid #127897;
@@ -170,10 +170,10 @@ app-edit-password-profilpic{
   }
 
   .opponent, .user {
+    padding: 0 1rem;
     background-color: white;
     color: #127897;
     text-align: center;
-    height: 2.2rem;
     width: 13rem;
     border-radius: 3rem;
     border: 2px solid #127897;

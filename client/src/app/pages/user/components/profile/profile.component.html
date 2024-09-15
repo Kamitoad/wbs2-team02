@@ -8,16 +8,17 @@
         </div>
         <div class="col">
           <h2>{{ currentUser?.userName }}</h2>
-          <p>{{ currentUser?.elo }}</p>
+          <p>({{ currentUser?.elo }})</p>
         </div>
         <div class="col">
           <button (click)='toggleEdit()' class="edit-button">
             <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 17 17" class="bi bi-pencil">
-              <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
+              <path
+                d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
             </svg>
           </button>
         </div>
-          <div class="col">
+        <div class="col">
           <button (click)="logout()" class="logout-button">
             <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 17 17" class="bi bi-power">
               <path d="M7.5 1v7h1V1z"/>
@@ -28,7 +29,7 @@
       </div>
     </div>
   </div>
-  @if(this.profileService.displayEdit){
+  @if (this.profileService.displayEdit) {
     <app-edit-password-profilpic></app-edit-password-profilpic>
   }
   <div class="statistics-card w-100F">
@@ -51,18 +52,17 @@
     <h3>Meine gespielten Matches</h3>
 
     @for (match of userMatches.slice().reverse(); track match.gameId) {
-      <div class="matchrow">
-      <div class="match opponent word-wrap" [ngClass]="getMatchResultClass(match)">
-        <p>{{getMatchOpponent(match)}}</p>
+      <div class="matchrow align-items-center">
+        <div class="match opponent word-wrap d-flex justify-content-center align-items-center" [ngClass]="getMatchResultClass(match)">
+          <p class="mb-0">{{ getMatchOpponent(match) }}</p>
+        </div>
+        <div class="match result" [ngClass]="getMatchResultClass(match)">
+          <p class="mb-0">{{ getMatchResultText(match) }}</p>
+        </div>
+        <div class="match user word-wrap justify-content-center align-items-center" [ngClass]="getMatchResultClass(match)">
+          <p class="mb-0">{{ getMatchSelf(match) }}</p>
+        </div>
       </div>
-      <div class="match result" [ngClass]="getMatchResultClass(match)">
-        <p>{{ getMatchResultText(match) }}</p>
-      </div>
-      <div class="match user word-wrap" [ngClass]="getMatchResultClass(match)">
-        <p>{{ getMatchSelf(match) }}</p>
-      </div>
-      </div>
-
     }
   </div>
 </div>

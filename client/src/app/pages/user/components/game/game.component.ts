@@ -45,15 +45,21 @@ export class GameComponent implements OnInit, OnDestroy {
       }
     });
     */
-
+    this.loadGameId();
     this.profileService.getCurrentUser().subscribe({
       next: () => {
+        this.gameService.getGame(this.gameId).subscribe({
+          next: () => {},
+          error: (err) => {
+            console.log(err.error.message)
+            this.router.navigate(['profile']);
+          }
+        })
       },
       error: () => {
         this.router.navigate(['login']);
       }
     });
-    this.loadGameId();
     this.loadUser();
     this.joinGame();
     this.setupWebSocketListeners();
@@ -67,7 +73,7 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    window.removeEventListener('beforeunload', this.onUnloadHandler);
+    //window.removeEventListener('beforeunload', this.onUnloadHandler);
 
     //this.gameService.resign(this.gameId, this.user.userId);
 

@@ -35,8 +35,6 @@ export class QueueComponent implements OnDestroy, OnInit {
     private router: Router,
     private profileService: ProfileService,
   ) {
-    const savedUser = localStorage.getItem('user');
-    this.user = savedUser ? JSON.parse(savedUser) : null;
   }
 
   ngOnInit(): void {
@@ -54,6 +52,8 @@ export class QueueComponent implements OnDestroy, OnInit {
     this.profileService.getCurrentUser().subscribe({
       next: (userData) => {
         localStorage.setItem("user", JSON.stringify(userData));
+        const savedUser = localStorage.getItem('user');
+        this.user = savedUser ? JSON.parse(savedUser) : null;
         this.queueService.checkIfInGame().subscribe({
           next: (res) => {
             console.log(res)
