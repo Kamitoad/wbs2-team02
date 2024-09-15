@@ -36,6 +36,7 @@ export class GameService {
     private http: HttpClient,
   ) {
     if (isPlatformBrowser(this.platformId)) {
+      console.log("this.plattformId")
       this.socket = io('http://localhost:3000/ws-user-game');// WebSocket-Verbindung zum NestJS-Server
       this.gameSocket = require('socket.io-client')('http://localhost:3000/ws-admin-gamedata');
       this.setupSocketListeners();
@@ -49,30 +50,37 @@ export class GameService {
   setupSocketListeners() {
     // Listen for moves
     this.socket.on('joinedGame', (data: any) => {
+      console.log('Joined game:', data);
       this.gameDataSubject.next(data); // Game-Daten für andere Komponenten bereitstellen
       this.joinedGameSubject.next(data);
     });
 
     // Listen for winner updates
-    this.gameSocket.on('winner', (data: { gameId: number, winnerId: number }) => {
-      const { gameId, winnerId } = data;
+    this.gameSocket.on('winner', (gameId: number, winnerId: number) => {
+      console.log("winner winnersocket")
 
-
+      console.log('winner:', winnerId);
+      console.log('gameId:', gameId);
 
       this.winnerSubject.next(winnerId);
       this.openEndGameModal();
     });
 
 
+
     // Listen for loser updates
     this.gameSocket.on('loser', (gameId: number, loserId: number) => {
-
+      console.log('loserId:', loserId);
+      console.log('gameId:', gameId);
       this.winnerSubject.next(loserId);
       this.openEndGameModal();
     });
 
     this.socket.on('gameState', (gameData: any) => {
-
+      console.log(`Game state updated:`, gameData);
+      if (gameData.players) {
+        console.log('Players:', gameData.players);  // Prüfe, ob die Spielerinformationen korrekt sind
+      }
       // Verarbeite die neuen Spielfelddaten
       this.moveSubject.next(gameData);
       this.gameDataSubject.next(gameData); // Game-Daten für andere Komponenten bereitstellen
