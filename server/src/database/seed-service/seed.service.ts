@@ -30,7 +30,7 @@ export class SeedService {
             user1.lastName = 'Mustermann';
             user1.role = RoleEnum.Admin;
             user1.elo = 1300;
-            user1.profilePic = "maxPb.";
+            user1.profilePic = "maxPb.jpeg";
             user1.inQueue = false;
             user1.totalWins = 20;
             user1.totalTies = 5;
@@ -45,7 +45,7 @@ export class SeedService {
             user2.lastName = 'Moustafa';
             user2.role = RoleEnum.User;
             user2.elo = 1100;
-            user2.profilePic = "kamiPb.";
+            user2.profilePic = "kamiPb.jpg";
             user2.inQueue = false;
             user2.totalWins = 30;
             user2.totalTies = 10;
@@ -60,7 +60,7 @@ export class SeedService {
             user3.lastName = 'Paliouras';
             user3.role = RoleEnum.User;
             user3.elo = 1150;
-            user3.profilePic = "dimiPb.";
+            user3.profilePic = "dimiPb.jpeg";
             user3.inQueue = false;
             user3.totalWins = 30;
             user3.totalTies = 10;
@@ -75,7 +75,7 @@ export class SeedService {
             user4.lastName = 'Dietzler';
             user4.role = RoleEnum.User;
             user4.elo = 1150;
-            user4.profilePic = "nilsPb.";
+            user4.profilePic = "nilsPb.jpg";
             user4.inQueue = false;
             user4.totalWins = 30;
             user4.totalTies = 10;
@@ -90,7 +90,7 @@ export class SeedService {
             user5.lastName = 'Fimmen';
             user5.role = RoleEnum.User;
             user5.elo = 1100;
-            user5.profilePic = "fabiPb.";
+            user5.profilePic = "fabiPb.png";
             user5.inQueue = false;
             user5.totalWins = 30;
             user5.totalTies = 10;
@@ -105,7 +105,7 @@ export class SeedService {
             user6.lastName = 'Lorenz';
             user6.role = RoleEnum.User;
             user6.elo = 1150;
-            user6.profilePic = "alexPb.";
+            user6.profilePic = "alexPb.jpg";
             user6.inQueue = false;
             user6.totalWins = 30;
             user6.totalTies = 10;
@@ -120,6 +120,7 @@ export class SeedService {
         // Überprüfen, ob bereits Nutzer in der Datenbank existieren
         if (gameCount === 0) {
             const game1: Game = this.gameRepository.create();
+            game1.hasEnded = true;
             game1.field0_0 = 1;
             game1.field0_1 = 1;
             game1.field0_2 = 1;
@@ -144,8 +145,8 @@ export class SeedService {
 
             await this.gameRepository.save(game1);
 
-
             const game2: Game = this.gameRepository.create();
+            game2.hasEnded = true;
             game2.field0_0 = 2;
             game2.field0_1 = 1;
             game2.field0_2 = 2;
@@ -172,6 +173,7 @@ export class SeedService {
 
 
             const game3: Game = this.gameRepository.create();
+            game3.hasEnded = true;
             game3.field0_0 = 2;
             game3.field0_1 = 0;
             game3.field0_2 = 1;
@@ -198,6 +200,7 @@ export class SeedService {
 
 
             const game4: Game = this.gameRepository.create();
+            game4.hasEnded = true;
             game4.field0_0 = 1;
             game4.field0_1 = 0;
             game4.field0_2 = 2;
@@ -224,6 +227,7 @@ export class SeedService {
 
 
             const game5: Game = this.gameRepository.create();
+            game5.hasEnded = true;
             game5.field0_0 = 2;
             game5.field0_1 = 2;
             game5.field0_2 = 2;
@@ -250,6 +254,7 @@ export class SeedService {
 
 
             const game6: Game = this.gameRepository.create();
+            game6.hasEnded = true;
             game6.field0_0 = 1;
             game6.field0_1 = 2;
             game6.field0_2 = 0;
@@ -276,6 +281,7 @@ export class SeedService {
 
 
             const game7: Game = this.gameRepository.create();
+            game7.hasEnded = true;
             game7.field0_0 = 0;
             game7.field0_1 = 0;
             game7.field0_2 = 2;
@@ -302,6 +308,7 @@ export class SeedService {
 
 
             const game8: Game = this.gameRepository.create();
+            game8.hasEnded = true;
             game8.field0_0 = 1;
             game8.field0_1 = 0;
             game8.field0_2 = 0;
@@ -328,6 +335,7 @@ export class SeedService {
 
 
             const game9: Game = this.gameRepository.create();
+            game9.hasEnded = true;
             game9.field0_0 = 1;
             game9.field0_1 = 2;
             game9.field0_2 = 1;
@@ -354,6 +362,7 @@ export class SeedService {
 
 
             const game10: Game = this.gameRepository.create();
+            game10.hasEnded = true;
             game10.field0_0 = 0;
             game10.field0_1 = 0;
             game10.field0_2 = 1;
