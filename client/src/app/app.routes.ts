@@ -7,6 +7,7 @@ import {CurrentGamesComponent} from "./pages/admin/components/gamedata/current-g
 import {GamedataComponent} from "./pages/admin/components/gamedata/gamedata.component";
 import {QueueOverviewComponent} from "./pages/admin/components/gamedata/queue-overview/queue-overview.component";
 import {QueueComponent} from "./pages/user/components/queue/queue.component";
+import {TestComponent} from "./pages/user/components/test/test.component";
 
 export const routes: Routes = [
 
@@ -23,6 +24,7 @@ export const routes: Routes = [
   */
 
 
+  {path:  'test', component: TestComponent},
   { path: 'login', component: LoginComponent},
   { path: '', component: LoginComponent},
 
@@ -30,7 +32,7 @@ export const routes: Routes = [
   { path: 'profile', component: ProfileComponent},
   { path: 'profil', redirectTo: 'profile', pathMatch: 'full'},
   { path: 'queue', component: QueueComponent },
-  
+
   { path: 'admin/user', component: UserdataComponent },
   { path: 'admin/game', component: GamedataComponent,
     children: [

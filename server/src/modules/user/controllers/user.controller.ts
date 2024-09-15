@@ -64,15 +64,15 @@ export class UserController {
     @UseGuards(IsLoggedInGuard)
     @Delete('profilepic')
     @ApiOperation({ summary: 'Löscht das Profilbild des aktuellen Benutzers' })
-    @ApiResponse({ status: 200, description: 'Das Profilbild wurde erfolgreich gelöscht.', type: ReadUserDto })
+    @ApiResponse({ status: 200, description: 'Das Profilbild wurde erfolgreich gelöscht.', type: ProfilePicResponseDto })
     @ApiResponse({ status: 500, description: 'Interner Serverfehler' })
     async deleteProfilePic(
         @Session() session: SessionData,
-    ): Promise<ReadUserDto> {
+    ): Promise<ProfilePicResponseDto> {
         try {
             const user: number = session.currentUser;
             const userData = await this.userService.deleteProfilePic(user);
-            return new ReadUserDto(userData);
+            return { newProfilePic: userData.profilePic };
         } catch (error) {
             if (error instanceof BadRequestException) {
                 throw new BadRequestException(error.message);
@@ -87,15 +87,15 @@ export class UserController {
     @UseGuards(IsLoggedInGuard)
     @Get('profilepic')
     @ApiOperation({ summary: 'Ruft das Profilbild des aktuellen Benutzers ab' })
-    @ApiResponse({ status: 200, description: 'Das Profilbild wurde erfolgreich abgerufen.', type: ReadUserDto })
+    @ApiResponse({ status: 200, description: 'Das Profilbild wurde erfolgreich abgerufen.', type: ProfilePicResponseDto })
     @ApiResponse({ status: 500, description: 'Interner Serverfehler' })
     async getProfilePic(
         @Session() session: SessionData,
-    ): Promise<ReadUserDto> {
+    ): Promise<ProfilePicResponseDto> {
         try {
             const user: number = session.currentUser;
             const userData = await this.authService.getUserByUserId(user);
-            return new ReadUserDto(userData);
+            return { newProfilePic: userData.profilePic };
         } catch (error) {
             if (error instanceof BadRequestException) {
                 throw new BadRequestException(error.message);
@@ -110,14 +110,14 @@ export class UserController {
     @UseGuards(IsLoggedInGuard)
     @Get('profilepic/user/:userName')
     @ApiOperation({ summary: 'Ruft das Profilbild des aktuellen Benutzers ab' })
-    @ApiResponse({ status: 200, description: 'Das Profilbild wurde erfolgreich abgerufen.', type: ReadUserDto })
+    @ApiResponse({ status: 200, description: 'Das Profilbild wurde erfolgreich abgerufen.', type: ProfilePicResponseDto })
     @ApiResponse({ status: 500, description: 'Interner Serverfehler' })
     async getProfilePicOfUser(
         @Param('userName') userName: string,
-    ): Promise<ReadUserDto> {
+    ): Promise<ProfilePicResponseDto> {
         try {
             const userData = await this.authService.getUserByUserName(userName);
-            return new ReadUserDto(userData);
+            return { newProfilePic: userData.profilePic };
         } catch (error) {
             if (error instanceof BadRequestException) {
                 throw new BadRequestException(error.message);
