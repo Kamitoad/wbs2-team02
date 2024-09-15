@@ -32,10 +32,22 @@ export class BoardComponent implements OnInit {
       this.gamedata = game;
       this.putSymbolsInFields(this.gamedata);
     });
+    this.setupWebSocketListeners()
   }
 
   ngOnDestroy() {
-    this.gameService.resign(this.gameId, this.userId)
+    //this.gameService.resign(this.gameId, this.userId)
+  }
+
+  setupWebSocketListeners(): void {
+    this.gameService.moveSubject.subscribe((gameData: any) => {
+      // Update the board based on the new gameData
+      this.putSymbolsInFields(gameData);
+    });
+
+    this.gameService.winnerSubject.subscribe((winnerData: any) => {
+      console.log(`Winner: ${winnerData.winner}`);
+    });
   }
 
   makeMove(rowIndex: number, colIndex: number): void {

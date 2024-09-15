@@ -13,6 +13,7 @@ import { GameService } from '../../services/game/game.service';
 import {GameDto} from "../../dtos/game/GameDto";
 import {SessionData} from "express-session";
 import {IsLoggedInGuard} from "../../../../common/guards/is-logged-in/is-logged-in.guard";
+import {ApiOperation} from "@nestjs/swagger";
 import {GameGateway} from "../../gateways/game/game.gateway";
 
 @UseGuards(IsLoggedInGuard)
@@ -21,6 +22,7 @@ export class GameController {
     constructor(private readonly gameService: GameService,  private readonly gameGateway: GameGateway) {}
 
     // Route für den Spielzug
+    @ApiOperation({ summary: 'Lädt die Daten eines Spiel, an dem der Benutzer teilgenommen hat / teilnimmt' })
     @Get(':gameId')
     async getGame(
         @Session() session: SessionData,
@@ -41,6 +43,7 @@ export class GameController {
     }
 
     // Route für den Spielzug
+    @ApiOperation({ summary: 'Führt einen Zug auf dem Spielfeld aus' })
     @Post(':gameId/move')
     @Header('Content-Type', 'application/json')
     async makeMove(
@@ -57,6 +60,7 @@ export class GameController {
     }
 
     // Route für das Aufgeben
+    @ApiOperation({ summary: 'Benutzer gibt in einem Spiel auf, Gegner siegt' })
     @Post(':gameId/resign')
     @Header('Content-Type', 'application/json')
     async resignGame(
@@ -67,6 +71,7 @@ export class GameController {
             await this.gameService.resignGame(gameId, resignDto.playerId);
             const game = await this.gameService.getGameById(gameId);
 
+            // Todo -> muss in gameService
             // WebSocket-Event senden, nachdem der Spieler zurückgetreten ist
             this.gameGateway.server.to(`game_${gameId}`).emit('playerResigned', { playerId: resignDto.playerId })
 

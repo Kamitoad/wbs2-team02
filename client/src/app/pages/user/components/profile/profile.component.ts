@@ -44,6 +44,7 @@ export class ProfileComponent implements OnInit {
   loadUserData(): void {
     this.profileService.getCurrentUser().subscribe(data => {
       this.currentUser = data;
+      localStorage.setItem("user", JSON.stringify(data));
     });
     this.profileService.getUserMatches().subscribe(matches => {
       this.userMatches = matches;

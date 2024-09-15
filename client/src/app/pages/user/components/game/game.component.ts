@@ -4,6 +4,7 @@ import {GameService} from '../../services/game.service';
 import {PlayerLeftComponent} from './playerLeft/playerLeft.component';
 import {BoardComponent} from './board/board.component';
 import {ProfileService} from "../../services/profile.service";
+import {Subscription} from "rxjs";
 import {PlayerRightComponent} from "./playerRight/playerRight.component";
 import {ModalComponent} from './modal/modal.component';
 
@@ -21,6 +22,7 @@ import {ModalComponent} from './modal/modal.component';
 })
 export class GameComponent implements OnInit, OnDestroy {
   public profileService: ProfileService = inject(ProfileService);
+  private routerSubscription: Subscription | null = null;
   @ViewChild(ModalComponent) modal!: ModalComponent; // Import Modal Component
 
   user: any = null;
@@ -38,17 +40,31 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.setupWebSocketListeners();
-    this.gameService.initializeBoard(this.gameId); // Initialisiere das Spielfeld// WebSocket-Listener einrichten
+    /*
+    window.addEventListener('beforeunload', this.onUnloadHandler);
+
+    this.routerSubscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        //this.gameService.resign(this.gameId, this.user.userId);
+      }
+    });
+    */
+    this.loadGameId();
     this.profileService.getCurrentUser().subscribe({
       next: () => {
         // TODO EVENTUELL this.joinGame() in das next und andere
+        this.gameService.getGame(this.gameId).subscribe({
+          next: () => {},
+          error: (err) => {
+            console.log(err.error.message)
+            this.router.navigate(['profile']);
+          }
+        })
       },
       error: () => {
         this.router.navigate(['login']);
       }
     });
-    this.loadGameId();
     this.loadUser();
     this.joinGame();
     this.setupWebSocketListeners();
@@ -62,9 +78,13 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.gameService.resign(this.gameId, this.user.userId);
+    //window.removeEventListener('beforeunload', this.onUnloadHandler);
 
+    //this.gameService.resign(this.gameId, this.user.userId);
 
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
   }
 
   // Lade Benutzerinformationen aus LocalStorage
@@ -168,7 +188,11 @@ export class GameComponent implements OnInit, OnDestroy {
 
   }
 
-// Methode zum aufrufen des Modal
+  onUnloadHandler = (event: BeforeUnloadEvent) => {
+    //this.gameService.resign(this.gameId, this.user.userId);
+  };
+
+  // Methode zum aufrufen des Modal
   showGameOverModal(): void {
     if (this.modal) {
       console.log('Modal wird geöffnet');

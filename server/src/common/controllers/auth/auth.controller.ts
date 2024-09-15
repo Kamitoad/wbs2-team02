@@ -16,7 +16,7 @@ import {
     ApiBadRequestResponse, ApiConflictResponse,
     ApiCreatedResponse, ApiForbiddenResponse,
     ApiInternalServerErrorResponse,
-    ApiOkResponse,
+    ApiOkResponse, ApiOperation,
     ApiTags,
 } from "@nestjs/swagger";
 import {OkDto} from "../../dtos/OkDto";
@@ -34,6 +34,7 @@ export class AuthController {
     ) {
     }
 
+    @ApiOperation({ summary: 'Registriert den Benutzer mit den angegebenen Daten' })
     @ApiCreatedResponse({
         type: ReadUserDto,
         description: 'User erfolgreich registriert'
@@ -71,6 +72,7 @@ export class AuthController {
         }
     }
 
+    @ApiOperation({ summary: 'Meldet den Benutzer an' })
     @ApiOkResponse({
         type: ReadUserDto,
         description: 'User erfolgreich eingeloggt'
@@ -105,6 +107,7 @@ export class AuthController {
         }
     }
 
+    @ApiOperation({ summary: 'Meldet den Benutzer ab' })
     @ApiOkResponse({
         type: OkDto,
         description: 'User erfolgreich ausgeloggt'
